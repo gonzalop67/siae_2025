@@ -14,6 +14,14 @@ class PeriodoLectivo
         return $this->db->registros();
     }
 
+    public function obtenerPeriodoLectivo($id_periodo_lectivo)
+    {
+        $query = "SELECT * FROM sw_periodo_lectivo WHERE id_periodo_lectivo = $id_periodo_lectivo";
+        // $this->db->query("SELECT * FROM sw_periodo_lectivo WHERE id_periodo_lectivo = $id_periodo_lectivo");
+        return $query;
+        // return $this->db->registro();
+    }
+
     public function obtenerPeriodosL($id_modalidad)
     {
         $this->db->query("SELECT p.*, pe_descripcion FROM sw_periodo_lectivo p, sw_periodo_estado pe WHERE pe.id_periodo_estado = p.id_periodo_estado AND id_modalidad = $id_modalidad AND pe_descripcion = 'ACTUAL' ORDER BY pe_fecha_inicio DESC");

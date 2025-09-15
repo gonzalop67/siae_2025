@@ -18,15 +18,15 @@ class Admin extends Controlador
         // $numero_estudiantes = $this->estudianteModelo->contarEstudiantes($id_periodo_lectivo);
         // $num_representantes = $this->usuarioModelo->contarRepresentantes($id_periodo_lectivo);
         // $jornadas = $this->jornadaModelo->obtenerJornadasPorPeriodoLectivo($id_periodo_lectivo);
-        // $datos = [
-        //     'titulo' => 'Dashboard',
+        $datos = [
+            'titulo' => 'Admin Dashboard',
         //     'numero_autoridades' => $numero_autoridades,
         //     'numero_docentes' => $numero_docentes,
         //     'numero_estudiantes' => $numero_estudiantes,
         //     'num_representantes' => $num_representantes,
         //     'jornadas' => $jornadas,
-        //     'nombreVista' => 'admin/dashboard.php'
-        // ];
-        $this->vista('admin/dashboard');
+            'nombreVista' => 'admin/dashboard.php'
+        ];
+        $this->vista('admin/index', $datos);
     }
 }

@@ -6,6 +6,7 @@ class Auth extends Controlador
     private $usuarioModelo;
     private $estudianteModelo;
     private $institucionModelo;
+    private $periodoLectivoModelo;
 
     public function __construct()
     {
@@ -14,6 +15,7 @@ class Auth extends Controlador
         $this->usuarioModelo = $this->modelo('Usuario');
         $this->estudianteModelo = $this->modelo('Estudiante');
         $this->institucionModelo = $this->modelo('Institucion');
+        $this->periodoLectivoModelo = $this->modelo('PeriodoLectivo');
     }
 
     public function index()
@@ -33,37 +35,37 @@ class Auth extends Controlador
         $username = $_POST["usuario"];
         $password = $_POST["clave"];
         $id_perfil = $_POST["perfil"];
-        $id_periodo_lectivo = $_POST["periodo"];
         // Verify data login
         $clave = Encrypter::encrypt($password);
         $usuario = $this->usuarioModelo->obtenerUsuario($username, $clave, $id_perfil);
-
-        //
-        // print_r("<pre>");
-        // print_r($usuario);
-        // print_r("</pre>");
-        // die();
-        //
+        if ($usuario->pe_nombre !== "ADMINISTRADOR" && $usuario->pe_nombre !== "TUTOR") {
+            $id_periodo_lectivo = $_POST["periodo"];
+            $periodoActual = $this->periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
+            $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $$periodoActual->pe_anio_fin;
+        }
 
         if (!empty($usuario)) {
             session_start();
             $_SESSION['usuario_logueado'] = true;
-            $_SESSION['id_periodo_lectivo'] = $id_periodo_lectivo;
+            if ($usuario->pe_nombre !== "ADMINISTRADOR" && $usuario->pe_nombre !== "TUTOR") {
+                $_SESSION['id_periodo_lectivo'] = $id_periodo_lectivo;
+                $_SESSION['nombrePeriodo'] = $nombrePeriodo;
+            }
             $_SESSION['id_usuario'] = $usuario->id_usuario;
-            $_SESSION['pe_nombre'] = $usuario->pe_nombre;
             $_SESSION['id_perfil'] = $id_perfil;
+            $_SESSION['nombrePerfil'] = $usuario->pe_nombre;
             $_SESSION['cambio_paralelo'] = 0;
 
             echo json_encode(array(
                 'error' => false,
                 'id_usuario' => $usuario->id_usuario,
-                'pe_nombre' => $usuario->pe_nombre
+                'nombrePerfil' => $usuario->pe_nombre
             ));
         } else {
             echo json_encode(array(
                 'error' => true,
                 'id_usuario' => 0,
-                'pe_nombre' => ''
+                'nombrePerfil' => ''
             ));
         }
     }

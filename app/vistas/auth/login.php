@@ -18,6 +18,17 @@
             background-position: center;
             background-size: cover;
         }
+
+        footer {
+            background: linear-gradient(transparent, #000a);
+            color: #fff;
+            font-family: Tahoma; 
+            font-weight: 300;
+            font-size: 13px;
+            margin-top: -40px; 
+            padding: 10px;
+            text-align: center; 
+        }
     </style>
 </head>
 
@@ -104,7 +115,7 @@
             </main>
         </div>
         <div id="layoutAuthentication_footer">
-            <footer style="text-align: center; color: #000; margin-top: -40px; font-weight: 600;">
+            <footer>
                 .: &copy; <?php echo date("  Y"); ?> - <?php echo $datos['nombreInstitucion']; ?> :.
             </footer>
         </div>
@@ -217,9 +228,8 @@
                 if (!json.error) {
 
                     //No hay error se redirecciona al dashboard correspondiente
-                    console.log(json.pe_nombre);
 
-                    switch (json.pe_nombre) {
+                    switch (json.nombrePerfil) {
                         case 'ADMINISTRADOR':
                             location.href = "<?php echo RUTA_URL ?>Admin/dashboard";
                             break;
