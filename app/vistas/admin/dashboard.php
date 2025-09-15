@@ -1,0 +1,1 @@
+<a href="<?php echo RUTA_URL ?>Auth/logout">Logout</a>
