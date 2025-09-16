@@ -8,7 +8,7 @@
     */
 
     class Core{
-        protected $controladorActual = 'auth';
+        protected $controladorActual = 'Auth';
         protected $metodoActual = 'index';
         protected $parametros = [];
 

@@ -1,1 +1,1 @@
-<a href="<?php echo RUTA_URL ?>Auth/logout">Logout</a>
+<h3 class="text-center p-5">Bienvenidos al panel de control del Administrador</h3>

@@ -4914,6 +4914,9 @@ textarea.form-control-lg {
 .badge:empty {
   display: none;
 }
+.badge-danger {
+  background-color: var(--bs-danger);
+}
 
 .btn .badge {
   position: relative;

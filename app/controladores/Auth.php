@@ -38,20 +38,21 @@ class Auth extends Controlador
         // Verify data login
         $clave = Encrypter::encrypt($password);
         $usuario = $this->usuarioModelo->obtenerUsuario($username, $clave, $id_perfil);
-        if ($usuario->pe_nombre !== "ADMINISTRADOR" && $usuario->pe_nombre !== "TUTOR") {
-            $id_periodo_lectivo = $_POST["periodo"];
-            $periodoActual = $this->periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
-            $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $$periodoActual->pe_anio_fin;
-        }
 
         if (!empty($usuario)) {
             session_start();
             $_SESSION['usuario_logueado'] = true;
+
             if ($usuario->pe_nombre !== "ADMINISTRADOR" && $usuario->pe_nombre !== "TUTOR") {
+                $id_periodo_lectivo = $_POST["periodo"];
+                $periodoActual = $this->periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
+                $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $$periodoActual->pe_anio_fin;
                 $_SESSION['id_periodo_lectivo'] = $id_periodo_lectivo;
                 $_SESSION['nombrePeriodo'] = $nombrePeriodo;
             }
             $_SESSION['id_usuario'] = $usuario->id_usuario;
+            $_SESSION['avatar_user'] = $usuario->us_foto;
+            $_SESSION['nombre_corto'] = $usuario->us_shortname;
             $_SESSION['id_perfil'] = $id_perfil;
             $_SESSION['nombrePerfil'] = $usuario->pe_nombre;
             $_SESSION['cambio_paralelo'] = 0;

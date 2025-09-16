@@ -80,7 +80,7 @@
                                                     $name = $modalidad->mo_nombre;
                                                 ?>
                                                     <optgroup label='<?php echo $name; ?>'>
-                                                        <?php $periodos = $periodoLectivoModelo->obtenerPeriodosL($code);
+                                                        <?php $periodos = $periodoLectivoModelo->obtenerPeriodosLActuales($code);
                                                         foreach ($periodos as $periodo) {
                                                             $code2 = $periodo->id_periodo_lectivo;
                                                             $fecha_inicial = explode("-", $periodo->pe_fecha_inicio);

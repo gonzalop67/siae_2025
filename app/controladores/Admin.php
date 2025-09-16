@@ -6,6 +6,11 @@ class Admin extends Controlador
     {
     }
 
+    public function index()
+    {
+        //
+    }
+
     public function dashboard()
     {
         session_start();
