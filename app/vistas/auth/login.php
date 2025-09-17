@@ -22,12 +22,12 @@
         footer {
             background: linear-gradient(transparent, #000a);
             color: #fff;
-            font-family: Tahoma; 
+            font-family: Tahoma;
             font-weight: 300;
             font-size: 13px;
-            margin-top: -40px; 
+            margin-top: -40px;
             padding: 10px;
-            text-align: center; 
+            text-align: center;
         }
     </style>
 </head>
@@ -228,12 +228,17 @@
                 if (!json.error) {
 
                     //No hay error se redirecciona al dashboard correspondiente
+                    // alert(json.nombrePerfil);
 
                     switch (json.nombrePerfil) {
                         case 'ADMINISTRADOR':
                             location.href = "<?php echo RUTA_URL ?>Admin/dashboard";
                             break;
-                    
+
+                        case 'AUTORIDAD':
+                            location.href = "<?php echo RUTA_URL ?>Autoridad/dashboard";
+                            break;
+
                         default:
                             alert("Todavía no se ha implementado el dashboard correspondiente.");
                             break;

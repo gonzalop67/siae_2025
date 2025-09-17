@@ -1,0 +1,7 @@
+# Visual Studio Code
+.vscode/
+
+# Directorio de imágenes subidas
+public/uploads/
+
+.git/

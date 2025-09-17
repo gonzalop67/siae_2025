@@ -1,5 +1,5 @@
 <?php
-class Admin extends Controlador
+class Autoridad extends Controlador
 {
 
     public function __construct()
@@ -24,14 +24,14 @@ class Admin extends Controlador
         // $num_representantes = $this->usuarioModelo->contarRepresentantes($id_periodo_lectivo);
         // $jornadas = $this->jornadaModelo->obtenerJornadasPorPeriodoLectivo($id_periodo_lectivo);
         $datos = [
-            'titulo' => 'Admin Dashboard',
-            'dashboard' => 'Admin',
+            'titulo' => 'Autoridad Dashboard',
+            'dashboard' => 'Autoridad',
         //     'numero_autoridades' => $numero_autoridades,
         //     'numero_docentes' => $numero_docentes,
         //     'numero_estudiantes' => $numero_estudiantes,
         //     'num_representantes' => $num_representantes,
         //     'jornadas' => $jornadas,
-            'nombreVista' => 'admin/dashboard.php'
+            'nombreVista' => 'autoridad/dashboard.php'
         ];
         $this->vista('admin/index', $datos);
     }

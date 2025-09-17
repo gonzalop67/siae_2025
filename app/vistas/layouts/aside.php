@@ -5,9 +5,9 @@
                 <div class="sb-sidenav-menu-heading"><?= $_SESSION['nombrePerfil'] ?></div>
                 <?php
                 $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-                $active = ($uriSegments[2] == "Admin") ? 'active' : '';
+                $active = ($uriSegments[2] == $datos['dashboard']) ? 'active' : '';
                 ?>
-                <a href="<?= RUTA_URL ?>Admin/dashboard" class="nav-link <?= $active ?>">
+                <a href="<?= RUTA_URL . $datos['dashboard'] ?>/dashboard" class="nav-link <?= $active ?>">
                     <div class="sb-nav-link-icon"><i class="fas fa-home"></i></div>
                     Dashboard
                 </a>

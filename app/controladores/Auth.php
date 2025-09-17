@@ -41,12 +41,11 @@ class Auth extends Controlador
 
         if (!empty($usuario)) {
             session_start();
-            $_SESSION['usuario_logueado'] = true;
 
             if ($usuario->pe_nombre !== "ADMINISTRADOR" && $usuario->pe_nombre !== "TUTOR") {
                 $id_periodo_lectivo = $_POST["periodo"];
                 $periodoActual = $this->periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
-                $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $$periodoActual->pe_anio_fin;
+                $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $periodoActual->pe_anio_fin;
                 $_SESSION['id_periodo_lectivo'] = $id_periodo_lectivo;
                 $_SESSION['nombrePeriodo'] = $nombrePeriodo;
             }
@@ -56,6 +55,8 @@ class Auth extends Controlador
             $_SESSION['id_perfil'] = $id_perfil;
             $_SESSION['nombrePerfil'] = $usuario->pe_nombre;
             $_SESSION['cambio_paralelo'] = 0;
+
+            $_SESSION['usuario_logueado'] = true;
 
             echo json_encode(array(
                 'error' => false,
