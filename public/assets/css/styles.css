@@ -11416,6 +11416,11 @@ body {
   max-width: 20rem;
 }
 
+.img-circle {
+  width: 25px;
+  border-radius: 50%;
+}
+
 .nav .nav-link .sb-nav-link-icon,
 .sb-sidenav-menu .nav-link .sb-nav-link-icon {
   margin-right: 0.5rem;

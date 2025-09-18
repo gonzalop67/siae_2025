@@ -33,7 +33,7 @@
                                         $icono = "<i class='fa fa-fw $menu2->mnu_icono'></i> ";
                                     }
                                 ?>
-                                    <a class="nav-link" href="<?php echo RUTA_URL . '/' . $menu2->mnu_link; ?>"><?= $menu2->mnu_texto; ?></a>
+                                    <a class="nav-link <?= $active ?>" href="<?php echo RUTA_URL . $menu2->mnu_link; ?>"><?= $menu2->mnu_texto; ?></a>
                                 <?php } ?>
                             </nav>
                         </div>
@@ -41,7 +41,7 @@
                         $uriSegments = explode("/", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
                         $active = ($uriSegments[2] == $menu->mnu_link) ? 'active' : '';
                     ?>
-                        <a class="nav-link" href="<?= RUTA_URL . '/' . $menu->mnu_link; ?>">
+                        <a class="nav-link <?= $active ?>" href="<?= RUTA_URL . $menu->mnu_link; ?>">
                             <div class="sb-nav-link-icon"><i class="fas <?= $menu->mnu_icono == '' ? 'fa-link' : $menu->mnu_icono  ?>"></i></div>
                             <?= $menu->mnu_texto; ?>
                         </a>

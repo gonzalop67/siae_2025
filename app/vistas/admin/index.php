@@ -39,6 +39,8 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <title><?php echo NOMBRESITIO . $datos['titulo'] ?></title>
     <link rel="shortcut icon" type="image/x-icon" href="<?= RUTA_URL ?>public/assets/img/favicon.ico" />
 
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
+
     <link href="<?php echo RUTA_URL ?>public/assets/css/styles.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
@@ -48,6 +50,12 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
             border-radius: 50%;
         }
     </style>
+
+    <!-- jQuery 3 -->
+    <script src="<?php echo RUTA_URL ?>public/assets/js/jquery/jquery.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="//cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
 
     <!-- Google Font -->
     <link rel="stylesheet"
@@ -69,6 +77,20 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="<?= RUTA_URL ?>public/assets/js/scripts.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // $("nav.sb-sidenav-menu-nested").find("a.active").parent().parent().prev().css("background-color", "yellow");
+            $("nav.sb-sidenav-menu-nested").find("a.active").parent().parent().prev().addClass('active');
+
+            $("nav.sb-sidenav-menu-nested").find("a.active").parent().parent().addClass('show');
+
+            //Autoclose
+            window.setTimeout(function() {
+                $(".alert").fadeOut(1500, 0);
+            }, 3000); //3 segundos y desaparece
+        });
+    </script>
 </body>
 
 </html>
