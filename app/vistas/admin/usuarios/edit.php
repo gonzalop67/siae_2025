@@ -45,7 +45,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password:</label>
-                    <?php $clave = encrypter::decrypt($datos['usuario']->us_password) ?>
+                    <?php $clave = Encrypter::decrypt($datos['usuario']->us_password) ?>
                     <input type="text" class="form-control" value="<?= $clave ?>" name="password" id="password" placeholder="Clave del Usuario">
                     <p id="error-password" class="invalid-feedback">La contraseña debe contener un dígito del 1 al 9, una letra minúscula, una letra mayúscula, un carácter especial ["$","@","!","%","*","?","&","+"], ningún espacio y debe tener entre 8 y 15 caracteres.</p>
                 </div>

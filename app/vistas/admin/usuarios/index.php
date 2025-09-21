@@ -76,7 +76,7 @@
                                     <td>
                                         <div class="btn-group">
                                             <a href="<?= RUTA_URL . "usuarios/edit/" . $v->id_usuario ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminar(<?= $v->id_usuario ?>)"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_usuario ?>)"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -137,6 +137,24 @@
     tableInitialized = true;
 
     function eliminar(id) {
-        alert("Eliminando el usuario...");
+        const url = base_url + "usuarios/delete/" + id;
+        Swal.fire({
+            title: "¿Estás seguro de eliminar este registro?",
+            text: "¡Una vez eliminado no podrá recuperarse!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, elimínalo!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Swal.fire({
+                //     title: "Deleted!",
+                //     text: "Your file has been deleted."+url,
+                //     icon: "success"
+                // });
+                window.location.href = url;
+            }
+        });
     }
 </script>

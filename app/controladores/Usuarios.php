@@ -191,24 +191,10 @@ class Usuarios extends Controlador
             $tipo_mensaje = "error";
         } else {
 
-            //
-                // print_r("<pre>");
-                // print_r($_FILES['foto']);
-                // print_r("</pre>");
-                // die();
-
             if ($_FILES['foto']['name'] != "") {
                 // Elimino el archivo de imagen anterior si existe
                 $ruta = dirname(dirname(dirname(__FILE__))) . "/public/uploads/";
                 $imagenActual = $ruta . $us_foto;
-
-                //
-                // print_r("<pre>");
-                // print_r($imagenActual);
-                // print_r("</pre>");
-
-                // echo json_encode(file_exists($imagenActual));
-                // die();
 
                 if (file_exists($imagenActual)) {
                     unlink($imagenActual); // El directorio que contiene los archivos de imagen debe tener permisos de escritura
@@ -255,5 +241,32 @@ class Usuarios extends Controlador
             'mensaje' => $mensaje,
             'tipo_mensaje' => $tipo_mensaje
         ));
+    }
+
+    public function delete($id)
+    {
+        try {
+            // Recuperar el nombre del archivo de imagen
+            $usuarioActual = $this->usuarioModelo->obtenerUsuarioPorId($id);
+            $us_foto = $usuarioActual->us_foto;
+            // Eliminar el registro de la base de datos
+            $this->usuarioModelo->eliminarUsuario($id);
+            // Elimino el archivo de imagen si existe
+            $ruta = dirname(dirname(dirname(__FILE__))) . "/public/uploads/";
+            $imagenActual = $ruta . $us_foto;
+
+            if (file_exists($imagenActual)) {
+                unlink($imagenActual); // El directorio que contiene los archivos de imagen debe tener permisos de escritura
+            }
+            // Mensaje de éxito
+            $_SESSION['mensaje'] = "Usuario eliminado exitosamente de la base de datos.";
+            $_SESSION['tipo'] = "success";
+            $_SESSION['icono'] = "check";
+        } catch (PDOException $e) {
+            $_SESSION['mensaje'] = "El Usuario no fue insertado exitosamente. Error: " . $e->getMessage();
+            $_SESSION['tipo'] = "error";
+            $_SESSION['icono'] = "ban";
+        }
+        redireccionar('usuarios');
     }
 }

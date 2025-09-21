@@ -124,6 +124,16 @@ class Usuario
         }
     }
 
+    public function eliminarUsuario($id)
+    {
+        $this->db->query('DELETE FROM `sw_usuario` WHERE `id_usuario` = :id_usuario');
+
+        //Vincular valores
+        $this->db->bind(':id_usuario', $id);
+
+        return $this->db->execute();
+    }
+
     public function obtenerPerfiles($id_usuario)
     {
         $perfiles = $this->db->query("SELECT u.id_usuario, 
