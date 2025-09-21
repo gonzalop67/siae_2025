@@ -5,12 +5,20 @@
             Administración de Usuarios
         </div>
         <div class="card-body">
-            <?php if (isset($_SESSION['msg'])) : ?>
-                <div class="alert alert-<?= $_SESSION['msg.type'] ?> alert-dismissible fade show" role="alert">
-                    <p><i class="icon fa fa-<?= $_SESSION['msg.icon'] ?>"></i> <?= $_SESSION['msg.body'] ?></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+            <?php if (isset($_SESSION['mensaje'])) { ?>
+                <div class="alert alert-<?= isset($_SESSION['tipo']) ? $_SESSION['tipo'] : 'danger' ?> alert-dismissible fade show" role="alert">
+                    <p><i class="icon fa fa-<?= isset($_SESSION['icono']) ? $_SESSION['icono'] : 'ban' ?>"></i> <span><?php echo isset($_SESSION['mensaje']) ? $_SESSION['mensaje'] : '' ?></span></p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            <?php endif ?>
+            <?php } ?>
+
+            <?php if (isset($_SESSION['mensaje'])) unset($_SESSION['mensaje']) ?>
+            <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
+            <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
+
             <a href="<?= RUTA_URL . "usuarios/create" ?>" class="btn btn-block btn-primary btn-sm">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo Usuario
             </a>

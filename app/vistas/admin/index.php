@@ -57,6 +57,14 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <!-- DataTables -->
     <script src="//cdn.datatables.net/2.0.1/js/dataTables.min.js"></script>
 
+    <!-- sweetalert 2 -->
+    <link rel="stylesheet" href="<?= RUTA_URL ?>public/assets/js/sweetalert2/sweetalert2.min.css">
+    <script src="<?= RUTA_URL ?>public/assets/js/sweetalert2/sweetalert2.min.js"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="<?= RUTA_URL ?>public/assets/js/toastr/toastr.min.css">
+    <script src="<?= RUTA_URL ?>public/assets/js/toastr/toastr.min.js"></script>
+
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -88,7 +96,11 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
             //Autoclose
             window.setTimeout(function() {
                 $(".alert").fadeOut(1500, 0);
-            }, 3000); //3 segundos y desaparece
+            }, 5000); //5 segundos y desaparece
+
+            $(".close").on('click', function() {
+                $(".alert").css("display", "none");
+            });
         });
     </script>
 </body>

@@ -32,6 +32,55 @@ class Usuario
         return $this->db->registros();
     }
 
+    public function existeUsuarioPorNombreUsuario($us_login)
+    {
+        $this->db->query("SELECT id_usuario FROM sw_usuario WHERE us_login = '$us_login'");
+        $usuario = $this->db->registro();
+
+        return !empty($usuario);
+    }
+
+    public function existeUsuarioPorNombreCompleto($us_fullname)
+    {
+        $this->db->query("SELECT id_usuario FROM sw_usuario WHERE us_fullname = '$us_fullname'");
+        $usuario = $this->db->registro();
+
+        return !empty($usuario);
+    }
+
+    public function insertarUsuario($datos)
+    {
+        $this->db->query('INSERT INTO sw_usuario (us_titulo, us_apellidos, us_nombres, us_shortname, us_fullname, us_login, us_password, us_foto, us_genero, us_activo) VALUES (:us_titulo, :us_apellidos, :us_nombres, :us_shortname, :us_fullname, :us_login, :us_password, :us_foto, :us_genero, :us_activo)');
+
+        //Vincular valores
+        $this->db->bind(':us_titulo', $datos['us_titulo']);
+        $this->db->bind(':us_apellidos', $datos['us_apellidos']);
+        $this->db->bind(':us_nombres', $datos['us_nombres']);
+        $this->db->bind(':us_shortname', $datos['us_shortname']);
+        $this->db->bind(':us_fullname', $datos['us_fullname']);
+        $this->db->bind(':us_login', $datos['us_login']);
+        $this->db->bind(':us_password', $datos['us_password']);
+        $this->db->bind(':us_foto', $datos['us_foto']);
+        $this->db->bind(':us_genero', $datos['us_genero']);
+        $this->db->bind(':us_activo', $datos['us_activo']);
+
+        $this->db->execute();
+
+        $this->db->query("SELECT MAX(id_usuario) AS lastInsertId FROM sw_usuario");
+        $lastInsertId = $this->db->registro()->lastInsertId;
+
+        for ($i = 0; $i < count($datos['perfiles']); $i++) {
+            //Insertar en la tabla sw_usuario_perfil
+            $this->db->query("INSERT INTO sw_usuario_perfil (id_usuario, id_perfil) VALUES (:id_usuario, :id_perfil)");
+
+            //Vincular valores
+            $this->db->bind(':id_usuario', $lastInsertId);
+            $this->db->bind(':id_perfil', $datos['perfiles'][$i]);
+
+            $this->db->execute();
+        }
+    }
+
     public function obtenerPerfiles($id_usuario)
     {
         $perfiles = $this->db->query("SELECT u.id_usuario, 
