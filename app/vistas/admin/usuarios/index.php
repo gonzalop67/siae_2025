@@ -75,8 +75,8 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="<?= RUTA_URL . "usuarios/edit/" . "1" ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminar(<?= '1' ?>)"><i class="fa fa-trash"></i></button>
+                                            <a href="<?= RUTA_URL . "usuarios/edit/" . $v->id_usuario ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
+                                            <button type="button" class="btn btn-danger btn-sm" onclick="eliminar(<?= $v->id_usuario ?>)"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>
@@ -90,6 +90,8 @@
 </div>
 
 <script>
+    const base_url = "<?php echo RUTA_URL; ?>";
+
     let table;
     let tableInitialized = false;
 
@@ -100,7 +102,7 @@
     table = new DataTable('#tbl_usuarios', {
         columnDefs: [{
             orderable: false,
-            targets: [0, 5, 6, 7]
+            targets: [0, 1, 2, 5, 6, 7]
         }],
         destroy: true,
         pageLength: 5,
@@ -133,4 +135,8 @@
     });
 
     tableInitialized = true;
+
+    function eliminar(id) {
+        alert("Eliminando el usuario...");
+    }
 </script>

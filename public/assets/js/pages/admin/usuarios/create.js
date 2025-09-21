@@ -1,5 +1,7 @@
-const formulario = document.getElementById("frmCreate");
-const inputs = document.querySelectorAll("#frmCreate input");
+const formulario = document.getElementById("formulario");
+const inputs = document.querySelectorAll("#formulario input");
+
+const inputIdUsuario = document.getElementById("id_usuario");
 
 const inputAbreviatura = document.getElementById("abreviatura");
 const inputDescripcion = document.getElementById("descripcion");
@@ -8,6 +10,8 @@ const inputNombres = document.getElementById("nombres");
 const inputNombreCorto = document.getElementById("nombre_corto");
 const inputUsuario = document.getElementById("usuario");
 const inputPassword = document.getElementById("password");
+
+const buttonSubmit = document.getElementById("btn-submit");
 
 const inputFoto = document.getElementById("foto");
 
@@ -126,10 +130,16 @@ inputs.forEach((input) => {
   input.addEventListener("blur", validarFormulario);
 });
 
-async function fntInsertar() {
+async function fntProcesar() {
+  let url = "";
+  if (buttonSubmit.innerHTML === "Actualizar") {
+    url = "usuarios/update";
+  } else {
+    url = "usuarios/insert";
+  }
   try {
-    const formData = new FormData(frmCreate);
-    let resp = await fetch(base_url + "usuarios/insert", {
+    const formData = new FormData(formulario);
+    let resp = await fetch(base_url + url, {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -137,7 +147,7 @@ async function fntInsertar() {
     });
     json = await resp.json();
     if (json.ok) {
-      frmCreate.reset();
+      formulario.reset();
       window.location.href = base_url + "usuarios";
     } else {
       Swal.fire({
@@ -158,6 +168,54 @@ formulario.addEventListener("submit", (e) => {
   const countPerfilesChecked = $(
     'input[type="checkbox"][name="perfiles[]"]:checked'
   ).length;
+
+  if (inputAbreviatura.value !== "") {
+    if (expresiones.abreviatura.test(inputAbreviatura.value)) {
+      campos["abreviatura"] = true;
+    } else {
+      campos["abreviatura"] = false;
+    }
+  }
+
+  if (inputDescripcion.value !== "") {
+    if (expresiones.descripcion.test(inputDescripcion.value)) {
+      campos["descripcion"] = true;
+    } else {
+      campos["descripcion"] = false;
+    }
+  }
+
+  if (inputApellidos.value !== "") {
+    if (expresiones.apellidos.test(inputApellidos.value)) {
+      campos["apellidos"] = true;
+    } else {
+      campos["apellidos"] = false;
+    }
+  }
+
+  if (inputNombres.value !== "") {
+    if (expresiones.apellidos.test(inputNombres.value)) {
+      campos["nombres"] = true;
+    } else {
+      campos["nombres"] = false;
+    }
+  }
+
+  if (inputUsuario.value !== "") {
+    if (expresiones.usuario.test(inputUsuario.value)) {
+      campos["usuario"] = true;
+    } else {
+      campos["usuario"] = false;
+    }
+  }
+
+  if (inputPassword.value !== "") {
+    if (expresiones.password.test(inputPassword.value)) {
+      campos["password"] = true;
+    } else {
+      campos["password"] = false;
+    }
+  }
 
   if (
     campos.abreviatura &&
@@ -200,26 +258,28 @@ formulario.addEventListener("submit", (e) => {
     }
 
     // Restringir el tamaño del archivo de imagen a un máximo de 1 Mb
-    var img = document.forms["frmCreate"]["foto"];
-    if (img.value === "") {
-      Swal.fire({
-        title: "Error",
-        text: "No ha seleccionado un archivo de imagen",
-        icon: "error",
-      });
-      return false;
-    } else {
-      if (parseFloat(img.files[0].size / (1024 * 1024)) >= 1) {
+    var img = document.forms["formulario"]["foto"];
+    if (buttonSubmit.innerHTML !== "Actualizar") {
+      if (img.value === "") {
         Swal.fire({
           title: "Error",
-          text: "El tamaño del archivo de imagen debe ser menor que 1 MB",
+          text: "No ha seleccionado un archivo de imagen",
           icon: "error",
         });
         return false;
+      } else {
+        if (parseFloat(img.files[0].size / (1024 * 1024)) >= 1) {
+          Swal.fire({
+            title: "Error",
+            text: "El tamaño del archivo de imagen debe ser menor que 1 MB",
+            icon: "error",
+          });
+          return false;
+        }
       }
     }
 
-    fntInsertar();
+    fntProcesar();
   } else {
     if (!campos.abreviatura) {
       inputAbreviatura.classList.add("is-invalid");
@@ -236,10 +296,6 @@ formulario.addEventListener("submit", (e) => {
     if (!campos.nombres) {
       inputNombres.classList.add("is-invalid");
       document.getElementById("error-nombres").style.display = "block";
-    }
-    if (!campos.nombre_corto) {
-      inputNombreCorto.classList.add("is-invalid");
-      document.getElementById("error-nombre_corto").style.display = "block";
     }
     if (!campos.usuario) {
       inputUsuario.classList.add("is-invalid");
@@ -259,3 +315,5 @@ formulario.addEventListener("submit", (e) => {
     });
   }
 });
+
+
