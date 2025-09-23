@@ -61,7 +61,7 @@ class Auth extends Controlador
             echo json_encode(array(
                 'error' => false,
                 'id_usuario' => $usuario->id_usuario,
-                'nombrePerfil' => $usuario->pe_nombre
+                'slug' => $usuario->pe_slug
             ));
         } else {
             echo json_encode(array(

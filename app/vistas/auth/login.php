@@ -144,8 +144,9 @@
 
             // Obtén el texto (innerHTML) del <option> seleccionado
             perfilSeleccionado = perfil.options[perfil.selectedIndex].innerHTML;
+            perfilSeleccionado = perfilSeleccionado.toLowerCase();
 
-            if (perfilSeleccionado === 'ADMINISTRADOR' || perfilSeleccionado === 'TUTOR' || valorSeleccionado === "") {
+            if (perfilSeleccionado === 'administrador' || perfilSeleccionado === 'tutor' || valorSeleccionado === "") {
                 periodo_group.style.display = "none";
             } else {
                 periodo_group.style.display = "block";
@@ -186,7 +187,7 @@
 
             } else {
 
-                if (perfilSeleccionado !== 'ADMINISTRADOR' && perfilSeleccionado !== 'TUTOR') {
+                if (perfilSeleccionado !== 'administrador' && perfilSeleccionado !== 'tutor') {
                     if (periodo.value == "") {
                         periodo.classList.add("is-invalid");
                         document.getElementById("error-periodo").innerHTML = "El campo Periodo Lectivo es obligatorio.";
@@ -230,12 +231,12 @@
                     //No hay error se redirecciona al dashboard correspondiente
                     // alert(json.nombrePerfil);
 
-                    switch (json.nombrePerfil) {
-                        case 'ADMINISTRADOR':
+                    switch (json.slug) {
+                        case 'administrador':
                             location.href = "<?php echo RUTA_URL ?>Admin/dashboard";
                             break;
 
-                        case 'AUTORIDAD':
+                        case 'autoridad':
                             location.href = "<?php echo RUTA_URL ?>Autoridad/dashboard";
                             break;
 

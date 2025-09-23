@@ -8,7 +8,22 @@ class Institucion
         $this->db = new Base;
     }
 
-    function obtenerDatosInstitucion()
+    public function obtenerInstituciones()
+    {
+        $this->db->query("SELECT 
+                            id_institucion, 
+                            in_logo, 
+                            us_shortname, 
+                            in_email, 
+                            in_direccion 
+                        FROM sw_institucion i, 
+                            sw_usuario u 
+                        WHERE u.id_usuario = i.admin_id 
+                        ORDER BY in_nombre");
+        return $this->db->registros();
+    }
+
+    public function obtenerDatosInstitucion()
     {
         $this->db->query("SELECT * FROM sw_institucion where id_institucion = 1");
         return $this->db->registro();

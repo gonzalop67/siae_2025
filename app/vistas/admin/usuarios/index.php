@@ -1,7 +1,7 @@
 <div class="container-fluid px-4">
     <div class="card mt-2">
         <div class="card-header">
-            <i class="fas fa-table me-1"></i>
+            <i class="fas fa-users me-1"></i>
             Administración de Usuarios
         </div>
         <div class="card-body">
@@ -24,7 +24,7 @@
             </a>
             <hr>
             <div class="row">
-                <div class="col-md-12 table-responsive viewdata">
+                <div class="col-md-12 table-responsive">
                     <table id="tbl_usuarios" class="table table-hover table-striped">
                         <thead>
                             <tr>
