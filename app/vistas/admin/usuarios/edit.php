@@ -1,7 +1,7 @@
 <div class="container-fluid px-4">
     <div class="card mt-2 mb-4">
         <div class="card-header">
-            <i class="fa fa-graduation-cap me-1"></i>
+            <i class="fa fa-user-edit me-1"></i>
             Editar Usuario
         </div>
         <div class="card-body">

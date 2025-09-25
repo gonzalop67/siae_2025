@@ -164,7 +164,7 @@ async function fntProcesar() {
 formulario.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  // Selecciona todos los checkboxes con el atributo name="niveles"
+  // Selecciona todos los checkboxes con el atributo name="perfiles"
   const countPerfilesChecked = $(
     'input[type="checkbox"][name="perfiles[]"]:checked'
   ).length;
@@ -257,7 +257,6 @@ formulario.addEventListener("submit", (e) => {
       }
     }
 
-    // Restringir el tamaño del archivo de imagen a un máximo de 1 Mb
     var img = document.forms["formulario"]["foto"];
     if (buttonSubmit.innerHTML !== "Actualizar") {
       if (img.value === "") {
@@ -267,15 +266,18 @@ formulario.addEventListener("submit", (e) => {
           icon: "error",
         });
         return false;
-      } else {
-        if (parseFloat(img.files[0].size / (1024 * 1024)) >= 1) {
-          Swal.fire({
-            title: "Error",
-            text: "El tamaño del archivo de imagen debe ser menor que 1 MB",
-            icon: "error",
-          });
-          return false;
-        }
+      }
+    }
+
+    // Restringir el tamaño del archivo de imagen a un máximo de 1 Mb
+    if (img.value !== "") {
+      if (parseFloat(img.files[0].size / (1024 * 1024)) >= 1) {
+        Swal.fire({
+          title: "Error",
+          text: "El tamaño del archivo de imagen debe ser menor que 1 MB",
+          icon: "error",
+        });
+        return false;
       }
     }
 
@@ -315,5 +317,3 @@ formulario.addEventListener("submit", (e) => {
     });
   }
 });
-
-

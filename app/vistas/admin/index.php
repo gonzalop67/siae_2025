@@ -14,10 +14,11 @@ $comentarioModelo = $this->modelo('Comentario');
 $nro_comentarios = $comentarioModelo->contarComentarios();
 // Obtener el id del periodo lectivo actual más reciente
 $periodoLectivoModelo = $this->modelo('PeriodoLectivo');
+$nombrePerfil = strtolower($_SESSION['nombrePerfil']);
 if (!isset($_SESSION['id_periodo_lectivo'])) {
-    if ($_SESSION['nombrePerfil'] === "ADMINISTRADOR") {
+    if ($nombrePerfil === "administrador") {
         $id_periodo_lectivo = $periodoLectivoModelo->obtenerIdPeriodoLectivoActual();
-    } else if ($_SESSION['nombrePerfil'] === "TUTOR") {
+    } else if ($nombrePerfil === "tutor") {
         //
     }
 } else {

@@ -38,17 +38,19 @@ class Auth extends Controlador
         // Verify data login
         $clave = Encrypter::encrypt($password);
         $usuario = $this->usuarioModelo->obtenerUsuario($username, $clave, $id_perfil);
+        $perfil = strtolower($usuario->pe_slug); 
 
         if (!empty($usuario)) {
             session_start();
 
-            if ($usuario->pe_nombre !== "ADMINISTRADOR" && $usuario->pe_nombre !== "TUTOR") {
+            if ($perfil !== "administrador" && $perfil !== "tutor") {
                 $id_periodo_lectivo = $_POST["periodo"];
                 $periodoActual = $this->periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
                 $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $periodoActual->pe_anio_fin;
                 $_SESSION['id_periodo_lectivo'] = $id_periodo_lectivo;
                 $_SESSION['nombrePeriodo'] = $nombrePeriodo;
             }
+
             $_SESSION['id_usuario'] = $usuario->id_usuario;
             $_SESSION['avatar_user'] = $usuario->us_foto;
             $_SESSION['nombre_corto'] = $usuario->us_shortname;
@@ -67,7 +69,7 @@ class Auth extends Controlador
             echo json_encode(array(
                 'error' => true,
                 'id_usuario' => 0,
-                'nombrePerfil' => ''
+                'slug' => ''
             ));
         }
     }
