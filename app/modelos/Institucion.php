@@ -49,11 +49,11 @@ class Institucion
         return $this->db->registros();
     }
 
-    // public function obtenerNombreInstitucion()
-    // {
-    //     $this->db->query("SELECT in_nombre FROM sw_institucion WHERE id_institucion = 1");
-    //     return $this->db->registro()->in_nombre;
-    // }
+    public function obtenerNombreInstitucion()
+    {
+        $this->db->query("SELECT in_nombre FROM sw_institucion WHERE id_institucion = 1");
+        return $this->db->registro()->in_nombre;
+    }
 
     public function existeNombreInstitucion($in_nombre)
     {

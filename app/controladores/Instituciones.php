@@ -149,12 +149,6 @@ class Instituciones extends Controlador
                 'in_copiar_y_pegar' => $in_copiar_y_pegar
             ];
 
-            //
-        // print_r("<pre>");
-        // print_r($datos);
-        // print_r("</pre>");
-        // die();
-
             try {
                 $this->institucionModelo->actualizarInstitucion($datos);
                 $ok = true;
