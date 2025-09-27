@@ -36,7 +36,7 @@ class Perfil
         return !empty($perfil);
     }
 
-    public function insertarPerfil($datos)
+    public function insertar($datos)
     {
         $this->db->query('INSERT INTO sw_perfil (pe_nombre, pe_slug) VALUES (:pe_nombre, :pe_slug)');
 
@@ -47,7 +47,7 @@ class Perfil
         $this->db->execute();
     }
 
-    public function actualizarPerfil($datos)
+    public function actualizar($datos)
     {
         $this->db->query('UPDATE sw_perfil SET pe_nombre = :pe_nombre, pe_slug = :pe_slug WHERE id_perfil = :id_perfil');
 
@@ -59,7 +59,7 @@ class Perfil
         $this->db->execute();
     }
 
-    public function eliminarPerfil($id)
+    public function eliminar($id)
     {
         $this->db->query('DELETE FROM `sw_perfil` WHERE `id_perfil` = :id_perfil');
 

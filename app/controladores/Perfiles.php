@@ -61,9 +61,9 @@ class Perfiles extends Controlador
             $tipo_mensaje = "error";
         } else {
             try {
-                $this->perfilModelo->insertarPerfil($datos);
+                $this->perfilModelo->insertar($datos);
                 $ok = true;
-                $_SESSION['mensaje'] = "El Perfil fue actualizado exitosamente.";
+                $_SESSION['mensaje'] = "El Perfil fue insertado exitosamente.";
                 $_SESSION['tipo'] = "success";
                 $_SESSION['icono'] = "check";
             } catch (PDOException $ex) {
@@ -84,12 +84,12 @@ class Perfiles extends Controlador
 
     public function edit($id)
     {
-        $eprfilActual = $this->perfilModelo->obtenerPerfil($id);
+        $perfilActual = $this->perfilModelo->obtenerPerfil($id);
 
         $datos = [
             'titulo' => 'Editar Perfil',
             'dashboard' => 'Admin',
-            'perfil' => $eprfilActual,
+            'perfil' => $perfilActual,
             'nombreVista' => 'admin/perfiles/edit.php'
         ];
         $this->vista('admin/index', $datos);
@@ -126,7 +126,7 @@ class Perfiles extends Controlador
             $tipo_mensaje = "error";
         } else {
             try {
-                $this->perfilModelo->actualizarPerfil($datos);
+                $this->perfilModelo->actualizar($datos);
                 $ok = true;
                 $_SESSION['mensaje'] = "El Usuario fue actualizado exitosamente.";
                 $_SESSION['tipo'] = "success";
@@ -151,7 +151,7 @@ class Perfiles extends Controlador
     {
         try {
             // Eliminar el registro de la base de datos
-            $this->perfilModelo->eliminarPerfil($id);
+            $this->perfilModelo->eliminar($id);
             // Mensaje de éxito
             $_SESSION['mensaje'] = "Perfil eliminado exitosamente de la base de datos.";
             $_SESSION['tipo'] = "success";

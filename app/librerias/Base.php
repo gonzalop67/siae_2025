@@ -97,4 +97,14 @@ class Base
     {
         return $this->stmt->rowCount();
     }
+
+    //Determinar si un campo de una tabla tiene el valor pasado como parámetro
+    public function existValueColumn($table_name, $column_name, $value_column)
+    {
+        $sql = "SELECT * FROM `".$table_name."` WHERE `".$column_name."` = '".$value_column."'";
+        $this->stmt = $this->dbh->prepare($sql);
+        $this->execute();
+        $records = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
+        return !empty($records);
+    }
 }
