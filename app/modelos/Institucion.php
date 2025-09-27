@@ -31,7 +31,7 @@ class Institucion
 
     public function obtenerAdministrador($id)
     {
-        $this->db->query("SELECT id_usuario, us_foto FROM sw_usuario u, sw_institucion i WHERE u.id_usuario = i.admin_id AND id_institucion = $id");
+        $this->db->query("SELECT id_usuario, us_foto FROM sw_usuario u, sw_institucion i WHERE u.id_usuario = i.admin_id AND i.id_institucion = $id");
         return $this->db->registro();
     }
 
@@ -44,7 +44,7 @@ class Institucion
                                 sw_perfil p  
                             WHERE u.id_usuario = up.id_usuario 
                             AND p.id_perfil = up.id_perfil
-                            AND pe_slug = 'administrador_de_ue'
+                            AND pe_slug = 'administrador-de-ue'
                             AND institucion_id = $id ORDER BY us_apellidos, us_nombres");
         return $this->db->registros();
     }

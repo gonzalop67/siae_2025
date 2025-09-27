@@ -10,7 +10,7 @@
     <title>Iniciar Sesión</title>
     <link rel="shortcut icon" type="image/x-icon" href="<?= RUTA_URL ?>public/assets/img/favicon.ico" />
     <link href="<?php echo RUTA_URL; ?>public/assets/css/styles.css" rel="stylesheet" />
-    <script src="<?php echo RUTA_URL; ?>public/assets/js/all.js" crossorigin="anonymous"></script>
+    <script src="<?php echo RUTA_URL; ?>public/assets/js/all.js"></script>
     <style>
         body {
             background-image: url('<?php echo RUTA_URL; ?>public/assets/img/loginFont.jpg');
@@ -225,7 +225,7 @@
                     body: data,
                 });
                 json = await resp.json();
-                // console.log(json);
+                console.log(json);
                 if (!json.error) {
 
                     //No hay error se redirecciona al dashboard correspondiente

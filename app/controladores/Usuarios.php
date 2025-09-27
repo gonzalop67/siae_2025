@@ -263,8 +263,8 @@ class Usuarios extends Controlador
             $_SESSION['tipo'] = "success";
             $_SESSION['icono'] = "check";
         } catch (PDOException $e) {
-            $_SESSION['mensaje'] = "El Usuario no fue insertado exitosamente. Error: " . $e->getMessage();
-            $_SESSION['tipo'] = "error";
+            $_SESSION['mensaje'] = "El Usuario no fue eliminado exitosamente. Error: " . $e->getMessage();
+            $_SESSION['tipo'] = "danger";
             $_SESSION['icono'] = "ban";
         }
         redireccionar('usuarios');

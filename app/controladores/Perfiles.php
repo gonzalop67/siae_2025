@@ -34,6 +34,54 @@ class Perfiles extends Controlador
         $this->vista('admin/index', $datos);
     }
 
+    public function insert()
+    {
+        $pe_nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
+        $pe_slug = preg_replace('/\s+/', ' ', trim($_POST['slug']));
+
+        $ok = false;
+        $titulo = "";
+        $mensaje = "";
+        $tipo_mensaje = "";
+
+        $datos = [ 
+            'pe_nombre' => $pe_nombre,
+            'pe_slug' => $pe_slug
+        ];
+
+        if ($this->perfilModelo->existeNombrePerfil($pe_nombre)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe el Perfil [$pe_nombre] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else if ($this->perfilModelo->existeSlugPerfil($pe_slug)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe el slug de Perfil [$pe_slug] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else {
+            try {
+                $this->perfilModelo->insertarPerfil($datos);
+                $ok = true;
+                $_SESSION['mensaje'] = "El Perfil fue actualizado exitosamente.";
+                $_SESSION['tipo'] = "success";
+                $_SESSION['icono'] = "check";
+            } catch (PDOException $ex) {
+                $ok = false;
+                $titulo = "Error";
+                $mensaje = "El Perfil no fue insertado exitosamente. Error: " . $ex->getMessage();
+                $tipo_mensaje = "error";
+            }
+        }
+
+        echo json_encode(array(
+            'ok' => $ok,
+            'titulo' => $titulo,
+            'mensaje' => $mensaje,
+            'tipo_mensaje' => $tipo_mensaje
+        ));
+    }
+
     public function edit($id)
     {
         $eprfilActual = $this->perfilModelo->obtenerPerfil($id);
@@ -97,5 +145,22 @@ class Perfiles extends Controlador
             'mensaje' => $mensaje,
             'tipo_mensaje' => $tipo_mensaje
         ));
+    }
+
+    public function delete($id)
+    {
+        try {
+            // Eliminar el registro de la base de datos
+            $this->perfilModelo->eliminarPerfil($id);
+            // Mensaje de éxito
+            $_SESSION['mensaje'] = "Perfil eliminado exitosamente de la base de datos.";
+            $_SESSION['tipo'] = "success";
+            $_SESSION['icono'] = "check";
+        } catch (PDOException $e) {
+            $_SESSION['mensaje'] = "El Perfil no fue eliminado exitosamente. Error: " . $e->getMessage();
+            $_SESSION['tipo'] = "danger";
+            $_SESSION['icono'] = "ban";
+        }
+        redireccionar('perfiles');
     }
 }

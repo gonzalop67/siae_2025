@@ -60,3 +60,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    const base_url = "<?php echo RUTA_URL; ?>";
+
+    function eliminar(id) {
+        const url = base_url + "perfiles/delete/" + id;
+        Swal.fire({
+            title: "¿Estás seguro de eliminar este registro?",
+            text: "¡Una vez eliminado no podrá recuperarse!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, elimínalo!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>

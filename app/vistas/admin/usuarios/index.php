@@ -148,11 +148,6 @@
             confirmButtonText: "Sí, elimínalo!"
         }).then((result) => {
             if (result.isConfirmed) {
-                // Swal.fire({
-                //     title: "Deleted!",
-                //     text: "Your file has been deleted."+url,
-                //     icon: "success"
-                // });
                 window.location.href = url;
             }
         });
