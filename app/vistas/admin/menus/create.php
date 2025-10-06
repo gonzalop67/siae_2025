@@ -14,7 +14,7 @@
             <form id="formulario" action="" method="post">
                 <div class="form-group row mb-3">
                     <div class="col-lg-3 text-end">
-                        <label for="texto" class="form-label fw-bold requerido">Texto:</label>
+                        <label for="texto" class="form-label requerido">Texto:</label>
                     </div>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" value="" name="texto" id="texto" autofocus required>
@@ -23,7 +23,7 @@
                 </div>
                 <div class="form-group row mb-3">
                     <div class="col-lg-3 text-end">
-                        <label for="enlace" class="form-label fw-bold requerido">Enlace:</label>
+                        <label for="enlace" class="form-label requerido">Enlace:</label>
                     </div>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" value="" name="enlace" id="enlace" required>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="form-group row mb-3">
                     <div class="col-lg-3 text-end">
-                        <label for="icono" class="form-label fw-bold">Icono:</label>
+                        <label for="icono" class="form-label">Icono:</label>
                     </div>
                     <div class="col-lg-8">
                         <input type="text" class="form-control" value="" name="icono" id="icono">
@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group row mb-3">
                     <div class="col-lg-3 text-end">
-                        <label for="publicado" class="form-label fw-bold requerido">Publicado:</label>
+                        <label for="publicado" class="form-label requerido">Publicado:</label>
                     </div>
                     <div class="col-lg-8">
                         <select class="form-select" id="publicado" name="publicado">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="form-group row mb-3">
                     <div class="col-lg-3 text-end">
-                        <label for="perfil" class="form-label fw-bold requerido">Perfil:</label>
+                        <label for="perfil" class="form-label requerido">Perfil:</label>
                     </div>
                     <div class="col-lg-8">
                         <?php foreach ($datos['perfiles'] as $v) : ?>

@@ -13,12 +13,12 @@
             <?php endif ?> -->
             <form id="formulario" action="" method="post">
                 <div class="mb-3">
-                    <label for="nombre" class="form-label fw-bold">Nombre:</label>
+                    <label for="nombre" class="form-label">Nombre:</label>
                     <input type="text" class="form-control text-uppercase" value="" name="nombre" id="nombre" autofocus required>
                     <p id="error-nombre" class="invalid-feedback">El nombre de la modalidad debe contener de 4 a 64 caracteres alfabéticos y/o el caracter espacio en blanco.</p>
                 </div>
                 <div class="mb-3">
-                    <label for="activo" class="form-label fw-bold">Activo:</label>
+                    <label for="activo" class="form-label">Activo:</label>
                     <select class="form-select" id="activo" name="activo">
                         <option value="1">Sí</option>
                         <option value="0">No</option>

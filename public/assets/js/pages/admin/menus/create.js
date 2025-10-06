@@ -11,7 +11,7 @@ const buttonSubmit = document.getElementById("btn-submit");
 
 const expresiones = {
     texto: /^[a-zA-Z0-9À-ÿ.\s]{4,64}$/, // texto del menu
-    enlace: /^[a-zA-Z0-9\/\#]{1,64}$/,
+    enlace: /^[a-zA-Z0-9\/\#\_]{1,64}$/,
 };
 
 const campos = {
