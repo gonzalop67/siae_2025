@@ -16,7 +16,7 @@ class Modalidades extends Controlador
     {
         $modalidades = $this->modalidadModelo->obtenerModalidades();
         $datos = [
-            'titulo' => 'Modalidades CRUD',
+            'titulo' => 'CRUD Modalidades',
             'dashboard' => 'Admin',
             'modalidades' => $modalidades,
             'nombreVista' => 'admin/modalidades/index.php'
@@ -95,7 +95,7 @@ class Modalidades extends Controlador
         $id_modalidad = $_POST['id_modalidad'];
         $modalidadActual = $this->modalidadModelo->obtenerModalidad($id_modalidad);
 
-        $mo_nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
+        $mo_nombre = strtoupper(preg_replace('/\s+/', ' ', trim($_POST['nombre'])));
         $mo_activo = $_POST['activo'];
 
         $ok = false;
@@ -109,7 +109,7 @@ class Modalidades extends Controlador
             'mo_activo' => $mo_activo
         ];
 
-        if ($modalidadActual->mo_nombre != $mo_nombre && $this->modalidadModelo->existeNombreModalidad($mo_nombre)) {
+        if ($modalidadActual->mo_nombre != $mo_nombre && $this->modalidadModelo->existeNombre($mo_nombre)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe La Modalidad [$mo_nombre] en la Base de Datos.";

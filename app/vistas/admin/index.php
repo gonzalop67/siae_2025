@@ -43,14 +43,9 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <link rel="stylesheet" href="//cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
 
     <link href="<?php echo RUTA_URL ?>public/assets/css/styles.css" rel="stylesheet" />
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="<?php echo RUTA_URL ?>public/assets/css/custom.css">
 
-    <style>
-        .avatar__img {
-            width: 25px;
-            border-radius: 50%;
-        }
-    </style>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
     <!-- jQuery 3 -->
     <script src="<?php echo RUTA_URL ?>public/assets/js/jquery/jquery.min.js"></script>

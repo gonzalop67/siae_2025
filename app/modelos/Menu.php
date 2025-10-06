@@ -50,29 +50,31 @@ class Menu
         return $this->db->registros();
     }
 
-    public function insertarMenu($datos)
+    public function insertar($datos)
     {
-        $this->db->query('INSERT INTO sw_menu (mnu_texto, mnu_link, mnu_publicado, mnu_icono, id_perfil) VALUES (:mnu_texto, :mnu_link, :mnu_publicado, :mnu_icono, :id_perfil)');
+        $this->db->query('INSERT INTO sw_menu (mnu_texto, mnu_link, mnu_publicado, mnu_icono) VALUES (:mnu_texto, :mnu_link, :mnu_publicado, :mnu_icono)');
 
         //Vincular valores
         $this->db->bind(':mnu_texto', $datos['mnu_texto']);
         $this->db->bind(':mnu_link', $datos['mnu_link']);
         $this->db->bind(':mnu_publicado', $datos['mnu_publicado']);
         $this->db->bind(':mnu_icono', $datos['mnu_icono']);
-        $this->db->bind(':id_perfil', $datos['id_perfil']);
 
         $this->db->execute();
 
         $this->db->query("SELECT MAX(id_menu) AS lastInsertId FROM sw_menu");
         $lastInsertId = $this->db->registro()->lastInsertId;
 
-        $this->db->query('INSERT INTO sw_menu_perfil (id_perfil, id_menu) VALUES (:id_perfil, :id_menu)');
+        for ($i = 0; $i < count($datos['perfiles']); $i++) {
+            //Insertar en la tabla sw_menu_perfil
+            $this->db->query("INSERT INTO sw_menu_perfil (id_menu, id_perfil) VALUES (:id_menu, :id_perfil)");
 
-        //Vincular valores
-        $this->db->bind(':id_perfil', $datos['id_perfil']);
-        $this->db->bind(':id_menu', $lastInsertId);
+            //Vincular valores
+            $this->db->bind(':id_menu', $lastInsertId);
+            $this->db->bind(':id_perfil', $datos['perfiles'][$i]);
 
-        $this->db->execute();
+            $this->db->execute();
+        }
     }
 
     public function obtenerMenuPorId($id)
@@ -83,8 +85,21 @@ class Menu
         return $this->db->registro();
     }
 
-    public function actualizarMenu($datos)
+    public function obtenerPerfilesMenu($id_menu)
     {
+        $this->db->query("SELECT * FROM sw_menu_perfil WHERE id_menu = $id_menu");
+        $registros = $this->db->registros();
+        $array = array();
+        foreach ($registros as $r) {
+            array_push($array, $r->id_perfil);
+        }
+        return $array;
+    }
+
+    public function actualizar($datos)
+    {
+        $id_menu = $datos['id_menu'];
+
         $this->db->query('UPDATE sw_menu SET mnu_texto = :mnu_texto, mnu_link = :mnu_link, mnu_publicado = :mnu_publicado, mnu_icono = :mnu_icono WHERE id_menu = :id_menu');
 
         //Vincular valores
@@ -92,31 +107,33 @@ class Menu
         $this->db->bind(':mnu_link', $datos['mnu_link']);
         $this->db->bind(':mnu_publicado', $datos['mnu_publicado']);
         $this->db->bind(':mnu_icono', $datos['mnu_icono']);
-        $this->db->bind(':id_menu', $datos['id_menu']);
+        $this->db->bind(':id_menu', $id_menu);
 
         $this->db->execute();
 
-        $this->db->query('UPDATE sw_menu_perfil SET id_perfil = :id_perfil WHERE id_menu = :id_menu');
-
-        //Vincular valores
-        $this->db->bind(':id_perfil', $datos['id_perfil']);
-        $this->db->bind(':id_menu', $datos['id_menu']);
-
+        $this->db->query("DELETE FROM sw_menu_perfil WHERE id_menu = $id_menu");
         $this->db->execute();
-    }
 
-    public function eliminarMenu($id)
-    {
-        $this->listarMenusHijos($id);
-
-        if ($this->db->rowCount() == 0) {
-            $this->db->query("DELETE FROM sw_menu WHERE id_menu = :id_menu");
+        for ($i = 0; $i < count($datos['perfiles']); $i++) {
+            //Insertar en la tabla sw_menu_perfil
+            $this->db->query("INSERT INTO sw_menu_perfil (id_menu, id_perfil) VALUES (:id_menu, :id_perfil)");
 
             //Vincular valores
-            $this->db->bind(':id_menu', $id);
+            $this->db->bind(':id_menu', $id_menu);
+            $this->db->bind(':id_perfil', $datos['perfiles'][$i]);
 
             $this->db->execute();
         }
+    }
+
+    public function eliminar($id)
+    {
+        $this->db->query('DELETE FROM `sw_menu` WHERE `id_menu` = :id_menu');
+
+        //Vincular valores
+        $this->db->bind(':id_menu', $id);
+
+        return $this->db->execute();
     }
 
     public function guardarOrden($menus)

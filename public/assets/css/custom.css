@@ -1,0 +1,9 @@
+.avatar__img {
+    width: 25px;
+    border-radius: 50%;
+}
+
+label.requerido::after {
+    content: " *";
+    color: #e73d4a;
+}
