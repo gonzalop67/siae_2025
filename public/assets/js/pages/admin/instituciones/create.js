@@ -12,6 +12,40 @@ const inputURL = document.getElementById("url");
 const inputAMIE = document.getElementById("amie");
 const inputCiudad = document.getElementById("ciudad");
 
+const inputAdminUE = document.getElementById("admin_id");
+const inputAvatarAdmin = document.getElementById("avatar_admin");
+
+inputAdminUE.addEventListener("change", function (e) {
+  if (this.value !== "") {
+    document.getElementById("img_admin").style.display = "block";
+    fntObtenerImagen(this.value);
+  } else {
+    document.getElementById("img_admin").style.display = "none";
+  }
+});
+
+async function fntObtenerImagen(id){
+  try {
+    const formData = new FormData();
+    formData.append("id", id);
+    let resp = await fetch(base_url + "instituciones/getAdminImage", {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      body: formData
+    });
+    json = await resp.json();
+    if (json.ok) {
+      document.querySelector("#img_admin").classList.remove("d-none");
+      inputAvatarAdmin.src = base_url + "public/uploads/" + json.us_foto;
+    } else {
+      document.querySelector("#img_admin").classList.add("d-none");
+    }
+  } catch (error) {
+    console.log("Ocurrió un error: " + error);
+  }
+}
+
 const buttonSubmit = document.getElementById("btn-submit");
 
 const inputLogo = document.getElementById("logo");
@@ -114,7 +148,7 @@ async function fntProcesar() {
   if (buttonSubmit.innerHTML === "Actualizar los datos de la institución") {
     url = "instituciones/update";
   } else {
-    url = "instituciones/insert";
+    url = "instituciones/store";
   }
   try {
     const formData = new FormData(formulario);
@@ -299,7 +333,7 @@ formulario.addEventListener("submit", (e) => {
     }
 
     fntProcesar();
-  }else{
+  } else {
     if (!campos.nombre) {
       inputNombre.classList.add("is-invalid");
       document.getElementById("error-nombre").style.display = "block";

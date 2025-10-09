@@ -1,6 +1,7 @@
 <?php
 class Instituciones extends Controlador
 {
+    private $usuarioModelo;
     private $institucionModelo;
 
     public function __construct()
@@ -9,6 +10,7 @@ class Instituciones extends Controlador
         if (!isset($_SESSION['usuario_logueado'])) {
             redireccionar('/auth');
         }
+        $this->usuarioModelo = $this->modelo('Usuario');
         $this->institucionModelo = $this->modelo('Institucion');
     }
 
@@ -24,17 +26,144 @@ class Instituciones extends Controlador
         $this->vista('admin/index', $datos);
     }
 
+    public function create()
+    {
+        $admin_list = $this->institucionModelo->obtenerPosiblesAdministradores();
+        $datos = [
+            'titulo' => 'Crear Instituciones',
+            'dashboard' => 'Admin',
+            'admin_list' => $admin_list,
+            'nombreVista' => 'admin/instituciones/create.php'
+        ];
+        $this->vista('admin/index', $datos);
+    }
+
+    public function getAdminImage()
+    {
+        $id_usuario = $_POST['id'];
+        $ok = false;
+        $mensaje = "";
+        $us_foto = "";
+        try {
+            $usuario = $this->usuarioModelo->obtenerUsuarioPorId($id_usuario);
+            $ok = true;
+            $mensaje = "Obtención exitosa de la imagen del usuario...";
+            $us_foto = $usuario->us_foto;
+        } catch (PDOException $ex) {
+            $ok = false;
+            $mensaje = "Ocurrió un error inesperado...Error: " . $ex->getMessage();
+            $us_foto = "";
+        }
+
+        echo json_encode(array(
+            'ok' => $ok,
+            'mensaje' => $mensaje,
+            'us_foto' => $us_foto
+        ));
+    }
+
+    public function store()
+    {
+        $admin_id = $_POST['admin_id'];
+        $in_nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $in_direccion = preg_replace('/\s+/', ' ', trim($_POST['direccion']));
+        $in_email = strtolower(trim($_POST['email']));
+        $in_telefono = trim($_POST['telefono']);
+        $in_regimen = strtoupper(trim($_POST['regimen']));
+        $in_nom_rector = preg_replace('/\s+/', ' ', trim($_POST['rector']));
+        $in_genero_rector = $_POST['rector_genero'];
+        $in_nom_vicerrector = preg_replace('/\s+/', ' ', trim($_POST['vicerrector']));
+        $in_genero_vicerrector = $_POST['vicerrector_genero'];
+        $in_nom_secretario = preg_replace('/\s+/', ' ', trim($_POST['secretario']));
+        $in_genero_secretario = $_POST['secretario_genero'];
+        $in_url = strtolower(trim($_POST['url']));
+        $in_amie = strtoupper(trim($_POST['amie']));
+        $in_ciudad = trim($_POST['ciudad']);
+
+        $in_copiar_y_pegar = $_POST['copiar_y_pegar'];
+
+        $ok = false;
+        $titulo = "";
+        $mensaje = "";
+        $tipo_mensaje = "";
+
+        if (!filter_var($in_email, FILTER_VALIDATE_EMAIL)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "El email es inválido.";
+            $tipo_mensaje = "error";
+        } else if ($this->institucionModelo->existeCampo('in_nombre', $in_nombre)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe el Nombre [$in_nombre] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else if ($this->institucionModelo->existeCampo('in_email', $in_email)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe el Email [$in_email] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else if ($this->institucionModelo->existeCampo('in_url', $in_url)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe la URL [$in_url] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else if ($this->institucionModelo->existeCampo('in_amie', $in_amie)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe el código AMIE [$in_amie] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else {
+            if ($_FILES['logo']['name'] != "") {
+                $image = $this->upload_image();
+            }
+
+            $datos = [
+                'admin_id' => $admin_id,
+                'in_nombre' => $in_nombre,
+                'in_direccion' => $in_direccion,
+                'in_telefono' => $in_telefono,
+                'in_regimen' => $in_regimen,
+                'in_nom_rector' => $in_nom_rector,
+                'in_genero_rector' => $in_genero_rector,
+                'in_nom_vicerrector' => $in_nom_vicerrector,
+                'in_genero_vicerrector' => $in_genero_vicerrector,
+                'in_nom_secretario' => $in_nom_secretario,
+                'in_genero_secretario' => $in_genero_secretario,
+                'in_email' => $in_email,
+                'in_url' => $in_url,
+                'in_logo' => $image,
+                'in_amie' => $in_amie,
+                'in_ciudad' => $in_ciudad,
+                'in_copiar_y_pegar' => $in_copiar_y_pegar
+            ];
+
+            try {
+                $this->institucionModelo->insertarInstitucion($datos);
+                $ok = true;
+                $_SESSION['mensaje'] = "La Institución fue actualizada exitosamente.";
+                $_SESSION['tipo'] = "success";
+                $_SESSION['icono'] = "check";
+            } catch (PDOException $ex) {
+                $ok = false;
+                $titulo = "Error";
+                $mensaje = "La Institución no fue actualizada exitosamente. Error: " . $ex->getMessage();
+                $tipo_mensaje = "error";
+            }
+        }
+
+        echo json_encode(array(
+            'ok' => $ok,
+            'titulo' => $titulo,
+            'mensaje' => $mensaje,
+            'tipo_mensaje' => $tipo_mensaje
+        ));
+    }
+
     public function edit($id)
     {
         $institucion = $this->institucionModelo->obtenerInstitucion($id);
         $administrador = $this->institucionModelo->obtenerAdministrador($id);
-        $admin_list = $this->institucionModelo->obtenerPosiblesAdministradores($id);
-
-        //
-        // print_r("<pre>");
-        // print_r($admin_list);
-        // print_r("</pre>");
-        // die();
+        $admin_list = $this->institucionModelo->obtenerPosiblesAdministradores();
 
         $datos = [
             'titulo' => 'Institución Edit',
@@ -62,19 +191,19 @@ class Instituciones extends Controlador
     {
         $id_institucion = $_POST['id_institucion'];
         $admin_id = $_POST['admin_id'];
-        $in_nombre = trim($_POST['nombre']);
+        $in_nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
         $in_direccion = preg_replace('/\s+/', ' ', trim($_POST['direccion']));
-        $in_email = trim($_POST['email']);
+        $in_email = strtolower(trim($_POST['email']));
         $in_telefono = trim($_POST['telefono']);
-        $in_regimen = trim($_POST['regimen']);
+        $in_regimen = strtoupper(trim($_POST['regimen']));
         $in_nom_rector = preg_replace('/\s+/', ' ', trim($_POST['rector']));
         $in_genero_rector = $_POST['rector_genero'];
         $in_nom_vicerrector = preg_replace('/\s+/', ' ', trim($_POST['vicerrector']));
         $in_genero_vicerrector = $_POST['vicerrector_genero'];
         $in_nom_secretario = preg_replace('/\s+/', ' ', trim($_POST['secretario']));
         $in_genero_secretario = $_POST['secretario_genero'];
-        $in_url = trim($_POST['url']);
-        $in_amie = trim($_POST['amie']);
+        $in_url = strtolower(trim($_POST['url']));
+        $in_amie = strtoupper(trim($_POST['amie']));
         $in_ciudad = trim($_POST['ciudad']);
 
         $in_copiar_y_pegar = $_POST['copiar_y_pegar'];
@@ -169,5 +298,32 @@ class Instituciones extends Controlador
             'mensaje' => $mensaje,
             'tipo_mensaje' => $tipo_mensaje
         ));
+    }
+
+    public function delete($id)
+    {
+        try {
+            // Recuperar el nombre del archivo de imagen
+            $institucionActual = $this->institucionModelo->obtenerInstitucion($id);
+            $in_logo = $institucionActual->in_logo;
+            // Eliminar el registro de la base de datos
+            $this->institucionModelo->eliminarInstitucion($id);
+            // Elimino el archivo de imagen si existe
+            $ruta = dirname(dirname(dirname(__FILE__))) . "/public/uploads/";
+            $imagenActual = $ruta . $in_logo;
+
+            if (file_exists($imagenActual)) {
+                unlink($imagenActual); // El directorio que contiene los archivos de imagen debe tener permisos de escritura
+            }
+            // Mensaje de éxito
+            $_SESSION['mensaje'] = "Institución Educativa eliminada exitosamente de la base de datos.";
+            $_SESSION['tipo'] = "success";
+            $_SESSION['icono'] = "check";
+        } catch (PDOException $e) {
+            $_SESSION['mensaje'] = "La Institución Educativa no fue eliminada satisfactoriamente, ya que tiene registros relacionados.";
+            $_SESSION['tipo'] = "danger";
+            $_SESSION['icono'] = "ban";
+        }
+        redireccionar('instituciones');
     }
 }

@@ -44,8 +44,8 @@ inputFoto.addEventListener("change", function (e) {
 });
 
 const expresiones = {
-  abreviatura: /^[a-zA-Z\.]{4,7}$/, // abreviatura de títulos como Ing. Tlgo. MSc. entre otros
-  descripcion: /^[a-zA-ZÀ-ÿ\s]{4,64}$/, // descripción del título como Ingeniero en sistemas informáticos y de computación
+  abreviatura: /^[a-zA-Z\.]{3,7}$/, // abreviatura de títulos como Ing. Tlgo. MSc. entre otros
+  descripcion: /^[a-zA-ZÀ-ÿ\s]{4,128}$/, // descripción del título como Ingeniero en sistemas informáticos y de computación
   apellidos: /^[a-zA-ZÀ-ÿ\s]{3,32}$/, // apellidos o nombres del usuario
   nombre_corto: /^[a-zA-ZÀ-ÿ\s\.]{3,32}$/, // nombre corto del usuario e.g. Ing. Gonzalo Peñaherrera
   usuario: /^[a-zA-Z0-9\_\-]{4,16}$/, // Letras, numeros, guion y guion_bajo

@@ -61,6 +61,12 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <link rel="stylesheet" href="<?= RUTA_URL ?>public/assets/js/toastr/toastr.min.css">
     <script src="<?= RUTA_URL ?>public/assets/js/toastr/toastr.min.js"></script>
 
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
+
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">

@@ -1,6 +1,6 @@
 <div class="container-fluid px-4">
     <div class="card mt-2 mb-4">
-        <div class="card-header">
+        <div class="card-header fw-bold">
             <i class="fa fa-user-edit me-1"></i>
             Editar Usuario
         </div>
