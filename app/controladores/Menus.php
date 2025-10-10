@@ -42,7 +42,6 @@ class Menus extends Controlador
         $mnu_link = trim($_POST['enlace']);
         $mnu_icono = trim($_POST['icono']);
         $mnu_publicado = trim($_POST['publicado']);
-        $id_perfil = trim($_POST['perfil']);
 
         $ok = false;
         $titulo = "";
@@ -101,7 +100,6 @@ class Menus extends Controlador
         $mnu_link = trim($_POST['enlace']);
         $mnu_icono = trim($_POST['icono']);
         $mnu_publicado = trim($_POST['publicado']);
-        $id_perfil = trim($_POST['perfil']);
 
         $ok = false;
         $titulo = "";
@@ -116,8 +114,6 @@ class Menus extends Controlador
             'mnu_publicado' => $mnu_publicado,
             'perfiles' => $_POST['perfiles']
         ];
-
-        $menuActual = $this->menuModelo->obtenerMenuPorId($id_menu);
 
         try {
             $this->menuModelo->actualizar($datos);

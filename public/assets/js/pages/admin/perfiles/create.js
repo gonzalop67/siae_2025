@@ -160,5 +160,10 @@ formulario.addEventListener("submit", (e) => {
       inputSlug.classList.add("is-invalid");
       document.getElementById("error-slug").style.display = "block";
     }
+    Swal.fire({
+      title: "Error",
+      text: "Por favor rellena el formulario correctamente.",
+      icon: "error",
+    });
   }
 });

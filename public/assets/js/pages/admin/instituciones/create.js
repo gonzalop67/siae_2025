@@ -69,7 +69,7 @@ inputLogo.addEventListener("change", function (e) {
 
 const expresiones = {
   nombre: /^[a-zA-ZÀ-ÿ\s]{4,64}$/, // nombre de la institución educativa
-  direccion: /^[a-zA-ZÀ-ÿ\s]{4,128}$/, // dirección de la institución educativa
+  direccion: /^[a-zA-ZÀ-ÿ\s\,]{4,128}$/, // dirección de la institución educativa
   regimen: /^[a-zA-ZÁáÉéÍíÓóÑñ]{5,16}$/, // régimen COSTA, SIERRA, GALAPAGOS, AMAZONIA
   administrativo: /^[a-zA-ZÀ-ÿ\s.]{4,64}$/, // administrativo e.g. MSc. Wilson Proaño
   url: /^https?:\/\/[\w\-]+(\.[\w\-]+)+[\#?]?.*$/, // URL e.g. http://colegionocturnosalamanca.com

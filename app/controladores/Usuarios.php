@@ -74,12 +74,12 @@ class Usuarios extends Controlador
         $mensaje = "";
         $tipo_mensaje = "";
 
-        if ($this->usuarioModelo->existeUsuarioPorNombreCompleto($us_fullname)) {
+        if ($this->usuarioModelo->existeCampo('us_fullname', $us_fullname)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el Usuario [$us_fullname] en la Base de Datos.";
             $tipo_mensaje = "error";
-        } else if ($this->usuarioModelo->existeUsuarioPorNombreUsuario($us_login)) {
+        } else if ($this->usuarioModelo->existeCampo('us_login', $us_login)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el Nombre de Usuario [$us_login] en la Base de Datos.";
@@ -179,12 +179,12 @@ class Usuarios extends Controlador
         $mensaje = "";
         $tipo_mensaje = "";
 
-        if ($usuarioActual->us_fullname != $us_fullname && $this->usuarioModelo->existeUsuarioPorNombreCompleto($us_fullname)) {
+        if ($usuarioActual->us_fullname != $us_fullname && $this->usuarioModelo->existeCampo('us_fullname', $us_fullname)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el Usuario [$us_fullname] en la Base de Datos.";
             $tipo_mensaje = "error";
-        } else if ($usuarioActual->us_login != $us_login && $this->usuarioModelo->existeUsuarioPorNombreUsuario($us_login)) {
+        } else if ($usuarioActual->us_login != $us_login && $this->usuarioModelo->existeCampo('us_login', $us_login)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el Nombre de Usuario [$us_login] en la Base de Datos.";

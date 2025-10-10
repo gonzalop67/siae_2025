@@ -1,4 +1,5 @@
 <?php
+mb_internal_encoding('UTF-8');
 class Instituciones extends Controlador
 {
     private $usuarioModelo;
@@ -65,7 +66,7 @@ class Instituciones extends Controlador
     public function store()
     {
         $admin_id = $_POST['admin_id'];
-        $in_nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $in_nombre = preg_replace('/\s+/', ' ', mb_strtoupper(trim($_POST['nombre']), 'UTF-8'));
         $in_direccion = preg_replace('/\s+/', ' ', trim($_POST['direccion']));
         $in_email = strtolower(trim($_POST['email']));
         $in_telefono = trim($_POST['telefono']);
@@ -191,7 +192,7 @@ class Instituciones extends Controlador
     {
         $id_institucion = $_POST['id_institucion'];
         $admin_id = $_POST['admin_id'];
-        $in_nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $in_nombre = preg_replace('/\s+/', ' ', mb_strtoupper(trim($_POST['nombre']), 'UTF-8'));
         $in_direccion = preg_replace('/\s+/', ' ', trim($_POST['direccion']));
         $in_email = strtolower(trim($_POST['email']));
         $in_telefono = trim($_POST['telefono']);
@@ -221,22 +222,22 @@ class Instituciones extends Controlador
             $titulo = "Error";
             $mensaje = "El email es inválido.";
             $tipo_mensaje = "error";
-        } else if ($institucionActual->in_nombre != $in_nombre && $this->institucionModelo->existeNombreInstitucion($in_nombre)) {
+        } else if ($institucionActual->in_nombre != $in_nombre && $this->institucionModelo->existeCampo('in_nombre', $in_nombre)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el Nombre [$in_nombre] en la Base de Datos.";
             $tipo_mensaje = "error";
-        } else if ($institucionActual->in_email != $in_email && $this->institucionModelo->existeEmailInstitucion($in_email)) {
+        } else if ($institucionActual->in_email != $in_email && $this->institucionModelo->existeCampo('in_email', $in_email)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el Email [$in_email] en la Base de Datos.";
             $tipo_mensaje = "error";
-        } else if ($institucionActual->in_url != $in_url && $this->institucionModelo->existeURLInstitucion($in_url)) {
+        } else if ($institucionActual->in_url != $in_url && $this->institucionModelo->existeCampo('in_url', $in_url)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe la URL [$in_url] en la Base de Datos.";
             $tipo_mensaje = "error";
-        } else if ($institucionActual->in_amie != $in_amie && $this->institucionModelo->existeAMIEInstitucion($in_amie)) {
+        } else if ($institucionActual->in_amie != $in_amie && $this->institucionModelo->existeCampo('in_amie', $in_amie)) {
             $ok = false;
             $titulo = "Error";
             $mensaje = "Ya existe el código AMIE [$in_amie] en la Base de Datos.";

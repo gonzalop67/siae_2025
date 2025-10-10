@@ -42,20 +42,9 @@ class Usuario
         return $this->db->registro();
     }
 
-    public function existeUsuarioPorNombreUsuario($us_login)
+    public function existeCampo($columna, $valor)
     {
-        $this->db->query("SELECT id_usuario FROM sw_usuario WHERE us_login = '$us_login'");
-        $usuario = $this->db->registro();
-
-        return !empty($usuario);
-    }
-
-    public function existeUsuarioPorNombreCompleto($us_fullname)
-    {
-        $this->db->query("SELECT id_usuario FROM sw_usuario WHERE us_fullname = '$us_fullname'");
-        $usuario = $this->db->registro();
-
-        return !empty($usuario);
+        return $this->db->existValueColumn('sw_usuario', $columna, $valor);
     }
 
     public function insertarUsuario($datos)

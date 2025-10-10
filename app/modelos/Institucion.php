@@ -55,41 +55,9 @@ class Institucion
         return $this->db->registro()->in_nombre;
     }
 
-    public function existeNombreInstitucion($in_nombre)
+    public function existeCampo($columna, $valor)
     {
-        $this->db->query("SELECT id_institucion FROM sw_institucion WHERE in_nombre = '$in_nombre'");
-        $institucion = $this->db->registro();
-
-        return !empty($institucion);
-    }
-
-    public function existeEmailInstitucion($in_email)
-    {
-        $this->db->query("SELECT id_institucion FROM sw_institucion WHERE in_email = '$in_email'");
-        $institucion = $this->db->registro();
-
-        return !empty($institucion);
-    }
-
-    public function existeURLInstitucion($in_url)
-    {
-        $this->db->query("SELECT id_institucion FROM sw_institucion WHERE in_url = '$in_url'");
-        $institucion = $this->db->registro();
-
-        return !empty($institucion);
-    }
-
-    public function existeAMIEInstitucion($in_amie)
-    {
-        $this->db->query("SELECT id_institucion FROM sw_institucion WHERE in_amie = '$in_amie'");
-        $institucion = $this->db->registro();
-
-        return !empty($institucion);
-    }
-
-    public function existeCampo($col_name, $in_nombre)
-    {
-        return $this->db->existValueColumn('sw_institucion', $col_name, $in_nombre);
+        return $this->db->existValueColumn('sw_institucion', $columna, $valor);
     }
 
     public function insertarInstitucion($datos)

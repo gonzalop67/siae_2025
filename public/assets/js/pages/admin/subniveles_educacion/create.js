@@ -1,0 +1,100 @@
+const formulario = document.getElementById("formulario");
+const inputs = document.querySelectorAll("#formulario input");
+
+const inputNombre = document.getElementById("nombre");
+const inputEsBachillerato = document.getElementById("es_bachillerato");
+
+const buttonSubmit = document.getElementById("btn-submit");
+
+const expresiones = {
+  nombre: /^[a-zA-ZÀ-ÿ.\s]{4,64}$/, // nombre del subnivel de educación
+};
+
+const campos = {
+  nombre: false,
+};
+
+const validarCampo = (expresion, input, campo) => {
+  if (expresion.test(input.value)) {
+    input.classList.remove("is-invalid");
+    document.getElementById(`error-${campo}`).style.display = "none";
+    campos[campo] = true;
+  } else {
+    input.classList.add("is-invalid");
+    document.getElementById(`error-${campo}`).style.display = "block";
+    campos[campo] = false;
+  }
+};
+
+const validarFormulario = (e) => {
+  switch (e.target.name) {
+    case "nombre":
+      validarCampo(expresiones.nombre, e.target, "nombre");
+      break;
+  }
+};
+
+inputs.forEach((input) => {
+  input.addEventListener("keyup", validarFormulario);
+  input.addEventListener("blur", validarFormulario);
+});
+
+async function fntProcesar() {
+  let url = "";
+  if (buttonSubmit.innerHTML === "Actualizar") {
+    url = "subniveles_educacion/update";
+  } else {
+    url = "subniveles_educacion/store";
+  }
+  try {
+    const formData = new FormData(formulario);
+    let resp = await fetch(base_url + url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-cache",
+      body: formData,
+    });
+    json = await resp.json();
+    if (json.ok) {
+      formulario.reset();
+      window.location.href = base_url + "subniveles_educacion";
+    } else {
+      Swal.fire({
+        title: json.titulo,
+        text: json.mensaje,
+        icon: json.tipo_mensaje,
+      });
+    }
+  } catch (error) {
+    console.log("Ocurrió un error: " + error);
+  }
+}
+
+formulario.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (inputNombre.value !== "") {
+    if (expresiones.nombre.test(inputNombre.value)) {
+      campos["nombre"] = true;
+    } else {
+      campos["nombre"] = false;
+    }
+  }
+
+  if (campos.nombre) {
+    inputNombre.classList.remove("is-invalid");
+    document.getElementById("error-nombre").style.display = "none";
+
+    fntProcesar();
+  } else {
+    if (!campos.nombre) {
+      inputNombre.classList.add("is-invalid");
+      document.getElementById("error-nombre").style.display = "block";
+    }
+    Swal.fire({
+      title: "Error",
+      text: "Por favor rellena el formulario correctamente.",
+      icon: "error",
+    });
+  }
+});

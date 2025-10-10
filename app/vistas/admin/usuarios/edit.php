@@ -80,7 +80,7 @@
                 <div id="img_upload">
                     <div class="mb-3">
                         <label for="avatar" class="form-label">Avatar</label>
-                        <div id="img_div" class="hide">
+                        <div id="img_div">
                             <img id="avatar" src="<?php echo RUTA_URL . 'public/uploads/' . $datos['usuario']->us_foto ?>" name="avatar" class="img-thumbnail" width="75">
                         </div>
                     </div>
