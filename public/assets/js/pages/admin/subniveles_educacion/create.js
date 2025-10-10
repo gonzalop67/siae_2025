@@ -81,15 +81,20 @@ formulario.addEventListener("submit", (e) => {
     }
   }
 
-  if (campos.nombre) {
+  if (campos.nombre && inputEsBachillerato.value !== "") {
     inputNombre.classList.remove("is-invalid");
     document.getElementById("error-nombre").style.display = "none";
+
+    document.getElementById("error-es_bachillerato").style.display = "none";
 
     fntProcesar();
   } else {
     if (!campos.nombre) {
       inputNombre.classList.add("is-invalid");
       document.getElementById("error-nombre").style.display = "block";
+    }
+    if (inputEsBachillerato.value === ""){
+      document.getElementById("error-es_bachillerato").style.display = "block";
     }
     Swal.fire({
       title: "Error",
