@@ -47,7 +47,7 @@
                                     <td><?= $v->pe_abreviatura ?></td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="<?= RUTA_URL . "subniveles_educacion/edit/" . $v->id_sub_periodo_evaluacion  ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
+                                            <a href="<?= RUTA_URL . "subperiodos_evaluacion/edit/" . $v->id_sub_periodo_evaluacion  ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
                                             <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_sub_periodo_evaluacion  ?>)"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
@@ -65,7 +65,7 @@
     const base_url = "<?php echo RUTA_URL; ?>";
 
     function eliminar(id) {
-        const url = base_url + "subniveles_educacion/delete/" + id;
+        const url = base_url + "subperiodos_evaluacion/delete/" + id;
         Swal.fire({
             title: "¿Estás seguro de eliminar este registro?",
             text: "¡Una vez eliminado no podrá recuperarse!",

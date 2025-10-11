@@ -40,8 +40,9 @@ class Subperiodos_evaluacion extends Controlador
 
     public function store()
     {
-        $nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
-        $es_bachillerato = trim($_POST['es_bachillerato']);
+        $nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $abreviatura = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['abreviatura'])));
+        $tipo_periodo = trim($_POST['tipo_periodo']);
 
         $ok = false;
         $titulo = "";
@@ -49,26 +50,32 @@ class Subperiodos_evaluacion extends Controlador
         $tipo_mensaje = "";
 
         $datos = [
-            'nombre' => $nombre,
-            'es_bachillerato' => $es_bachillerato
+            'pe_nombre' => $nombre,
+            'pe_abreviatura' => $abreviatura,
+            'id_tipo_periodo' => $tipo_periodo
         ];
 
-        if ($this->subNivelEducacionModelo->existeNombre($nombre)) {
+        if ($this->subPeriodoEvaluacionModelo->existeCampo('pe_nombre', $nombre)) {
             $ok = false;
             $titulo = "Error";
-            $mensaje = "Ya existe el Subnivel de Educación [$nombre] en la Base de Datos.";
+            $mensaje = "Ya existe el Subperiodo de Evaluación [$nombre] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else if ($this->subPeriodoEvaluacionModelo->existeCampo('pe_abreviatura', $abreviatura)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe la abreviatura de Subperiodo de Evaluación [$abreviatura] en la Base de Datos.";
             $tipo_mensaje = "error";
         } else {
             try {
-                $this->subNivelEducacionModelo->insertar($datos);
+                $this->subPeriodoEvaluacionModelo->insertar($datos);
                 $ok = true;
-                $_SESSION['mensaje'] = "El Subnivel de Educación fue insertado exitosamente.";
+                $_SESSION['mensaje'] = "El Subperiodo de Evaluación fue insertado exitosamente.";
                 $_SESSION['tipo'] = "success";
                 $_SESSION['icono'] = "check";
             } catch (PDOException $ex) {
                 $ok = false;
                 $titulo = "Error";
-                $mensaje = "El Subnivel de Educación no fue insertado exitosamente. Error: " . $ex->getMessage();
+                $mensaje = "El Subperiodo de Evaluación no fue insertado exitosamente. Error: " . $ex->getMessage();
                 $tipo_mensaje = "error";
             }
         }
@@ -83,22 +90,25 @@ class Subperiodos_evaluacion extends Controlador
 
     public function edit($id)
     {
-        $subnivelActual = $this->subNivelEducacionModelo->obtenerSubnivel($id);
+        $subPeriodoActual = $this->subPeriodoEvaluacionModelo->obtener($id);
+        $tipos_periodo = $this->tipoPeriodoModelo->obtenerTodos();
 
         $datos = [
-            'titulo' => 'Editar Perfil',
+            'titulo' => 'Editar Subperiodo de Evaluación',
             'dashboard' => 'Admin',
-            'subnivel' => $subnivelActual,
-            'nombreVista' => 'admin/subnivel_educacion/edit.php'
+            'subperiodo' => $subPeriodoActual,
+            'tipos_periodo' => $tipos_periodo,
+            'nombreVista' => 'admin/subperiodo_evaluacion/edit.php'
         ];
         $this->vista('admin/index', $datos);
     }
 
     public function update()
     {
-        $id = $_POST['id_nivel_educacion'];
-        $nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
-        $es_bachillerato = trim($_POST['es_bachillerato']);
+        $id = trim($_POST['id_sub_periodo_evaluacion']);
+        $nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $abreviatura = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['abreviatura'])));
+        $tipo_periodo = trim($_POST['tipo_periodo']);
 
         $ok = false;
         $titulo = "";
@@ -106,29 +116,42 @@ class Subperiodos_evaluacion extends Controlador
         $tipo_mensaje = "";
 
         $datos = [
-            'id_nivel_educacion' => $id,
-            'nombre' => $nombre,
-            'es_bachillerato' => $es_bachillerato
+            'id_sub_periodo_evaluacion' => $id,
+            'pe_nombre' => $nombre,
+            'pe_abreviatura' => $abreviatura,
+            'id_tipo_periodo' => $tipo_periodo
         ];
 
-        $subnivelActual = $this->subNivelEducacionModelo->obtenerSubnivel($id);
+        //
+        // print_r("<pre>");
+        // print_r($datos);
+        // print_r("</pre>");
+        // die();
+        //
 
-        if ($subnivelActual->nombre != $nombre && $this->subNivelEducacionModelo->existeNombre($nombre)) {
+        $subPeriodoActual = $this->subPeriodoEvaluacionModelo->obtener($id);
+
+        if ($subPeriodoActual->pe_nombre != $nombre && $this->subPeriodoEvaluacionModelo->existeCampo('pe_nombre', $nombre)) {
             $ok = false;
             $titulo = "Error";
-            $mensaje = "Ya existe el Subnivel de Educación [$nombre] en la Base de Datos.";
+            $mensaje = "Ya existe el Subperiodo de Evaluación [$nombre] en la Base de Datos.";
+            $tipo_mensaje = "error";
+        } else if ($subPeriodoActual->pe_abreviatura != $abreviatura && $this->subPeriodoEvaluacionModelo->existeCampo('pe_abreviatura', $abreviatura)) {
+            $ok = false;
+            $titulo = "Error";
+            $mensaje = "Ya existe la abreviatura de Subperiodo de Evaluación [$abreviatura] en la Base de Datos.";
             $tipo_mensaje = "error";
         } else {
             try {
-                $this->subNivelEducacionModelo->actualizar($datos);
+                $this->subPeriodoEvaluacionModelo->actualizar($datos);
                 $ok = true;
-                $_SESSION['mensaje'] = "El Subnivel de Educación fue actualizado exitosamente.";
+                $_SESSION['mensaje'] = "El Subperiodo de Evaluación fue actualizado exitosamente.";
                 $_SESSION['tipo'] = "success";
                 $_SESSION['icono'] = "check";
             } catch (PDOException $ex) {
                 $ok = false;
                 $titulo = "Error";
-                $mensaje = "El Subnivel de Educación no fue actualizado exitosamente. Error: " . $ex->getMessage();
+                $mensaje = "El Subperiodo de Evaluación no fue actualizado exitosamente. Error: " . $ex->getMessage();
                 $tipo_mensaje = "error";
             }
         }
@@ -145,16 +168,16 @@ class Subperiodos_evaluacion extends Controlador
     {
         try {
             // Eliminar el registro de la base de datos
-            $this->subNivelEducacionModelo->eliminar($id);
+            $this->subPeriodoEvaluacionModelo->eliminar($id);
             // Mensaje de éxito
-            $_SESSION['mensaje'] = "Subnivel de Educación eliminado exitosamente de la base de datos.";
+            $_SESSION['mensaje'] = "Subperiodo de Evaluación eliminado exitosamente de la base de datos.";
             $_SESSION['tipo'] = "success";
             $_SESSION['icono'] = "check";
         } catch (PDOException $e) {
-            $_SESSION['mensaje'] = "El Subnivel de Educación no fue eliminado exitosamente. Error: " . $e->getMessage();
+            $_SESSION['mensaje'] = "El Subperiodo de Evaluación no fue eliminado exitosamente. Error: " . $e->getMessage();
             $_SESSION['tipo'] = "danger";
             $_SESSION['icono'] = "ban";
         }
-        redireccionar('subniveles_educacion');
+        redireccionar('subperiodos_evaluacion');
     }
 }

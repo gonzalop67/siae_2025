@@ -14,31 +14,29 @@ class Subperiodo_evaluacion
         return $this->db->registros();
     }
 
-    public function obtenerSubnivel($id)
+    public function obtener($id)
     {
-        $this->db->query("SELECT * FROM sw_nivel_educacion WHERE id_nivel_educacion = $id");
+        $this->db->query("SELECT * FROM sw_sub_periodo_evaluacion WHERE id_sub_periodo_evaluacion = $id");
         return $this->db->registro();
     }
 
-    public function existeNombre($nombre)
+    public function existeCampo($columna, $valor)
     {
-        $this->db->query("SELECT * FROM sw_nivel_educacion WHERE nombre = '$nombre'");
-        $subnivel = $this->db->registro();
-
-        return !empty($subnivel);
+        return $this->db->existValueColumn('sw_sub_periodo_evaluacion', $columna, $valor);
     }
 
     public function insertar($datos)
     {
-        $this->db->query('SELECT MAX(orden) AS max_orden FROM sw_nivel_educacion');
+        $this->db->query('SELECT MAX(pe_orden) AS max_orden FROM sw_sub_periodo_evaluacion');
         $registro = $this->db->registro();
         $max_orden = (!empty($registro)) ? $registro->max_orden + 1 : 1;
 
-        $this->db->query('INSERT INTO sw_nivel_educacion (nombre, es_bachillerato, orden) VALUES (:nombre, :es_bachillerato, :orden)');
+        $this->db->query('INSERT INTO sw_sub_periodo_evaluacion (id_tipo_periodo, pe_nombre, pe_abreviatura, pe_orden) VALUES (:id_tipo_periodo, :pe_nombre, :pe_abreviatura, :orden)');
 
         //Vincular valores
-        $this->db->bind(':nombre', $datos['nombre']);
-        $this->db->bind(':es_bachillerato', $datos['es_bachillerato']);
+        $this->db->bind(':id_tipo_periodo', $datos['id_tipo_periodo']);
+        $this->db->bind(':pe_nombre', $datos['pe_nombre']);
+        $this->db->bind(':pe_abreviatura', $datos['pe_abreviatura']);
         $this->db->bind(':orden', $max_orden);
 
         $this->db->execute();
@@ -46,22 +44,23 @@ class Subperiodo_evaluacion
 
     public function actualizar($datos)
     {
-        $this->db->query('UPDATE sw_nivel_educacion SET nombre = :nombre, es_bachillerato = :es_bachillerato WHERE id_nivel_educacion = :id_nivel_educacion');
+        $this->db->query('UPDATE sw_sub_periodo_evaluacion SET id_tipo_periodo = :id_tipo_periodo, pe_nombre = :pe_nombre, pe_abreviatura = :pe_abreviatura WHERE id_sub_periodo_evaluacion = :id_sub_periodo_evaluacion');
 
         //Vincular valores
-        $this->db->bind(':nombre', $datos['nombre']);
-        $this->db->bind(':es_bachillerato', $datos['es_bachillerato']);
-        $this->db->bind(':id_nivel_educacion', $datos['id_nivel_educacion']);
+        $this->db->bind(':id_tipo_periodo', $datos['id_tipo_periodo']);
+        $this->db->bind(':pe_nombre', $datos['pe_nombre']);
+        $this->db->bind(':pe_abreviatura', $datos['pe_abreviatura']);
+        $this->db->bind(':id_sub_periodo_evaluacion', $datos['id_sub_periodo_evaluacion']);
 
         $this->db->execute();
     }
 
     public function eliminar($id)
     {
-        $this->db->query('DELETE FROM `sw_nivel_educacion` WHERE `id_nivel_educacion` = :id_nivel_educacion');
+        $this->db->query('DELETE FROM `sw_sub_periodo_evaluacion` WHERE `id_sub_periodo_evaluacion` = :id_sub_periodo_evaluacion');
 
         //Vincular valores
-        $this->db->bind(':id_nivel_educacion', $id);
+        $this->db->bind(':id_sub_periodo_evaluacion', $id);
 
         return $this->db->execute();
     }

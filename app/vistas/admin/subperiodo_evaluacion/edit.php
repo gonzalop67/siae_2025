@@ -2,7 +2,7 @@
     <div class="card mt-2 mb-4">
         <div class="card-header">
             <i class="fa fa-user-gear me-1"></i>
-            Crear Nuevo Subperiodo de Evaluación
+            Editar Subperiodo de Evaluación
         </div>
         <div class="card-body">
             <?php if (isset($_SESSION['msg'])) : ?>
@@ -12,14 +12,15 @@
                 </div>
             <?php endif ?>
             <form id="formulario" action="" method="post">
+                <input type="hidden" name="id_sub_periodo_evaluacion" value="<?= $datos['subperiodo']->id_sub_periodo_evaluacion ?>">
                 <div class="mb-3">
                     <label for="nombre" class="form-label requerido">Nombre:</label>
-                    <input type="text" class="form-control text-uppercase" value="" name="nombre" id="nombre" required>
+                    <input type="text" class="form-control text-uppercase" value="<?= $datos['subperiodo']->pe_nombre ?>" name="nombre" id="nombre" required>
                     <p id="error-nombre" class="invalid-feedback">El nombre del subperiodo de evaluación debe contener de 4 a 64 caracteres alfabéticos y el caracter espacio en blanco.</p>
                 </div>
                 <div class="mb-3">
                     <label for="abreviatura" class="form-label requerido">Abreviatura:</label>
-                    <input type="text" class="form-control text-uppercase" value="" name="abreviatura" id="abreviatura" required>
+                    <input type="text" class="form-control text-uppercase" value="<?= $datos['subperiodo']->pe_abreviatura ?>" name="abreviatura" id="abreviatura" required>
                     <p id="error-abreviatura" class="invalid-feedback">La abreviatura del subperiodo de evaluación debe contener de 4 a 64 caracteres alfabéticos y el caracter espacio en blanco.</p>
                 </div>
                 <div class="mb-3">
@@ -29,14 +30,14 @@
                         <?php
                         foreach ($datos['tipos_periodo'] as $tipo_periodo) {
                         ?>
-                            <option value="<?= $tipo_periodo->id_tipo_periodo ?>"><?= $tipo_periodo->tp_descripcion ?></option>
+                            <option value="<?= $tipo_periodo->id_tipo_periodo ?>" <?= $datos['subperiodo']->id_tipo_periodo == $tipo_periodo->id_tipo_periodo ? 'selected' : '' ?>><?= $tipo_periodo->tp_descripcion ?></option>
                         <?php
                         }
                         ?>
                     </select>
                     <p id="error-tipo_periodo" class="invalid-feedback">Debe seleccionar una opción...</p>
                 </div>
-                <button id="btn-submit" type="submit" class="btn btn-primary">Guardar</button>
+                <button id="btn-submit" type="submit" class="btn btn-primary">Actualizar</button>
                 <a href="<?= RUTA_URL . "subperiodos_evaluacion" ?>" class="btn btn-secondary">Regresar</a>
             </form>
         </div>
