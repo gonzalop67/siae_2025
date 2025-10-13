@@ -40,7 +40,7 @@
                             foreach ($datos['modalidades'] as $v) {
                                 $contador++;
                             ?>
-                                <tr>
+                                <tr data-index='<?= $v->id_modalidad ?>' data-orden='<?= $v->mo_orden ?>'>
                                     <td><?= $contador ?></td>
                                     <td><?= $v->id_modalidad ?></td>
                                     <td><?= $v->mo_nombre ?></td>
@@ -69,6 +69,41 @@
 
 <script>
     const base_url = "<?php echo RUTA_URL; ?>";
+
+    $(document).ready(function () {
+        $('table tbody').sortable({
+            update: function(event, ui) {
+                $(this).children().each(function(index) {
+                    if ($(this).attr('data-orden') != (index + 1)) {
+                        $(this).attr('data-orden', (index + 1)).addClass('updated');
+                    }
+                });
+
+                saveNewPositions();
+            }
+        });
+    });
+
+    function saveNewPositions() {
+        var positions = [];
+        $('.updated').each(function() {
+            positions.push([$(this).attr('data-index'), $(this).attr('data-orden')]);
+            $(this).removeClass('updated');
+        });
+
+        $.ajax({
+            url: base_url + "modalidades/saveNewPositions",
+            method: 'POST',
+            dataType: 'text',
+            data: {
+                positions: positions
+            },
+            success: function(response) {
+                // console.log(response);
+                window.location.href = base_url + "modalidades";
+            }
+        });
+    }
 
     function eliminar(id) {
         const url = base_url + "modalidades/delete/" + id;

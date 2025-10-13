@@ -57,6 +57,9 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <link rel="stylesheet" href="<?= RUTA_URL ?>public/assets/js/sweetalert2/sweetalert2.min.css">
     <script src="<?= RUTA_URL ?>public/assets/js/sweetalert2/sweetalert2.min.js"></script>
 
+    <!-- jquery-ui -->
+    <link rel="stylesheet" href="<?php echo RUTA_URL ?>/public/assets/js/jquery-ui/jquery-ui.css">
+
     <!-- Toastr -->
     <link rel="stylesheet" href="<?= RUTA_URL ?>public/assets/js/toastr/toastr.min.css">
     <script src="<?= RUTA_URL ?>public/assets/js/toastr/toastr.min.js"></script>
@@ -84,6 +87,9 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
             <?php require RUTA_APP . "/vistas/layouts/footer.php" ?>
         </div>
     </div>
+
+    <!-- jquery-ui -->
+    <script src="<?php echo RUTA_URL ?>/public/assets/js/jquery-ui/jquery-ui.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="<?= RUTA_URL ?>public/assets/js/scripts.js"></script>

@@ -43,6 +43,9 @@ class Subperiodos_evaluacion extends Controlador
         $nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
         $abreviatura = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['abreviatura'])));
         $tipo_periodo = trim($_POST['tipo_periodo']);
+        $nombre_tipo_periodo = trim($_POST['nombre_tipo_periodo']);
+        // $nota_desde = trim($_POST['nota_desde']);
+        // $nota_hasta = trim($_POST['nota_hasta']);
 
         $ok = false;
         $titulo = "";
@@ -52,7 +55,8 @@ class Subperiodos_evaluacion extends Controlador
         $datos = [
             'pe_nombre' => $nombre,
             'pe_abreviatura' => $abreviatura,
-            'id_tipo_periodo' => $tipo_periodo
+            'id_tipo_periodo' => $tipo_periodo,
+            'nombre_tipo_periodo' => $nombre_tipo_periodo
         ];
 
         if ($this->subPeriodoEvaluacionModelo->existeCampo('pe_nombre', $nombre)) {
@@ -65,6 +69,16 @@ class Subperiodos_evaluacion extends Controlador
             $titulo = "Error";
             $mensaje = "Ya existe la abreviatura de Subperiodo de Evaluación [$abreviatura] en la Base de Datos.";
             $tipo_mensaje = "error";
+        // } else if ($nombre_tipo_periodo === "SUPLETORIO" && $nota_desde == $nota_hasta) {
+        //     $ok = false;
+        //         $titulo = "Error";
+        //         $mensaje = "Las Notas desde y hasta no pueden ser iguales.";
+        //         $tipo_mensaje = "error";
+        // } else if ($nombre_tipo_periodo === "SUPLETORIO" && $nota_desde == $nota_hasta) {
+        //     $ok = false;
+        //     $titulo = "Error";
+        //     $mensaje = "La Nota desde no puede ser mayor a la Nota hasta.";
+        //     $tipo_mensaje = "error";
         } else {
             try {
                 $this->subPeriodoEvaluacionModelo->insertar($datos);
@@ -121,13 +135,6 @@ class Subperiodos_evaluacion extends Controlador
             'pe_abreviatura' => $abreviatura,
             'id_tipo_periodo' => $tipo_periodo
         ];
-
-        //
-        // print_r("<pre>");
-        // print_r($datos);
-        // print_r("</pre>");
-        // die();
-        //
 
         $subPeriodoActual = $this->subPeriodoEvaluacionModelo->obtener($id);
 

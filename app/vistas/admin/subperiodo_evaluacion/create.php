@@ -36,6 +36,29 @@
                     </select>
                     <p id="error-tipo_periodo" class="invalid-feedback">Debe seleccionar una opción...</p>
                 </div>
+                <!-- <div id="div_rango" class="mb-3" style="display: none;">
+                    <fieldset>
+                        <legend>Rango de obtención del examen:</legend>
+                        <div class="row" class="mt-2">
+                            <div class="col-lg-3 text-end">
+                                <label for="nota_desde" class="form-label">Nota desde:</label>
+                            </div>
+                            <div class="col-lg-9 mb-3">
+                                <input type="number" min="0.01" step="0.01" class="form-control" id="nota_desde" name="nota_desde" value="0.01" onfocus="sel_texto(this)" onkeypress="return permite(event,'num')">
+                                <p id="error-nota_desde" class="invalid-feedback">Debe ingresar un número real entre 0.01 y 1</p>
+                            </div>
+                        </div>
+                        <div class="row" class="mt-2">
+                            <div class="col-lg-3 text-end">
+                                <label for="nota_hasta" class="form-label">Nota hasta:</label>
+                            </div>
+                            <div class="col-lg-9">
+                                <input type="number" min="0.01" step="0.01" class="form-control" id="nota_hasta" name="nota_hasta" value="0.01" onfocus="sel_texto(this)" onkeypress="return permite(event,'num')">
+                                <p id="error-nota_hasta" class="invalid-feedback">Debe ingresar un número real entre 0.01 y 1</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div> -->
                 <button id="btn-submit" type="submit" class="btn btn-primary">Guardar</button>
                 <a href="<?= RUTA_URL . "subperiodos_evaluacion" ?>" class="btn btn-secondary">Regresar</a>
             </form>
@@ -46,4 +69,6 @@
 <script>
     const base_url = "<?php echo RUTA_URL; ?>";
 </script>
+<script src="<?php echo RUTA_URL; ?>public/assets/js/funciones.js"></script>
+<script src="<?php echo RUTA_URL; ?>public/assets/js/keypress.js"></script>
 <script src="<?php echo RUTA_URL; ?>public/assets/js/pages/admin/subperiodos_evaluacion/create.js"></script>

@@ -62,4 +62,15 @@ class Modalidad
 
         return $this->db->execute();
     }
+
+    public function actualizarOrden($id_modalidad, $mo_orden)
+    {
+        $this->db->query('UPDATE `sw_modalidad` SET `mo_orden` = :mo_orden WHERE `id_modalidad` = :id_modalidad');
+
+        //Vincular valores
+        $this->db->bind(':id_modalidad', $id_modalidad);
+        $this->db->bind(':mo_orden', $mo_orden);
+
+        echo $this->db->execute();
+    }
 }

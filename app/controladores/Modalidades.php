@@ -153,4 +153,14 @@ class Modalidades extends Controlador
         }
         redireccionar('modalidades');
     }
+
+    public function saveNewPositions()
+    {
+        foreach($_POST['positions'] as $position) {
+            $index = $position[0];
+            $newPosition = $position[1];
+
+            $this->modalidadModelo->actualizarOrden($index, $newPosition);
+        }
+    }
 }

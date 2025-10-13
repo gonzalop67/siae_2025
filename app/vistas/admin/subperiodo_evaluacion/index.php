@@ -37,22 +37,31 @@
                         <tbody>
                             <?php
                             $contador = 0;
-                            foreach ($datos['subperiodos_evaluacion'] as $v) {
-                                $contador++;
+                            if (!empty($datos['subperiodos_evaluacion'])) {
+                                foreach ($datos['subperiodos_evaluacion'] as $v) {
+                                    $contador++;
                             ?>
+                                    <tr>
+                                        <td><?= $contador ?></td>
+                                        <td><?= $v->id_sub_periodo_evaluacion  ?></td>
+                                        <td><?= $v->pe_nombre ?></td>
+                                        <td><?= $v->pe_abreviatura ?></td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="<?= RUTA_URL . "subperiodos_evaluacion/edit/" . $v->id_sub_periodo_evaluacion  ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
+                                                <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_sub_periodo_evaluacion  ?>)"><i class="fa fa-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php }
+                            } else {
+                                ?>
                                 <tr>
-                                    <td><?= $contador ?></td>
-                                    <td><?= $v->id_sub_periodo_evaluacion  ?></td>
-                                    <td><?= $v->pe_nombre ?></td>
-                                    <td><?= $v->pe_abreviatura ?></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="<?= RUTA_URL . "subperiodos_evaluacion/edit/" . $v->id_sub_periodo_evaluacion  ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_sub_periodo_evaluacion  ?>)"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </td>
+                                    <td colspan="100%" class="text-center">Aún no se han definido subperiodos de evaluación</td>
                                 </tr>
-                            <?php } ?>
+                            <?php
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>

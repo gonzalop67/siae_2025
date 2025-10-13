@@ -5,6 +5,16 @@ const inputNombre = document.getElementById("nombre");
 const inputAbreviatura = document.getElementById("abreviatura");
 const inputTipoPeriodo = document.getElementById("tipo_periodo");
 
+// inputTipoPeriodo.addEventListener("change", function (e) {
+//   e.preventDefault();
+//   let optionSelectedText = this.options[this.selectedIndex].text;
+//   if (optionSelectedText === "SUPLETORIO") {
+//     document.getElementById("div_rango").style.display = "block";
+//   } else {
+//     document.getElementById("div_rango").style.display = "none";
+//   }
+// })
+
 const buttonSubmit = document.getElementById("btn-submit");
 
 const expresiones = {
@@ -54,6 +64,8 @@ async function fntProcesar() {
   }
   try {
     const formData = new FormData(formulario);
+    let optionSelectedText = inputTipoPeriodo.options[inputTipoPeriodo.selectedIndex].text;
+    formData.append("nombre_tipo_periodo", optionSelectedText);
     let resp = await fetch(base_url + url, {
       method: "POST",
       mode: "cors",
@@ -95,8 +107,8 @@ formulario.addEventListener("submit", (e) => {
     }
   }
 
-  if (campos.nombre && 
-    campos.abreviatura && 
+  if (campos.nombre &&
+    campos.abreviatura &&
     inputTipoPeriodo.value !== ""
   ) {
     inputNombre.classList.remove("is-invalid");
@@ -120,7 +132,7 @@ formulario.addEventListener("submit", (e) => {
     if (inputTipoPeriodo.value === "") {
       document.getElementById("error-tipo_periodo").style.display = "block";
     }
-    
+
     Swal.fire({
       title: "Error",
       text: "Por favor rellena el formulario correctamente.",
