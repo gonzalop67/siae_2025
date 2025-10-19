@@ -4,6 +4,10 @@ class Autoridad extends Controlador
 
     public function __construct()
     {
+        session_start();
+        if (!isset($_SESSION['usuario_logueado'])) {
+            redireccionar('/auth');
+        }
     }
 
     public function index()
@@ -13,10 +17,6 @@ class Autoridad extends Controlador
 
     public function dashboard()
     {
-        session_start();
-        if (!isset($_SESSION['usuario_logueado'])) {
-            redireccionar('/auth');
-        }
         // $numero_autoridades = $this->usuarioModelo->contarAutoridades();
         // $numero_docentes = $this->usuarioModelo->contarDocentes();
         // $id_periodo_lectivo = $_SESSION['id_periodo_lectivo'];

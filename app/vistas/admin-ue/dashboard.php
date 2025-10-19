@@ -1,0 +1,1 @@
+<h3 class="text-center p-5">Bienvenidos al panel de control del Administrador de la Unidad Educativa</h3>

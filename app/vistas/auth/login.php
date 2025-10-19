@@ -240,6 +240,10 @@
                             location.href = "<?php echo RUTA_URL ?>Autoridad/dashboard";
                             break;
 
+                        case 'administrador-de-ue':
+                            location.href = "<?php echo RUTA_URL ?>AdminUE/dashboard";
+                            break;
+
                         default:
                             alert("Todavía no se ha implementado el dashboard correspondiente.");
                             break;
