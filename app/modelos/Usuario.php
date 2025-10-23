@@ -10,7 +10,8 @@ class Usuario
 
     public function obtenerUsuario($login, $clave, $id_perfil)
     {
-        $query = "SELECT u.id_usuario, 
+        $query = "SELECT u.id_usuario,
+                         institucion_id,  
                          us_foto, 
                          us_shortname, 
                          pe_nombre, 

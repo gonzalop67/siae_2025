@@ -16,7 +16,7 @@ $nro_comentarios = $comentarioModelo->contarComentarios();
 $periodoLectivoModelo = $this->modelo('PeriodoLectivo');
 $nombrePerfil = strtolower($_SESSION['nombrePerfil']);
 if (!isset($_SESSION['id_periodo_lectivo'])) {
-    if ($nombrePerfil === "administrador") {
+    if ($nombrePerfil === "administrador" || $nombrePerfil === "administrador-de-ue") {
         $id_periodo_lectivo = $periodoLectivoModelo->obtenerIdPeriodoLectivoActual();
     } else if ($nombrePerfil === "tutor") {
         //
@@ -24,6 +24,7 @@ if (!isset($_SESSION['id_periodo_lectivo'])) {
 } else {
     $id_periodo_lectivo = $_SESSION['id_periodo_lectivo'];
 }
+$institucion_id = $_SESSION['institucion_id'];
 //Obtengo los años de inicio y de fin del periodo lectivo actual
 $periodo_lectivo = $periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
 $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lectivo->pe_anio_fin;
@@ -76,6 +77,7 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
 </head>
 
 <body class="sb-nav-fixed">
+    <input type="hidden" name="institucion_id" value="<?= $institucion_id ?>">
     <?php require RUTA_APP . "/vistas/layouts/header.php" ?>
 
     <div id="layoutSidenav">

@@ -17,6 +17,8 @@
         {
             $url = $this->getUrl();
 
+            //die(var_dump('../app/controladores/'.ucwords($url[0]).'.php'));
+
             //buscar en controladores si el controlador existe
             if (isset($url[0]) && file_exists('../app/controladores/'.ucwords($url[0]).'.php')) {
                 //si existe se setea como controlador por defecto

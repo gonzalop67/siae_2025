@@ -8,9 +8,9 @@ class Subnivel_educacion
         $this->db = new Base;
     }
 
-    public function obtenerTodos()
+    public function obtenerTodos($institucion_id)
     {
-        $this->db->query("SELECT * FROM sw_nivel_educacion ORDER BY orden ASC");
+        $this->db->query("SELECT * FROM sw_nivel_educacion WHERE institucion_id = $institucion_id ORDER BY orden ASC");
         return $this->db->registros();
     }
 
@@ -34,9 +34,10 @@ class Subnivel_educacion
         $registro = $this->db->registro();
         $max_orden = (!empty($registro)) ? $registro->max_orden + 1 : 1;
 
-        $this->db->query('INSERT INTO sw_nivel_educacion (nombre, es_bachillerato, orden) VALUES (:nombre, :es_bachillerato, :orden)');
+        $this->db->query('INSERT INTO sw_nivel_educacion (institucion_id, nombre, es_bachillerato, orden) VALUES (:institucion_id, :nombre, :es_bachillerato, :orden)');
 
         //Vincular valores
+        $this->db->bind(':institucion_id', $datos['institucion_id']);
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':es_bachillerato', $datos['es_bachillerato']);
         $this->db->bind(':orden', $max_orden);

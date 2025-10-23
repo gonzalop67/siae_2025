@@ -146,7 +146,7 @@
             perfilSeleccionado = perfil.options[perfil.selectedIndex].innerHTML;
             perfilSeleccionado = perfilSeleccionado.toLowerCase();
 
-            if (perfilSeleccionado === 'administrador' || perfilSeleccionado === 'tutor' || valorSeleccionado === "") {
+            if (perfilSeleccionado === 'administrador' || perfilSeleccionado === 'tutor' || perfilSeleccionado === 'administrador de u.e.' || valorSeleccionado === "") {
                 periodo_group.style.display = "none";
             } else {
                 periodo_group.style.display = "block";
@@ -187,7 +187,7 @@
 
             } else {
 
-                if (perfilSeleccionado !== 'administrador' && perfilSeleccionado !== 'tutor') {
+                if (perfilSeleccionado !== 'administrador' && perfilSeleccionado !== 'tutor' && perfilSeleccionado !== 'administrador de u.e.') {
                     if (periodo.value == "") {
                         periodo.classList.add("is-invalid");
                         document.getElementById("error-periodo").innerHTML = "El campo Periodo Lectivo es obligatorio.";

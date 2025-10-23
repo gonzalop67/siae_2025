@@ -7,7 +7,7 @@ const inputEsBachillerato = document.getElementById("es_bachillerato");
 const buttonSubmit = document.getElementById("btn-submit");
 
 const expresiones = {
-  nombre: /^[a-zA-ZÀ-ÿ.\s]{4,64}$/, // nombre del subnivel de educación
+  nombre: /^[a-zA-ZÀ-ÿ.\s\-]{4,64}$/, // nombre del subnivel de educación
 };
 
 const campos = {

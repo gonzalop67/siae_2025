@@ -4,7 +4,7 @@
             <i class="fas fa-users me-1"></i>
             Administración de Áreas del Conocimiento
 
-            <a href="<?= RUTA_URL . "areas/create" ?>" class="btn btn-block btn-primary btn-sm rounded-0 float-end">
+            <a href="<?= RUTA_URL . "areas/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
@@ -25,7 +25,7 @@
 
             <div class="row">
                 <div class="col-md-12 table-responsive">
-                    <table id="tbl_areas" class="table table-hover table-striped">
+                    <table id="tbl_areas" class="table table-hover table-striped form-control-sm">
                         <thead>
                             <tr>
                                 <th>Id</th>

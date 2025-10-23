@@ -43,7 +43,7 @@ class Auth extends Controlador
         if (!empty($usuario)) {
             session_start();
 
-            if ($perfil !== "administrador" && $perfil !== "tutor") {
+            if ($perfil !== "administrador" && $perfil !== "tutor" && $perfil !== "administrador-de-ue") {
                 $id_periodo_lectivo = $_POST["periodo"];
                 $periodoActual = $this->periodoLectivoModelo->obtenerPeriodoLectivo($id_periodo_lectivo);
                 $nombrePeriodo = $periodoActual->pe_anio_inicio . " - " . $periodoActual->pe_anio_fin;
@@ -52,10 +52,11 @@ class Auth extends Controlador
             }
 
             $_SESSION['id_usuario'] = $usuario->id_usuario;
+            $_SESSION['institucion_id'] = $usuario->institucion_id;
             $_SESSION['avatar_user'] = $usuario->us_foto;
             $_SESSION['nombre_corto'] = $usuario->us_shortname;
             $_SESSION['id_perfil'] = $id_perfil;
-            $_SESSION['nombrePerfil'] = $usuario->pe_nombre;
+            $_SESSION['nombrePerfil'] = $usuario->pe_slug;
             $_SESSION['cambio_paralelo'] = 0;
 
             $_SESSION['usuario_logueado'] = true;

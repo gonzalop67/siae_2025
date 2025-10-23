@@ -15,7 +15,7 @@
                 <input type="hidden" name="id_nivel_educacion" value="<?= $datos['subnivel']->id_nivel_educacion ?>">
                 <div class="mb-3">
                     <label for="nombre" class="form-label requerido">Nombre:</label>
-                    <input type="text" class="form-control text-uppercase" value="<?= $datos['subnivel']->nombre ?>" name="nombre" id="nombre" autofocus required>
+                    <input type="text" class="form-control text-uppercase" value="<?= $datos['subnivel']->nombre ?>" name="nombre" id="nombre" required>
                     <p id="error-nombre" class="invalid-feedback">El nombre del subnivel de educación debe contener de 4 a 64 caracteres alfabéticos y el caracter espacio en blanco.</p>
                 </div>
                 <div class="mb-3">
