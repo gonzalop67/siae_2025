@@ -22,7 +22,6 @@
             <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
             <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
 
-            <hr>
             <div class="row">
                 <div class="col-md-12 table-responsive">
                     <table id="tbl_subniveles" class="table table-hover table-striped">
@@ -43,13 +42,13 @@
                             ?>
                                 <tr>
                                     <td><?= $contador ?></td>
-                                    <td><?= $v->id_nivel_educacion ?></td>
+                                    <td><?= $v->id ?></td>
                                     <td><?= $v->nombre ?></td>
                                     <td><?= $v->es_bachillerato == 1 ? 'Sí' : 'No' ?></td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="<?= RUTA_URL . "subniveles_educacion/edit/" . $v->id_nivel_educacion ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_nivel_educacion ?>)"><i class="fa fa-trash"></i></button>
+                                            <a href="<?= RUTA_URL . "subniveles_educacion/edit/" . $v->id ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id ?>)"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

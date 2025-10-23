@@ -106,7 +106,7 @@ class Subniveles_educacion extends Controlador
         $tipo_mensaje = "";
 
         $datos = [
-            'id_nivel_educacion' => $id,
+            'id' => $id,
             'nombre' => $nombre,
             'es_bachillerato' => $es_bachillerato
         ];

@@ -12,7 +12,7 @@
                 </div>
             <?php endif ?>
             <form id="formulario" action="" method="post">
-                <input type="hidden" name="id_nivel_educacion" value="<?= $datos['subnivel']->id_nivel_educacion ?>">
+                <input type="hidden" name="id_nivel_educacion" value="<?= $datos['subnivel']->id ?>">
                 <div class="mb-3">
                     <label for="nombre" class="form-label requerido">Nombre:</label>
                     <input type="text" class="form-control text-uppercase" value="<?= $datos['subnivel']->nombre ?>" name="nombre" id="nombre" required>

@@ -16,7 +16,7 @@ class Subnivel_educacion
 
     public function obtenerSubnivel($id)
     {
-        $this->db->query("SELECT * FROM sw_sub_nivel_educacion WHERE id_nivel_educacion = $id");
+        $this->db->query("SELECT * FROM sw_sub_nivel_educacion WHERE id = $id");
         return $this->db->registro();
     }
 
@@ -47,22 +47,22 @@ class Subnivel_educacion
 
     public function actualizar($datos)
     {
-        $this->db->query('UPDATE sw_sub_nivel_educacion SET nombre = :nombre, es_bachillerato = :es_bachillerato WHERE id_nivel_educacion = :id_nivel_educacion');
+        $this->db->query('UPDATE sw_sub_nivel_educacion SET nombre = :nombre, es_bachillerato = :es_bachillerato WHERE id = :id');
 
         //Vincular valores
         $this->db->bind(':nombre', $datos['nombre']);
         $this->db->bind(':es_bachillerato', $datos['es_bachillerato']);
-        $this->db->bind(':id_nivel_educacion', $datos['id_nivel_educacion']);
+        $this->db->bind(':id', $datos['id']);
 
         $this->db->execute();
     }
 
     public function eliminar($id)
     {
-        $this->db->query('DELETE FROM `sw_sub_nivel_educacion` WHERE `id_nivel_educacion` = :id_nivel_educacion');
+        $this->db->query('DELETE FROM `sw_sub_nivel_educacion` WHERE `id` = :id');
 
         //Vincular valores
-        $this->db->bind(':id_nivel_educacion', $id);
+        $this->db->bind(':id', $id);
 
         return $this->db->execute();
     }
