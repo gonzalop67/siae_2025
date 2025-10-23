@@ -18,7 +18,7 @@
                         <label for="texto" class="form-label requerido">Texto:</label>
                     </div>
                     <div class="col-lg-8">
-                        <input type="text" class="form-control" value="<?= $datos['menu']->mnu_texto ?>" name="texto" id="texto" autofocus required>
+                        <input type="text" class="form-control" value="<?= $datos['menu']->mnu_texto ?>" name="texto" id="texto" required>
                         <span id="error-texto" class="invalid-feedback">El texto del menú debe contener de 4 a 64 caracteres alfanuméricos incluyendo el espacio en blanco.</span>
                     </div>
                 </div>

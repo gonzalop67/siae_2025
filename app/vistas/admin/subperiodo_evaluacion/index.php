@@ -3,6 +3,10 @@
         <div class="card-header">
             <i class="fas fa-address-card  me-1"></i>
             Administración de Subperiodos de Evaluación
+
+            <a href="<?= RUTA_URL . "subperiodos_evaluacion/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+                <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
+            </a>
         </div>
         <div class="card-body">
             <?php if (isset($_SESSION['mensaje'])) { ?>
@@ -18,10 +22,6 @@
             <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
             <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
 
-            <a href="<?= RUTA_URL . "subperiodos_evaluacion/create" ?>" class="btn btn-block btn-primary btn-sm">
-                <i class="fa fa-fw fa-plus-circle"></i> Nuevo Subperiodo de Evaluación
-            </a>
-            <hr>
             <div class="row">
                 <div class="col-md-12 table-responsive">
                     <table id="tbl_subperiodos" class="table table-hover table-striped">

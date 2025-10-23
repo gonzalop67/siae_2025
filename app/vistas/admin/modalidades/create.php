@@ -14,7 +14,7 @@
             <form id="formulario" action="" method="post">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control text-uppercase" value="" name="nombre" id="nombre" autofocus required>
+                    <input type="text" class="form-control text-uppercase" value="" name="nombre" id="nombre" required>
                     <p id="error-nombre" class="invalid-feedback">El nombre de la modalidad debe contener de 4 a 64 caracteres alfabéticos y/o el caracter espacio en blanco.</p>
                 </div>
                 <div class="mb-3">

@@ -4,6 +4,10 @@
         <div class="card-header">
             <i class="fas fa-bars me-1"></i>
             Administración de Menús
+
+            <a href="<?= RUTA_URL . "menus/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+                <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
+            </a>
         </div>
         <div class="card-body">
             <?php if (isset($_SESSION['mensaje'])) { ?>
@@ -18,11 +22,6 @@
             <?php if (isset($_SESSION['mensaje'])) unset($_SESSION['mensaje']) ?>
             <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
             <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
-
-            <a href="<?= RUTA_URL . "menus/create" ?>" class="btn btn-block btn-primary btn-sm">
-                <i class="fa fa-fw fa-plus-circle"></i> Nuevo Menú
-            </a>
-            <hr>
 
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 table-responsive">

@@ -15,7 +15,7 @@
                 <input type="hidden" name="id_usuario" value="<?= $datos['usuario']->id_usuario ?>">
                 <div class="mb-3">
                     <label for="abreviatura" class="form-label">Título Abreviatura:</label>
-                    <input type="text" class="form-control" value="<?= $datos['usuario']->us_titulo ?>" name="abreviatura" id="abreviatura" placeholder="Abreviatura del Título. Ejemplo: Ing." autofocus>
+                    <input type="text" class="form-control" value="<?= $datos['usuario']->us_titulo ?>" name="abreviatura" id="abreviatura" placeholder="Abreviatura del Título. Ejemplo: Ing.">
                     <p id="error-abreviatura" class="invalid-feedback">La abreviatura del título tiene que ser de 4 a 7 caracteres y solo puede contener caracteres alfabéticos y el caracter punto.</p>
                 </div>
                 <div class="mb-3">

@@ -14,7 +14,7 @@
             <form id="formulario" action="" enctype="multipart/form-data" method="post">
                 <div class="mb-3">
                     <label for="abreviatura" class="form-label">Título Abreviatura:</label>
-                    <input type="text" class="form-control" value="" name="abreviatura" id="abreviatura" placeholder="Abreviatura del Título. Ejemplo: Ing." autofocus>
+                    <input type="text" class="form-control" value="" name="abreviatura" id="abreviatura" placeholder="Abreviatura del Título. Ejemplo: Ing.">
                     <p id="error-abreviatura" class="invalid-feedback">La abreviatura del título tiene que ser de 4 a 7 caracteres y solo puede contener caracteres alfabéticos y el caracter punto.</p>
                 </div>
                 <div class="mb-3">

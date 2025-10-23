@@ -3,6 +3,10 @@
         <div class="card-header">
             <i class="fas fa-building-columns me-1"></i>
             Administración de Instituciones Educativas
+
+            <a href="<?= RUTA_URL . "instituciones/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+                <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
+            </a>
         </div>
         <div class="card-body">
 
@@ -19,10 +23,6 @@
             <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
             <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
 
-            <a href="<?= RUTA_URL . "instituciones/create" ?>" class="btn btn-block btn-primary btn-sm">
-                <i class="fa fa-fw fa-plus-circle"></i> Nueva Institución
-            </a>
-            <hr>
             <div class="row">
                 <div class="col-md-12 table-responsive">
                     <table id="tbl_usuarios" class="table table-hover table-striped">

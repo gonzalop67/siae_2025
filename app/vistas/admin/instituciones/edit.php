@@ -3,6 +3,10 @@
         <div class="card-header">
             <i class="fas fa-building-columns me-1"></i>
             Datos de la Institución Educativa
+
+            <a href="<?= RUTA_URL . "instituciones" ?>" class="btn btn-block btn-primary btn-sm float-end">
+                <i class="fa-solid fa-backward-fast"></i> Volver al listado
+            </a>
         </div>
         <div class="card-body">
 
@@ -24,7 +28,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <label for="nombre" class="form-label">Nombre:</label>
-                        <input type="text" class="form-control text-uppercase" value="<?= $datos['institucion']->in_nombre ?>" name="nombre" id="nombre" autofocus required>
+                        <input type="text" class="form-control text-uppercase" value="<?= $datos['institucion']->in_nombre ?>" name="nombre" id="nombre" required>
                         <p id="error-nombre" class="invalid-feedback">El nombre de la Institución Educativa tiene que contener de 4 a 64 caracteres y solo puede contener caracteres alfabéticos.</p>
                     </div>
                 </div>
