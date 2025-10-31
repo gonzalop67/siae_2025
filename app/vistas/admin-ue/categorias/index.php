@@ -2,9 +2,9 @@
     <div class="card mt-2">
         <div class="card-header">
             <i class="fas fa-graduation-cap me-1"></i>
-            Administración de Especialidades
+            Administración de Categorías
 
-            <a href="<?= RUTA_URL . "especialidades/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+            <a href="<?= RUTA_URL . "categorias/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
@@ -24,41 +24,38 @@
 
             <div class="row">
                 <div class="col-md-12 table-responsive">
-                    <table id="tbl_especialidades" class="table table-hover table-striped form-control-sm">
+                    <table id="tbl_categorias" class="table table-hover table-striped form-control-sm">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>ID</th>
-                                <th>Categoría</th>
-                                <th>Figura</th>
+                                <th>Nombre</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             $contador = 0;
-                            if (count($datos['especialidades']) > 0) {
-                                foreach ($datos['especialidades'] as $v) {
+                            if (count($datos['categorias']) > 0) {
+                                foreach ($datos['categorias'] as $v) {
                                     $contador++;
                             ?>
-                                    <tr>
-                                        <td><?= $contador ?></td>
-                                        <td><?= $v->id_especialidad ?></td>
-                                        <td><?= $v->nombre ?></td>
-                                        <td><?= $v->es_figura ?></td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="<?= RUTA_URL . "especialidades/edit/" . $v->id_especialidad ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                                <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_especialidad ?>)"><i class="fa fa-trash"></i></button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php
-                                }
-                            } else {
-                                ?>
                                 <tr>
-                                    <td colspan="100%" class="text-center">No se han ingresado Categorías de Especialidad todavía...</td>
+                                    <td><?= $contador ?></td>
+                                    <td><?= $v->id_categoria ?></td>
+                                    <td><?= $v->nombre ?></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="<?= RUTA_URL . "categorias/edit/" . $v->id_categoria ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_categoria ?>)"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php
+                                }
+                            } else { ?>
+                                <tr>
+                                    <td colspan="100%" class="text-center">No se han ingresado categorías todavía...</td>
                                 </tr>
                             <?php
                             }
@@ -67,6 +64,7 @@
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -75,7 +73,7 @@
     const base_url = "<?php echo RUTA_URL; ?>";
 
     function eliminar(id) {
-        const url = base_url + "especialidades/delete/" + id;
+        const url = base_url + "categorias/delete/" + id;
         Swal.fire({
             title: "¿Estás seguro de eliminar este registro?",
             text: "¡Una vez eliminado no podrá recuperarse!",

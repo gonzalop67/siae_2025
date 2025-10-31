@@ -2,16 +2,23 @@ const formulario = document.getElementById("formulario");
 const inputs = document.querySelectorAll("#formulario input");
 
 const inputNombre = document.getElementById("nombre");
-const inputEsBachillerato = document.getElementById("es_bachillerato");
 
 const buttonSubmit = document.getElementById("btn-submit");
 
 const expresiones = {
-  nombre: /^[0-9a-zA-ZÀ-ÿ.\s\-]{4,64}$/, // nombre del subnivel de educación
+  nombre: /^[a-zA-ZÀ-ÿ.\s]{4,64}$/, // nombre de la modalidad
 };
 
 const campos = {
   nombre: false,
+};
+
+const validarFormulario = (e) => {
+  switch (e.target.name) {
+    case "nombre":
+      validarCampo(expresiones.nombre, e.target, "nombre");
+      break;
+  }
 };
 
 const validarCampo = (expresion, input, campo) => {
@@ -26,14 +33,6 @@ const validarCampo = (expresion, input, campo) => {
   }
 };
 
-const validarFormulario = (e) => {
-  switch (e.target.name) {
-    case "nombre":
-      validarCampo(expresiones.nombre, e.target, "nombre");
-      break;
-  }
-};
-
 inputs.forEach((input) => {
   input.addEventListener("keyup", validarFormulario);
   input.addEventListener("blur", validarFormulario);
@@ -42,9 +41,9 @@ inputs.forEach((input) => {
 async function fntProcesar() {
   let url = "";
   if (buttonSubmit.innerHTML === "Actualizar") {
-    url = "subniveles_educacion/update";
+    url = "categorias/update";
   } else {
-    url = "subniveles_educacion/store";
+    url = "categorias/store";
   }
   try {
     const formData = new FormData(formulario);
@@ -57,7 +56,7 @@ async function fntProcesar() {
     json = await resp.json();
     if (json.ok) {
       formulario.reset();
-      window.location.href = base_url + "subniveles_educacion";
+      window.location.href = base_url + "categorias";
     } else {
       Swal.fire({
         title: json.titulo,
@@ -81,11 +80,9 @@ formulario.addEventListener("submit", (e) => {
     }
   }
 
-  if (campos.nombre && inputEsBachillerato.value !== "") {
+  if (campos.nombre) {
     inputNombre.classList.remove("is-invalid");
     document.getElementById("error-nombre").style.display = "none";
-
-    document.getElementById("error-es_bachillerato").style.display = "none";
 
     fntProcesar();
   } else {
@@ -93,13 +90,5 @@ formulario.addEventListener("submit", (e) => {
       inputNombre.classList.add("is-invalid");
       document.getElementById("error-nombre").style.display = "block";
     }
-    if (inputEsBachillerato.value === ""){
-      document.getElementById("error-es_bachillerato").style.display = "block";
-    }
-    Swal.fire({
-      title: "Error",
-      text: "Por favor rellena el formulario correctamente.",
-      icon: "error",
-    });
   }
 });
