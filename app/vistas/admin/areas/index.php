@@ -4,7 +4,7 @@
             <i class="fas fa-users me-1"></i>
             Administración de Áreas del Conocimiento
 
-            <a href="<?= RUTA_URL . "areas/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+            <a href="<?= RUTA_URL . "areas/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
@@ -31,7 +31,7 @@
                                 <th>Id</th>
                                 <th>Nombre</th>
                                 <th>Activo</th>
-                                <th>Acciones</th>
+                                <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,9 +52,9 @@
                                         <?php endif ?>
                                     </td>
                                     <td>
-                                        <div class="btn-group">
+                                        <div class="btn-group float-end">
                                             <a href="<?= RUTA_URL . "areas/edit/" . $v->id_area ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_area ?>)"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_area ?>)" title="Eliminar"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

@@ -8,7 +8,7 @@ class Subnivel_educacion
         $this->db = new Base;
     }
 
-    public function obtenerTodos($institucion_id)
+    public function obtenerSubniveles($institucion_id)
     {
         $this->db->query("SELECT * FROM sw_sub_nivel_educacion WHERE institucion_id = $institucion_id ORDER BY orden ASC");
         return $this->db->registros();

@@ -10,7 +10,7 @@ class Especialidad
 
     public function obtenerEspecialidades()
     {
-        $this->db->query("SELECT e.*, c.nombre FROM sw_especialidad e, sw_categoria c WHERE c.id_categoria = e.id_categoria ORDER BY es_orden");
+        $this->db->query("SELECT e.*, c.nombre FROM sw_especialidad e, sw_categoria c WHERE c.id_categoria = e.categoria_id ORDER BY es_orden");
         return $this->db->registros();
     }
 
@@ -18,6 +18,12 @@ class Especialidad
     {
         $this->db->query("SELECT * FROM sw_especialidad WHERE id_especialidad = $id_especialidad");
         return $this->db->registro();
+    }
+
+    public function obtenerFigura($id_especialidad)
+    {
+        $this->db->query("SELECT es_figura FROM sw_especialidad WHERE id_especialidad = $id_especialidad");
+        return $this->db->registro()->es_figura;
     }
 
     public function existeCampo($columna, $value)
@@ -31,10 +37,11 @@ class Especialidad
         $registro = $this->db->registro();
         $max_orden = empty($registro->max_orden) ? $registro->max_orden + 1 : 1;
 
-        $this->db->query('INSERT INTO sw_especialidad (id_categoria, es_figura, es_abreviatura, es_orden) VALUES (:id_categoria, :es_figura, :es_abreviatura, :es_orden)');
+        $this->db->query('INSERT INTO sw_especialidad (categoria_id, subnivel_id, es_figura, es_abreviatura, es_orden) VALUES (:categoria_id, :subnivel_id, :es_figura, :es_abreviatura, :es_orden)');
 
         //Vincular valores
-        $this->db->bind(':id_categoria', $datos['id_categoria']);
+        $this->db->bind(':categoria_id', $datos['categoria_id']);
+        $this->db->bind(':subnivel_id', $datos['subnivel_id']);
         $this->db->bind(':es_figura', $datos['es_figura']);
         $this->db->bind(':es_abreviatura', $datos['es_abreviatura']);
         $this->db->bind(':es_orden', $max_orden);
@@ -44,11 +51,12 @@ class Especialidad
 
     public function actualizar($datos)
     {
-        $this->db->query('UPDATE sw_especialidad SET id_categoria = :id_categoria, es_figura = :es_figura, es_abreviatura = :es_abreviatura WHERE id_especialidad = :id_especialidad');
+        $this->db->query('UPDATE sw_especialidad SET categoria_id = :categoria_id, subnivel_id = :subnivel_id, es_figura = :es_figura, es_abreviatura = :es_abreviatura WHERE id_especialidad = :id_especialidad');
 
         //Vincular valores
         $this->db->bind(':id_especialidad', $datos['id_especialidad']);
-        $this->db->bind(':id_categoria', $datos['id_categoria']);
+        $this->db->bind(':categoria_id', $datos['categoria_id']);
+        $this->db->bind(':subnivel_id', $datos['subnivel_id']);
         $this->db->bind(':es_figura', $datos['es_figura']);
         $this->db->bind(':es_abreviatura', $datos['es_abreviatura']);
 

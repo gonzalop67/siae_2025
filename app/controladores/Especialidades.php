@@ -2,6 +2,7 @@
 class Especialidades extends Controlador
 {
     private $categoriaModelo;
+    private $subnivelModelo;
     private $especialidadModelo;
 
     public function __construct()
@@ -12,6 +13,7 @@ class Especialidades extends Controlador
         }
         $this->categoriaModelo = $this->modelo('Categoria');
         $this->especialidadModelo = $this->modelo('Especialidad');
+        $this->subnivelModelo = $this->modelo('Subnivel_educacion');
     }
 
     public function index()
@@ -29,10 +31,12 @@ class Especialidades extends Controlador
     public function create()
     {
         $categorias = $this->categoriaModelo->obtenerTodos();
+        $subniveles = $this->subnivelModelo->obtenerSubniveles($_SESSION['institucion_id']);
         $datos = [
             'titulo' => 'Crear Especialidad',
             'dashboard' => 'AdminUE',
             'categorias' => $categorias,
+            'subniveles' => $subniveles,
             'nombreVista' => 'admin-ue/especialidades/create.php'
         ];
         $this->vista('admin/index', $datos);
@@ -40,7 +44,8 @@ class Especialidades extends Controlador
 
     public function store()
     {
-        $id_categoria = $_POST['categoria'];
+        $categoria_id = $_POST['categoria'];
+        $subnivel_id = $_POST['subnivel'];
         $es_figura = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['figura'])));
         $es_abreviatura = strtoupper(trim($_POST['abreviatura']));
 
@@ -50,7 +55,8 @@ class Especialidades extends Controlador
         $tipo_mensaje = "";
 
         $datos = [
-            'id_categoria' => $id_categoria,
+            'categoria_id' => $categoria_id,
+            'subnivel_id' => $subnivel_id,
             'es_figura' => $es_figura,
             'es_abreviatura' => $es_abreviatura
         ];
@@ -92,10 +98,12 @@ class Especialidades extends Controlador
     {
         $categorias = $this->categoriaModelo->obtenerTodos();
         $especialidad = $this->especialidadModelo->obtener($id);
+        $subniveles = $this->subnivelModelo->obtenerSubniveles($_SESSION['institucion_id']);
         $datos = [
             'titulo' => 'Crear Especialidad',
             'dashboard' => 'AdminUE',
             'categorias' => $categorias,
+            'subniveles' => $subniveles,
             'especialidad' => $especialidad,
             'nombreVista' => 'admin-ue/especialidades/edit.php'
         ];
@@ -105,7 +113,8 @@ class Especialidades extends Controlador
     public function update()
     {
         $id_especialidad = $_POST['id_especialidad'];
-        $id_categoria = $_POST['categoria'];
+        $categoria_id = $_POST['categoria'];
+        $subnivel_id = $_POST['subnivel'];
         $es_figura = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['figura'])));
         $es_abreviatura = strtoupper(trim($_POST['abreviatura']));
 
@@ -116,7 +125,8 @@ class Especialidades extends Controlador
 
         $datos = [
             'id_especialidad' => $id_especialidad,
-            'id_categoria' => $id_categoria,
+            'categoria_id' => $categoria_id,
+            'subnivel_id' => $subnivel_id,
             'es_figura' => $es_figura,
             'es_abreviatura' => $es_abreviatura
         ];

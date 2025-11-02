@@ -24,4 +24,14 @@ class Periodos_lectivos extends Controlador
         ];
         $this->vista('admin/index', $datos);
     }
+
+    public function create()
+    {
+        $datos = [
+            'titulo' => 'Crear Periodo Lectivo',
+            'dashboard' => 'AdminUE',
+            'nombreVista' => 'admin-ue/periodos_lectivos/create.php'
+        ];
+        $this->vista('admin/index', $datos);
+    }
 }

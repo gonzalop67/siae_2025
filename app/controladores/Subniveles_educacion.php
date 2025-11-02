@@ -15,7 +15,7 @@ class Subniveles_educacion extends Controlador
     public function index()
     {
         $institucion_id = $_SESSION['institucion_id'];
-        $subniveles_educacion = $this->subNivelEducacionModelo->obtenerTodos($institucion_id);
+        $subniveles_educacion = $this->subNivelEducacionModelo->obtenerSubniveles($institucion_id);
         $datos = [
             'titulo' => 'CRUD Sub Nivel de Educación',
             'dashboard' => 'AdminUE',

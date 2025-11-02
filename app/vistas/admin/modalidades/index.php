@@ -4,7 +4,7 @@
             <i class="fas fa-address-card me-1"></i>
             Administración de Modalidades
 
-            <a href="<?= RUTA_URL . "modalidades/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+            <a href="<?= RUTA_URL . "modalidades/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
@@ -31,7 +31,7 @@
                                 <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Activo</th>
-                                <th>Acciones</th>
+                                <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,9 +52,9 @@
                                         <?php endif ?>
                                     </td>
                                     <td>
-                                        <div class="btn-group">
+                                        <div class="btn-group float-end">
                                             <a href="<?= RUTA_URL . "modalidades/edit/" . $v->id_modalidad ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_modalidad ?>)"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_modalidad ?>)" title="Eliminar"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

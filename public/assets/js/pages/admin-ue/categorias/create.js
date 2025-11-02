@@ -6,7 +6,7 @@ const inputNombre = document.getElementById("nombre");
 const buttonSubmit = document.getElementById("btn-submit");
 
 const expresiones = {
-  nombre: /^[a-zA-ZÀ-ÿ.\s]{4,64}$/, // nombre de la modalidad
+  nombre: /^[a-zA-ZÀ-ÿ.\s]{4,64}$/, // nombre de la categoría
 };
 
 const campos = {

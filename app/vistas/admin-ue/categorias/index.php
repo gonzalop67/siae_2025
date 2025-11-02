@@ -4,7 +4,7 @@
             <i class="fas fa-graduation-cap me-1"></i>
             Administración de Categorías
 
-            <a href="<?= RUTA_URL . "categorias/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+            <a href="<?= RUTA_URL . "categorias/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
@@ -30,7 +30,7 @@
                                 <th>#</th>
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                <th>Acciones</th>
+                                <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,9 +45,9 @@
                                     <td><?= $v->id_categoria ?></td>
                                     <td><?= $v->nombre ?></td>
                                     <td>
-                                        <div class="btn-group">
+                                        <div class="btn-group float-end">
                                             <a href="<?= RUTA_URL . "categorias/edit/" . $v->id_categoria ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_categoria ?>)"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_categoria ?>)" title="Eliminar"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

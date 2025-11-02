@@ -1,11 +1,11 @@
 <div class="container-fluid px-4">
     <div class="card mt-2">
         <div class="card-header">
-            <i class="far fa-calendar  me-1"></i>
+            <i class="far fa-calendar me-1"></i>
             Administración de Periodos Lectivos
 
-            <a href="<?= RUTA_URL . "periodos_lectivos/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
-                <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
+            <a href="<?= RUTA_URL . "periodos_lectivos/create" ?>" class="btn btn-danger btn-sm float-end">
+                Crear Periodo Lectivo
             </a>
         </div>
         <div class="card-body">
@@ -33,7 +33,7 @@
                                 <th>Año Inicio</th>
                                 <th>Año Fin</th>
                                 <th>Estado</th>
-                                <th>Acciones</th>
+                                <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -50,9 +50,9 @@
                                     <td><?= $v->pe_anio_fin ?></td>
                                     <td><?= $v->pe_descripcion ?></td>
                                     <td>
-                                        <div class="btn-group">
+                                        <div class="btn-group float-end">
                                             <a href="<?= RUTA_URL . "periodos_lectivos/edit/" . $v->id_periodo_lectivo ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_periodo_lectivo ?>)"><i class="fa fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_periodo_lectivo ?>)" title="Eliminar"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

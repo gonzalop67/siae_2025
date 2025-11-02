@@ -5,7 +5,7 @@
             <i class="fas fa-bars me-1"></i>
             Administración de Menús
 
-            <a href="<?= RUTA_URL . "menus/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
+            <a href="<?= RUTA_URL . "menus/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>

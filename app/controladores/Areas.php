@@ -26,6 +26,7 @@ class Areas extends Controlador
     {
         $datos = [
             'titulo' => 'Crear Nueva Área',
+            'dashboard' => 'Admin',
             'nombreVista' => 'admin/areas/create.php'
         ];
         $this->vista('admin/index', $datos);
