@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8" />
@@ -103,7 +103,7 @@
                                         </div>
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                             <!-- ¿Olvidó su contraseña? -->
-                                            <a class="small" href="password.html"></a>
+                                            <a class="small" href="<?php echo RUTA_URL; ?>Register">¿Olvidó su contraseña?</a>
                                             <button class="btn btn-primary" type="submit" onclick="frmLogin(event);"><i class="fas fa-sign-in"></i> Ingresar</button>
                                         </div>
                                     </form>

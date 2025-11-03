@@ -128,11 +128,6 @@ class Cursos extends Controlador
             'subniveles' => $subniveles
         ];
 
-        // print_r("<pre>");
-        // print_r($datos);
-        // print_r("</pre>");
-        // die();
-
         $ok = false;
         $titulo = "";
         $mensaje = "";
@@ -159,13 +154,13 @@ class Cursos extends Controlador
             try {
                 $this->cursoModelo->actualizar($datos);
                 $ok = true;
-                $_SESSION['mensaje'] = "El Curso fue insertado exitosamente.";
+                $_SESSION['mensaje'] = "El Curso fue actualizado exitosamente.";
                 $_SESSION['tipo'] = "success";
                 $_SESSION['icono'] = "check";
             } catch (PDOException $ex) {
                 $ok = false;
                 $titulo = "Error";
-                $mensaje = "El Curso no fue insertado exitosamente. Error: " . $ex->getMessage();
+                $mensaje = "El Curso no fue actualizado exitosamente. Error: " . $ex->getMessage();
                 $tipo_mensaje = "error";
             }
         }
