@@ -22,6 +22,24 @@
                     <input type="text" class="form-control" value="<?= $datos['curso']->cu_abreviatura ?>" name="abreviatura" id="abreviatura" required>
                     <p id="error-abreviatura" class="invalid-feedback">La abreviatura del curso debe contener de 4 a 45 caracteres alfabéticos y/o el caracter espacio en blanco.</p>
                 </div>
+                <!-- <div class="mb-3">
+                    <label for="periodo_lectivo" class="form-label requerido">Periodo Lectivo:</label>
+                    <select class="form-select" name="periodo_lectivo" id="periodo_lectivo" required>
+                        <option value="">Seleccione...</option>
+                        <?php
+                        $meses_abrev = array(0, "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic");
+                        foreach ($datos['periodos_lectivos'] as $periodo) {
+                            $fecha_inicial = explode("-", $periodo->pe_fecha_inicio);
+                            $fecha_final = explode("-", $periodo->pe_fecha_fin);
+                            $nombre = "[" . $periodo->mo_nombre . "] " . $meses_abrev[(int)$fecha_inicial[1]] . " " . $fecha_inicial[0] . " - " . $meses_abrev[(int)$fecha_final[1]] . " " . $fecha_final[0];
+                        ?>
+                            <option value="<?= $periodo->id_periodo_lectivo ?>" <?= 1 ?>><?= $nombre ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                    <p id="error-periodo_lectivo" class="invalid-feedback">Debe seleccionar un periodo lectivo vigente.</p>
+                </div> -->
                 <div class="row mb-3">
                     <div class="col-12">
                         <label for="subniveles" class="form-label requerido">Subniveles de Educación:</label>

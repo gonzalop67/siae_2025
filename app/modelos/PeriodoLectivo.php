@@ -27,6 +27,12 @@ class PeriodoLectivo
         return $this->db->registro();
     }
 
+    public function obtenerPeriodosLectivosActuales()
+    {
+        $this->db->query("SELECT p.*, mo_nombre FROM sw_periodo_lectivo p, sw_modalidad m, sw_periodo_estado pe WHERE m.id_modalidad = p.id_modalidad AND pe.id_periodo_estado = p.id_periodo_estado AND pe_descripcion = 'ACTUAL' ORDER BY pe_fecha_inicio DESC");
+        return $this->db->registros();
+    }
+
     public function obtenerPeriodosLActuales($id_modalidad)
     {
         $this->db->query("SELECT p.*, pe_descripcion FROM sw_periodo_lectivo p, sw_periodo_estado pe WHERE pe.id_periodo_estado = p.id_periodo_estado AND id_modalidad = $id_modalidad AND pe_descripcion = 'ACTUAL' ORDER BY pe_fecha_inicio DESC");

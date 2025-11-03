@@ -85,6 +85,7 @@ class Curso
                     $this->db->bind(':especialidad_id', $especialidad->id_especialidad);
                     $this->db->bind(':curso_id', $lastInsertId);
                     $this->db->bind(':subnivel_id', $especialidad->subnivel_id);
+                    // $this->db->bind(':periodo_lectivo_id', $datos['periodo_lectivo_id']);
                     $this->db->bind(':orden', $max_orden);
 
                     $this->db->execute();
@@ -132,6 +133,7 @@ class Curso
                     $this->db->bind(':especialidad_id', $especialidad->id_especialidad);
                     $this->db->bind(':curso_id', $id_curso);
                     $this->db->bind(':subnivel_id', $especialidad->subnivel_id);
+                    // $this->db->bind(':periodo_lectivo_id', $datos['periodo_lectivo_id']);
                     $this->db->bind(':orden', $max_orden);
 
                     $this->db->execute();

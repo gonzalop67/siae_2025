@@ -12,8 +12,8 @@ class Cursos extends Controlador
             redireccionar('/auth');
         }
         $this->cursoModelo = $this->modelo('Curso');
-        $this->subnivelModelo = $this->modelo('Subnivel_educacion');
         $this->especialidadModelo = $this->modelo('Especialidad');
+        $this->subnivelModelo = $this->modelo('Subnivel_educacion');
     }
 
     public function index()
@@ -31,10 +31,10 @@ class Cursos extends Controlador
         $institucion_id = $_SESSION['institucion_id'];
         $subniveles = $this->subnivelModelo->obtenerSubniveles($institucion_id);
         $datos = [
-            'titulo'         => 'Crear Nuevo Curso',
-            'dashboard'      => 'AdminUE',
-            'subniveles'     => $subniveles,
-            'nombreVista'    => 'admin-ue/cursos/create.php'
+            'titulo'            => 'Crear Nuevo Curso',
+            'dashboard'         => 'AdminUE',
+            'subniveles'        => $subniveles,
+            'nombreVista'       => 'admin-ue/cursos/create.php'
         ];
         $this->vista('admin/index', $datos);
     }
@@ -44,12 +44,14 @@ class Cursos extends Controlador
         $nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
         $nombre_corto = preg_replace('/\s+/', ' ', trim($_POST['nombre_corto']));
         $abreviatura = preg_replace('/\s+/', ' ', trim($_POST['abreviatura']));
+        // $periodo_lectivo_id = $_POST['periodo_lectivo'];
         $subniveles = $_POST['subniveles'];
         
         $datos = [
             'cu_nombre' => $nombre,
             'cu_shortname' => $nombre_corto,
             'cu_abreviatura' => $abreviatura,
+            // 'periodo_lectivo_id' => $periodo_lectivo_id,
             'subniveles' => $subniveles
         ];
 
@@ -98,16 +100,18 @@ class Cursos extends Controlador
 
     public function edit($id) {
         $institucion_id = $_SESSION['institucion_id'];
-        $subniveles = $this->subnivelModelo->obtenerSubniveles($institucion_id);
         $subnivelesCurso = $this->cursoModelo->obtenerSubnivelesCurso($id);
+        $subniveles = $this->subnivelModelo->obtenerSubniveles($institucion_id);
+        // $periodos_lectivos = $this->periodoLectivoModelo->obtenerPeriodosLectivosActuales();
         $curso = $this->cursoModelo->obtener($id);
         $datos = [
-            'titulo'          => 'Crear Nuevo Curso',
-            'dashboard'       => 'AdminUE',
-            'subniveles'      => $subniveles,
-            'subnivelesCurso' => $subnivelesCurso,
-            'curso'           => $curso,
-            'nombreVista'     => 'admin-ue/cursos/edit.php'
+            'titulo'            => 'Crear Nuevo Curso',
+            'dashboard'         => 'AdminUE',
+            'subniveles'        => $subniveles,
+            'subnivelesCurso'   => $subnivelesCurso,
+            // 'periodos_lectivos' => $periodos_lectivos,
+            'curso'             => $curso,
+            'nombreVista'       => 'admin-ue/cursos/edit.php'
         ];
         $this->vista('admin/index', $datos);
     }
@@ -118,6 +122,7 @@ class Cursos extends Controlador
         $nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
         $nombre_corto = preg_replace('/\s+/', ' ', trim($_POST['nombre_corto']));
         $abreviatura = preg_replace('/\s+/', ' ', trim($_POST['abreviatura']));
+        $periodo_lectivo_id = $_POST['periodo_lectivo'];
         $subniveles = $_POST['subniveles'];
         
         $datos = [
@@ -125,6 +130,7 @@ class Cursos extends Controlador
             'cu_nombre' => $nombre,
             'cu_shortname' => $nombre_corto,
             'cu_abreviatura' => $abreviatura,
+            'periodo_lectivo_id' => $periodo_lectivo_id,
             'subniveles' => $subniveles
         ];
 

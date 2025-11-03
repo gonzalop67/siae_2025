@@ -28,6 +28,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Periodo Lectivo</th>
                                 <th>Especialidad</th>
                                 <th>Curso</th>
                                 <th>Nombre</th>
@@ -39,11 +40,16 @@
                             <?php
                             $contador = 0;
                             if (count($datos['paralelos']) > 0) {
+                                $meses_abrev = array(0, "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic");
                                 foreach ($datos['paralelos'] as $v) {
                                     $contador++;
+                                    $fecha_inicial = explode("-", $v->pe_fecha_inicio);
+                                    $fecha_final = explode("-", $v->pe_fecha_fin);
+                                    $nombrePL = "[" . $v->mo_nombre . "] " . $meses_abrev[(int)$fecha_inicial[1]] . " " . $fecha_inicial[0] . " - " . $meses_abrev[(int)$fecha_final[1]] . " " . $fecha_final[0];
                             ?>
                                     <tr>
                                         <td><?= $contador ?></td>
+                                        <td><?= $nombrePL ?></td>
                                         <td><?= $v->es_figura ?></td>
                                         <td><?= $v->cu_nombre ?></td>
                                         <td><?= $v->pa_nombre ?></td>
