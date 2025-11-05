@@ -44,7 +44,6 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <link rel="stylesheet" href="//cdn.datatables.net/2.0.1/css/dataTables.dataTables.min.css">
 
     <link href="<?php echo RUTA_URL ?>public/assets/css/styles.css" rel="stylesheet" />
-    <link rel="stylesheet" href="<?php echo RUTA_URL ?>public/assets/css/custom.css">
 
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
@@ -74,6 +73,8 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <link rel="stylesheet" href="<?php echo RUTA_URL ?>public/assets/css/custom.css">
 </head>
 
 <body class="sb-nav-fixed">
@@ -94,6 +95,12 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <script src="<?php echo RUTA_URL ?>/public/assets/js/jquery-ui/jquery-ui.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+    <!-- InputMask -->
+	<script src="public/assets/js/input-mask/jquery.inputmask.js"></script>
+	<script src="public/assets/js/input-mask/jquery.inputmask.date.extensions.js"></script>
+	<script src="public/assets/js/input-mask/jquery.inputmask.extensions.js"></script>
+
     <script src="<?= RUTA_URL ?>public/assets/js/scripts.js"></script>
 
     <script>

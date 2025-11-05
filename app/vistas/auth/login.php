@@ -229,7 +229,7 @@
                 if (!json.error) {
 
                     //No hay error se redirecciona al dashboard correspondiente
-                    // alert(json.nombrePerfil);
+                    // alert(json.slug);
 
                     switch (json.slug) {
                         case 'administrador':
@@ -242,6 +242,10 @@
 
                         case 'administrador-de-ue':
                             location.href = "<?php echo RUTA_URL ?>AdminUE/dashboard";
+                            break;
+
+                        case 'secretaria':
+                            location.href = "<?php echo RUTA_URL ?>Secretaria/dashboard";
                             break;
 
                         default:

@@ -7,3 +7,34 @@ label.requerido::after {
     content: " *";
     color: #e73d4a;
 }
+
+.fuente9 {
+    font: 9pt helvetica;
+}
+
+.formulario__grupo-input {
+    position: relative;
+}
+
+.formulario__validacion-dni {
+    position: absolute;
+    right: 10px;
+    top: 9px;
+    z-index: 100;
+    opacity: 0;
+}
+
+/* Estilos para validación */
+.formulario__grupo-correcto .formulario__validacion-dni {
+    color: #1ed12d;
+    opacity: 1;
+}
+
+.formulario__grupo-incorrecto .formulario__validacion-dni {
+    color: #bb2929;
+    opacity: 1;
+}
+
+.formulario__grupo-incorrecto .formulario__input {
+    border: 2px solid #bb2929;
+}
