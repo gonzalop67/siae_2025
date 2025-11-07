@@ -19,10 +19,18 @@ class Estudiante
         return $this->db->registro()->nro_estudiantes;
     }
 
-    function CalculaEdad($fecha)
+    public function CalculaEdad($fecha)
     {
         list($Y, $m, $d) = explode("-", $fecha);
         return (date("md") < $m . $d ? date("Y") - $Y - 1 : date("Y") - $Y);
+    }
+
+    public function existeDNI($dni)
+    {
+        $this->db->query("SELECT * FROM sw_estudiante WHERE es_cedula = '$dni'");
+        $this->db->registro();
+        
+        return $this->db->rowCount() > 0;
     }
 
     public function listarEstudiantesParalelo($id_paralelo)

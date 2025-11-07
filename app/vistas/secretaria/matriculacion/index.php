@@ -65,12 +65,11 @@
             </div>
         </div>
     </div>
-    <?php include_once "modalInsert.php" ?>
+    <?php require "modalInsert.php" ?>
 </div>
 
 <script>
     $(document).ready(function() {
-
         document.getElementById("error-paralelo").classList.add("is-invalid");
         document.getElementById("error-paralelo").style.display = "block";
 
@@ -99,61 +98,12 @@
             }
         });
 
-        const reg_fecnac = /^([12]\d{3}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01]))$/i;
-
-        $("#fec_nac").keyup(function() {
-            if (reg_fecnac.test($(this).val())) {
-                $("#edad").val(calcularEdad($(this).val()));
-            } else {
-                $("#edad").val('');
-            }
-        });
-
-        const reg_cedula = /^\d{10}/;
-
-        $("#dni").keyup(function() {
-            if ($("#tipo_documento").val() == 1) {
-                if (reg_cedula.test($(this).val())) {
-                    if (cedulaValida($(this).val())) {
-                        document.getElementById('grupo__dni').classList.remove('formulario__grupo-incorrecto');
-                        document.getElementById('grupo__dni').classList.add('formulario__grupo-correcto');
-                        document.querySelector('.formulario__validacion-dni').classList.remove('fa-circle-xmark');
-                        document.querySelector('.formulario__validacion-dni').classList.add('fa-circle-check');
-                        document.getElementById('error-dni').style.display = "none";
-                    }
-                } else {
-                    document.getElementById('grupo__dni').classList.remove('formulario__grupo-correcto');
-                    document.getElementById('grupo__dni').classList.add('formulario__grupo-incorrecto');
-                    document.querySelector('.formulario__validacion-dni').classList.remove('fa-circle-check');
-                    document.querySelector('.formulario__validacion-dni').classList.add('fa-circle-xmark');
-                    document.getElementById('error-dni').style.display = "block";
-                }
-            }
-        });
-
-        $("#tipo_documento").change(function() {
-            if ($(this).val != 1) {
-                document.getElementById('grupo__dni').classList.remove('formulario__grupo-incorrecto');
-                document.getElementById('grupo__dni').classList.remove('formulario__grupo-correcto');
-                document.getElementById('error-dni').style.display = "none";
-            } else {
-                if ($("#dni").val() !== "") {
-                    if (reg_cedula.test($("#dni").val()) && cedulaValida($("#dni").val())) {
-                        document.getElementById('grupo__dni').classList.remove('formulario__grupo-incorrecto');
-                        document.getElementById('grupo__dni').classList.add('formulario__grupo-correcto');
-                        document.querySelector('.formulario__validacion-dni').classList.remove('fa-circle-xmark');
-                        document.querySelector('.formulario__validacion-dni').classList.add('fa-circle-check');
-                        document.getElementById('error-dni').style.display = "none";
-                    } else {
-                        document.getElementById('grupo__dni').classList.remove('formulario__grupo-correcto');
-                        document.getElementById('grupo__dni').classList.add('formulario__grupo-incorrecto');
-                        document.querySelector('.formulario__validacion-dni').classList.remove('fa-circle-check');
-                        document.querySelector('.formulario__validacion-dni').classList.add('fa-circle-xmark');
-                        document.getElementById('error-dni').style.display = "block";
-                    }
-                }
-            }
-        })
+        const expresiones = {
+            reg_fecnac: /^([12]\d{3}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01]))$/i,
+            reg_cedula_ecuatoriana: /^\d{10}/,
+            reg_nombres: /^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{3,64})$/i,
+            reg_email: /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/i
+        };
 
         $("#paralelo").on('change', function() {
             let id_paralelo = $(this).val();
@@ -165,10 +115,101 @@
             } else {
                 $("#botones").fadeIn("slow");
                 $("#error-paralelo").fadeOut();
-                listarEstudiantesParalelo(id_paralelo);
+                //listarEstudiantesParalelo(id_paralelo);
                 $("#lista_estudiantes").show();
             }
         });
+
+        $("#tipo_documento").change(function() {
+            if ($(this).val() === "") {
+                $("#error-tipo_documento").html("Debe seleccionar un tipo de documento.");
+                $("#error-tipo_documento").fadeIn("slow");
+            } else {
+                $("#error-tipo_documento").fadeOut();
+            }
+        });
+
+        $("#dni").keyup(function() {
+            if ($("#tipo_documento").val() == 1) {
+                if (expresiones.reg_cedula_ecuatoriana.test($("#dni").val())) {
+                    if (cedulaValida($("#dni").val())) {
+                        ExisteDNI();
+                    }
+                } else {
+                    document.getElementById('grupo__dni').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__dni').classList.add('formulario__grupo-incorrecto');
+                    document.getElementById('icon__dni').classList.remove('fa-circle-check');
+                    document.getElementById('icon__dni').classList.add('fa-circle-xmark');
+                    document.getElementById('error-dni').style.display = "block";
+                }
+            } else {
+                // 
+            }
+        });
+
+        $("#apellidos").keyup(function() {
+            if ($("#apellidos").val() !== "") {
+                if (expresiones.reg_nombres.test($(this).val())) {
+                    document.getElementById('grupo__apellidos').classList.remove('formulario__grupo-incorrecto');
+                    document.getElementById('grupo__apellidos').classList.add('formulario__grupo-correcto');
+                    document.getElementById('icon__apellidos').classList.remove('fa-circle-xmark');
+                    document.getElementById('icon__apellidos').classList.add('fa-circle-check');
+                    document.getElementById('error-apellidos').style.display = "none";
+                } else {
+                    document.getElementById('grupo__apellidos').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__apellidos').classList.add('formulario__grupo-incorrecto');
+                    document.getElementById('icon__apellidos').classList.remove('fa-circle-check');
+                    document.getElementById('icon__apellidos').classList.add('fa-circle-xmark');
+                    document.getElementById('error-apellidos').style.display = "block";
+                }
+            }
+        });
+
+        $("#nombres").keyup(function() {
+            if ($("#nombres").val() !== "") {
+                if (expresiones.reg_nombres.test($(this).val())) {
+                    document.getElementById('grupo__nombres').classList.remove('formulario__grupo-incorrecto');
+                    document.getElementById('grupo__nombres').classList.add('formulario__grupo-correcto');
+                    document.getElementById('icon__nombres').classList.remove('fa-circle-xmark');
+                    document.getElementById('icon__nombres').classList.add('fa-circle-check');
+                    document.getElementById('error-nombres').style.display = "none";
+                } else {
+                    document.getElementById('grupo__nombres').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__nombres').classList.add('formulario__grupo-incorrecto');
+                    document.getElementById('icon__nombres').classList.remove('fa-circle-check');
+                    document.getElementById('icon__nombres').classList.add('fa-circle-xmark');
+                    document.getElementById('error-nombres').style.display = "block";
+                }
+            }
+        });
+
+        $("#fec_nac").keyup(function() {
+            if (expresiones.reg_fecnac.test($(this).val())) {
+                $("#edad").val(calcularEdad($(this).val()));
+                $("#error-edad").hide();
+            } else {
+                $("#edad").val('');
+            }
+        });
+
+        $("#email").keyup(function() {
+            if ($("#email").val() !== "") {
+                if (expresiones.reg_email.test($(this).val())) {
+                    document.getElementById('grupo__email').classList.remove('formulario__grupo-incorrecto');
+                    document.getElementById('grupo__email').classList.add('formulario__grupo-correcto');
+                    document.getElementById('icon__email').classList.remove('fa-circle-xmark');
+                    document.getElementById('icon__email').classList.add('fa-circle-check');
+                    document.getElementById('error-email').style.display = "none";
+                } else {
+                    document.getElementById('grupo__email').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__email').classList.add('formulario__grupo-incorrecto');
+                    document.getElementById('icon__email').classList.remove('fa-circle-check');
+                    document.getElementById('icon__email').classList.add('fa-circle-xmark');
+                    document.getElementById('error-email').style.display = "block";
+                }
+            }
+        });
+
     });
 
     function cedulaValida(cedula) {
@@ -211,17 +252,217 @@
         return edad;
     }
 
-    function listarEstudiantesParalelo(id_paralelo) {
+    function ExisteDNI() {
         $.ajax({
-            url: "<?= RUTA_URL ?>/matriculacion/listar",
-            method: "POST",
+            type: "POST",
+            url: "<?= RUTA_URL ?>/Estudiantes/existeDNI",
             data: {
-                id_paralelo: id_paralelo
+                dni: $("#dni").val()
             },
-            dataType: "html",
+            dataType: "json",
             success: function(response) {
-                $("#t_estudiantes tbody").html(response);
+                //console.log(response);
+                const mensaje_anterior = document.getElementById('error-dni').innerHTML;
+                if (response.ok) {
+                    document.getElementById('grupo__dni').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__dni').classList.add('formulario__grupo-incorrecto');
+                    document.getElementById('icon__dni').classList.remove('fa-circle-check');
+                    document.getElementById('icon__dni').classList.add('fa-circle-xmark');
+                    document.getElementById('error-dni').innerHTML = "Ya existe el número de cédula en la Base de Datos";
+                    document.getElementById('error-dni').style.display = "block";
+                    document.getElementById('error-dni').innerHTML = mensaje_anterior;
+                } else {
+                    document.getElementById('grupo__dni').classList.remove('formulario__grupo-incorrecto');
+                    document.getElementById('grupo__dni').classList.add('formulario__grupo-correcto');
+                    document.getElementById('icon__dni').classList.remove('fa-circle-xmark');
+                    document.getElementById('icon__dni').classList.add('fa-circle-check');
+                    document.getElementById('error-dni').style.display = "none";
+                }
             }
         });
+    }
+
+    function insertarEstudiante() {
+        let cont_errores = 0;
+
+        const paralelo = $("#paralelo").val().trim();
+
+        const cedula = $("#dni").val().trim();
+        const email = $("#email").val().trim();
+        const sector = $("#sector").val().trim();
+        const genero = $("#genero").val().trim();
+        const nombres = $("#nombres").val().trim();
+        const telefono = $("#telefono").val().trim();
+        const direccion = $("#direccion").val().trim();
+        const apellidos = $("#apellidos").val().trim();
+        const nacionalidad = $("#nacionalidad").val().trim();
+        const tipo_documento = $("#tipo_documento").val().trim();
+        const fec_nacim = $("#fec_nac").val().trim();
+
+        const reg_cedula = /^([A-Z0-9.]{4,10})$/i;
+        const reg_nombres = /^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{3,64})$/i;
+        const reg_fecnac = /^([12]\d{3}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01]))$/i;
+        const reg_email = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/i;
+
+        if (paralelo == "") {
+            Swal.fire({
+                title: "Ocurrió un error inesperado!",
+                text: "Debe seleccionar un paralelo.",
+                icon: "error",
+            });
+            $("#error-paralelo").html("Debe seleccionar un paralelo...");
+            $("#error-paralelo").fadeIn("slow");
+            cont_errores++;
+        } else {
+            $("#error-paralelo").fadeOut();
+        }
+
+        if (tipo_documento == "") {
+            $("#error-tipo_documento").html("Debe seleccionar un tipo de documento...");
+            $("#error-tipo_documento").fadeIn("slow");
+            cont_errores++;
+        } else {
+            $("#error-tipo_documento").fadeOut();
+        }
+
+        if (cedula == "") {
+            $("#error-dni").html("Debe ingresar el DNI...");
+            $("#error-dni").fadeIn();
+            cont_errores++;
+        } else if (cedula.length != 0 && !reg_cedula.test(cedula)) {
+            $("#error-dni").html("El DNI del estudiante no tiene un formato válido.");
+            $("#error-dni").fadeIn();
+            cont_errores++;
+        } else if (tipo_documento == 1 && !cedulaValida(cedula)) {
+            $("#error-dni").html("La cédula ingresada no es válida.");
+            $("#error-dni").fadeIn("slow");
+            cont_errores++;
+        } else {
+            $("#error-dni").fadeOut();
+        }
+
+        if (apellidos == "") {
+            $("#error-apellidos").html("Debe ingresar los apellidos...");
+            $("#error-apellidos").fadeIn();
+            cont_errores++;
+        } else if (!reg_nombres.test(apellidos)) {
+            $("#error-apellidos").html("Los apellidos del estudiante deben contener entre 4 y 32 caracteres alfabéticos y espacio entre apellidos.");
+            $("#error-apellidos").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-apellidos").fadeOut();
+        }
+
+        if (nombres == "") {
+            $("#error-nombres").html("Debe ingresar los nombres...");
+            $("#error-nombres").fadeIn();
+            cont_errores++;
+        } else if (!reg_nombres.test(nombres)) {
+            $("#error-nombres").html("Los nombres del estudiante deben contener entre 4 y 32 caracteres alfabéticos y espacio entre nombres.");
+            $("#error-nombres").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-nombres").fadeOut();
+        }
+
+        if (fec_nacim == "") {
+            $("#error-fec_nac").html("Debe ingresar la fecha de nacimiento...");
+            $("#error-fec_nac").fadeIn();
+            cont_errores++;
+        } else if (!reg_fecnac.test(fec_nacim)) {
+            $("#error-fec_nac").html("La fecha de nacimiento debe tener el formato aaaa-mm-dd");
+            $("#error-fec_nac").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-fec_nac").fadeOut();
+            $("#edad").val(calcularEdad(fec_nacim));
+        }
+
+        if (direccion == "") {
+            $("#error-direccion").html("Debe ingresar la dirección de domicilio del estudiante...");
+            $("#error-direccion").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-direccion").fadeOut();
+        }
+
+        if (sector == "") {
+            $("#error-sector").html("Debe ingresar el sector del domicilio...");
+            $("#error-sector").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-sector").fadeOut();
+        }
+
+        if (telefono == "") {
+            $("#error-telefono").html("Debe ingresar el(los) número(s) de teléfono(s)...");
+            $("#error-telefono").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-telefono").fadeOut();
+        }
+
+        if (email.length != 0 && !reg_email.test(email)) {
+            $("#error-email").html("Correo electrónico no válido.");
+            $("#error-email").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-email").fadeOut();
+        }
+
+        if (genero == "") {
+            $("#error-genero").html("Debe seleccionar el género...");
+            $("#error-genero").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-genero").fadeOut();
+        }
+
+        if (nacionalidad == "") {
+            $("#error-nacionalidad").html("Debe seleccionar la nacionalidad...");
+            $("#error-nacionalidad").fadeIn();
+            cont_errores++;
+        } else {
+            $("#error-nacionalidad").fadeOut();
+        }
+
+        if (cont_errores == 0) {
+            // Aquí vamos a insertar el estudiante mediante AJAX
+            $.ajax({
+                url: "<?= RUTA_URL ?>/matriculacion/insert",
+                method: "POST",
+                data: {
+                    id_paralelo: paralelo,
+                    id_tipo_documento: tipo_documento,
+                    es_cedula: cedula.toUpperCase(),
+                    es_apellidos: apellidos.toUpperCase(),
+                    es_nombres: nombres.toUpperCase(),
+                    es_fec_nacim: fec_nacim,
+                    es_direccion: direccion.toUpperCase(),
+                    es_sector: sector.toUpperCase(),
+                    es_telefono: telefono,
+                    es_email: email.toLowerCase(),
+                    id_def_genero: genero,
+                    id_def_nacionalidad: nacionalidad,
+                    id_paralelo: paralelo
+                },
+                dataType: "json",
+                success: function(response) {
+                    $('#newStudentModal').modal('hide');
+                    Swal.fire({
+                        title: response.titulo,
+                        text: response.mensaje,
+                        icon: response.tipo_mensaje,
+                        confirmButtonText: 'Aceptar'
+                    });
+                    //listarEstudiantesParalelo(id_paralelo);
+                    //contarEstudiantesParalelo(id_paralelo);
+                    $("#formulario")[0].reset();
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    alert(xhr.status + "\n" + xhr.responseText + "\n" + thrownError);
+                }
+            });
+        }
     }
 </script>

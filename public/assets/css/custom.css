@@ -16,7 +16,7 @@ label.requerido::after {
     position: relative;
 }
 
-.formulario__validacion-dni {
+.formulario__validacion-estado {
     position: absolute;
     right: 10px;
     top: 9px;
@@ -25,12 +25,12 @@ label.requerido::after {
 }
 
 /* Estilos para validación */
-.formulario__grupo-correcto .formulario__validacion-dni {
+.formulario__grupo-correcto .formulario__validacion-estado {
     color: #1ed12d;
     opacity: 1;
 }
 
-.formulario__grupo-incorrecto .formulario__validacion-dni {
+.formulario__grupo-incorrecto .formulario__validacion-estado {
     color: #bb2929;
     opacity: 1;
 }

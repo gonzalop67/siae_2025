@@ -45,13 +45,56 @@ class Matriculacion extends Controlador
         echo $this->estudianteModelo->listarEstudiantesParalelo($id_paralelo);
     }
 
-    public function create()
+    public function insert()
     {
+        $id_tipo_documento = trim($_POST['id_tipo_documento']);
+        $es_cedula = strtoupper(trim($_POST['es_cedula']));
+        $es_apellidos = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['es_apellidos'])));
+        $es_nombres = strtoupper(trim($_POST['es_nombres']));
+        $es_nombre_completo = $es_apellidos . " " . $es_nombres;
+        $es_fec_nacim = trim($_POST['es_fec_nacim']);
+        $es_direccion = trim($_POST['es_direccion']);
+        $es_sector = trim($_POST['es_sector']);
+        $es_telefono = trim($_POST['es_telefono']);
+        $es_email = trim($_POST['es_email']);
+        $id_def_genero = trim($_POST['id_def_genero']);
+        $id_def_nacionalidad = trim($_POST['id_def_nacionalidad']);
+
         $datos = [
-            'titulo' => 'Insertar Estudiante',
-            'dashboard' => 'Secretaria',
-            'nombreVista' => 'secretaria/matriculacion/create.php'
+            'id_tipo_documento' => $id_tipo_documento,
+            'id_def_genero' => $id_def_genero,
+            'id_def_nacionalidad' => $id_def_nacionalidad,
+            'es_apellidos' => $es_apellidos,
+            'es_nombres' => $es_nombres,
+            'es_nombre_completo' => $es_nombre_completo,
+            'es_cedula' => $es_cedula,
+            'es_email' => $es_email,
+            'es_sector' => $es_sector,
+            'es_direccion' => $es_direccion,
+            'es_telefono' => $es_telefono,
+            'es_fec_nacim' => $es_fec_nacim
         ];
-        $this->vista('admin/index', $datos);
+
+        // print_r("<pre>");
+        // print_r($datos);
+        // print_r("</pre>");
+        // die();
+
+        // Primero comprobar si ya existen los nombres y apellidos del estudiante
+        if ($this->estudianteModelo->existeNombreEstudiante($es_apellidos, $es_nombres)) {
+            $data = array(
+                "titulo"       => "Ocurrió un error inesperado.",
+                "mensaje"      => "Ya existe el estudiante en la base de datos...",
+                "tipo_mensaje" => "error"
+            );
+        } else {
+            $data = array(
+                "titulo"       => "Operación exitosa.",
+                "mensaje"      => "El estudiante fue insertado exitosamente.",
+                "tipo_mensaje" => "success"
+            );
+        }
+
+        echo json_encode($data);
     }
 }
