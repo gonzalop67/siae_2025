@@ -34,14 +34,18 @@
             </div>
             <div id="conteo_estudiantes" class="row mb-3 form-control-sm hide">
                 <div class="col-md-12">
-                    <div id="contar_estudiantes_por_genero">
+                    <span id="contar_estudiantes_por_genero">
                         <!-- Aqui va el conteo de estudiantes por genero -->
+                    </span>
+                    
+                    <div class="input-group-sm float-end" style="width: 400px;">
+                        <input id="buscar_estudiante" class="form-control float-end" type="text" placeholder="BUSCAR ESTUDIANTE..." />
                     </div>
                 </div>
             </div>
             <div id="lista_estudiantes" class="row hide">
                 <div class="col-md-12 table-responsive">
-                    <table id="t_estudiantes" class="table form-control-sm">
+                    <table id="t_estudiantes" class="table table-striped table-hover form-control-sm">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -72,6 +76,9 @@
     $(document).ready(function() {
         document.getElementById("error-paralelo").classList.add("is-invalid");
         document.getElementById("error-paralelo").style.display = "block";
+
+        // DataTables
+        
 
         //Datemask yyyy/mm/dd
         $('#fec_nac').inputmask('yyyy-mm-dd', {
@@ -112,11 +119,14 @@
                 $("#botones").fadeOut();
                 $("#error-paralelo").fadeIn("slow");
                 $("#lista_estudiantes").hide();
+                $("#conteo_estudiantes").hide();
             } else {
                 $("#botones").fadeIn("slow");
                 $("#error-paralelo").fadeOut();
-                //listarEstudiantesParalelo(id_paralelo);
+                listarEstudiantesParalelo(id_paralelo);
+                contarEstudiantesParalelo(id_paralelo);
                 $("#lista_estudiantes").show();
+                $("#conteo_estudiantes").show();
             }
         });
 
@@ -278,6 +288,33 @@
                     document.getElementById('icon__dni').classList.add('fa-circle-check');
                     document.getElementById('error-dni').style.display = "none";
                 }
+            }
+        });
+    }
+
+    function contarEstudiantesParalelo(id_paralelo) {
+        $.ajax({
+            type: "post",
+            url: "<?= RUTA_URL ?>/matriculacion/contar_estudiantes_por_genero",
+            data: "id_paralelo=" + id_paralelo,
+            dataType: "html",
+            success: function(response) {
+                console.log(response);
+                $("#contar_estudiantes_por_genero").html(response);
+            }
+        });
+    }
+
+    function listarEstudiantesParalelo(id_paralelo) {
+        $.ajax({
+            url: "<?= RUTA_URL ?>/matriculacion/listar",
+            method: "POST",
+            data: {
+                id_paralelo: id_paralelo
+            },
+            dataType: "html",
+            success: function(response) {
+                $("#t_estudiantes tbody").html(response);
             }
         });
     }
@@ -455,8 +492,12 @@
                         icon: response.tipo_mensaje,
                         confirmButtonText: 'Aceptar'
                     });
-                    //listarEstudiantesParalelo(id_paralelo);
-                    //contarEstudiantesParalelo(id_paralelo);
+                    listarEstudiantesParalelo(paralelo);
+                    contarEstudiantesParalelo(paralelo);
+                    document.getElementById('grupo__dni').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__apellidos').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__nombres').classList.remove('formulario__grupo-correcto');
+                    document.getElementById('grupo__email').classList.remove('formulario__grupo-correcto');
                     $("#formulario")[0].reset();
                 },
                 error: function(xhr, ajaxOptions, thrownError) {

@@ -78,6 +78,39 @@ class Paralelo
         return $this->db->rowCount() > 0;
     }
 
+    public function contarEstudiantesPorGenero($id_paralelo)
+    {
+        $this->db->query("SELECT * FROM sw_def_genero ORDER BY id_def_genero");
+        $registros = $this->db->registros();
+        $cadena = "";
+        $suma_generos = 0;
+        if (count($registros) > 0) {
+            foreach ($registros as $registro) {
+                $genero = $registro->id_def_genero;
+                $this->db->query("SELECT id_def_genero, 
+                                         COUNT(*) AS numero 
+                                    FROM sw_estudiante_periodo_lectivo ep, 
+                                         sw_estudiante e 
+                                   WHERE e.id_estudiante = ep.id_estudiante 
+                                     AND ep.id_paralelo = $id_paralelo 
+                                     AND activo = 1 
+                                     AND id_def_genero = $genero 
+                                   GROUP BY id_def_genero");
+                $conteo = $this->db->registro();
+                $numero = empty($conteo) ? 0 : $conteo->numero;
+                if ($genero == 1) {
+                    $cadena .= "&nbsp;Mujeres: " . $numero . ", ";
+                } else {
+                    $cadena .= "Hombres: " . $numero;
+                }
+                $suma_generos += $numero;
+            }
+            return $cadena . " - Total estudiantes: " . $suma_generos;
+        } else {
+            return "No se han matriculado estudiantes todavía...";
+        }
+    }
+
     public function insertar($datos)
     {
         $this->db->query("SELECT MAX(pa_orden) AS max_orden FROM sw_paralelo WHERE curso_subnivel_id = $datos[curso_subnivel_id] AND id_jornada = $datos[jornada_id] AND id_periodo_lectivo = $datos[periodo_lectivo_id]");

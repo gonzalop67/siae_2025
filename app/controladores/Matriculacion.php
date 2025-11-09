@@ -45,6 +45,13 @@ class Matriculacion extends Controlador
         echo $this->estudianteModelo->listarEstudiantesParalelo($id_paralelo);
     }
 
+    public function contar_estudiantes_por_genero()
+    {
+        $id_paralelo = $_POST['id_paralelo'];
+
+        echo $this->paraleloModelo->contarEstudiantesPorGenero($id_paralelo);
+    }
+
     public function insert()
     {
         $id_tipo_documento = trim($_POST['id_tipo_documento']);
@@ -75,24 +82,41 @@ class Matriculacion extends Controlador
             'es_fec_nacim' => $es_fec_nacim
         ];
 
-        // print_r("<pre>");
-        // print_r($datos);
-        // print_r("</pre>");
-        // die();
-
         // Primero comprobar si ya existen los nombres y apellidos del estudiante
         if ($this->estudianteModelo->existeNombreEstudiante($es_apellidos, $es_nombres)) {
             $data = array(
-                "titulo"       => "Ocurrió un error inesperado.",
+                "titulo"       => "Operación fallida.",
                 "mensaje"      => "Ya existe el estudiante en la base de datos...",
                 "tipo_mensaje" => "error"
             );
-        } else {
+        } elseif ($this->estudianteModelo->existeNroCedula($es_cedula)) {
             $data = array(
-                "titulo"       => "Operación exitosa.",
-                "mensaje"      => "El estudiante fue insertado exitosamente.",
-                "tipo_mensaje" => "success"
+                "titulo"       => "Operación fallida.",
+                "mensaje"      => "Ya existe el número de cédula en la base de datos...",
+                "tipo_mensaje" => "error"
             );
+        } elseif ($this->estudianteModelo->existeEstudiantePeriodoLectivo($es_apellidos, $es_nombres)) {
+            $data = array(
+                "titulo"       => "Operación fallida.",
+                "mensaje"      => "Ya está matriculado el estudiante en el presente periodo lectivo...",
+                "tipo_mensaje" => "error"
+            );
+        } else {
+            try {
+                $this->estudianteModelo->insertarEstudiante($datos);
+
+                $data = array(
+                    "titulo"       => "Operación exitosa.",
+                    "mensaje"      => "El estudiante fue insertado exitosamente.",
+                    "tipo_mensaje" => "success"
+                );
+            } catch (\Throwable $th) {
+                $data = array(
+                    "titulo"       => "Ocurrió un error al tratar de insertar al estudiante.",
+                    "mensaje"      => "Error...: " . $th->getMessage(),
+                    "tipo_mensaje" => "error"
+                );
+            }
         }
 
         echo json_encode($data);
