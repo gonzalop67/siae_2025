@@ -1,7 +1,7 @@
 <div class="container-fluid px-4">
     <div class="card mt-2 mb-4">
         <div class="card-header">
-            <i class="fa fa-user-gear me-1"></i>
+            <i class="fa-solid fa-calendar-days me-1"></i>
             Editar Subperiodo de Evaluación
         </div>
         <div class="card-body">

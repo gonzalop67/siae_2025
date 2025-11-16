@@ -2,7 +2,7 @@
 
     //Cargamos librerias
     require_once 'config/configurar.php';
-    require_once 'helpers/url_helper.php';
+    require_once 'helpers/helpers.php';
     require_once 'fpdf16/fpdf.php';
 
     //Autoload php

@@ -50,9 +50,10 @@ class Usuario
 
     public function insertarUsuario($datos)
     {
-        $this->db->query('INSERT INTO sw_usuario (us_titulo, us_titulo_descripcion, us_apellidos, us_nombres, us_shortname, us_fullname, us_login, us_password, us_foto, us_genero, us_activo) VALUES (:us_titulo, :us_titulo_descripcion, :us_apellidos, :us_nombres, :us_shortname, :us_fullname, :us_login, :us_password, :us_foto, :us_genero, :us_activo)');
+        $this->db->query('INSERT INTO sw_usuario (institucion_id, us_titulo, us_titulo_descripcion, us_apellidos, us_nombres, us_shortname, us_fullname, us_login, us_password, us_foto, us_genero, us_activo) VALUES (:institucion_id, :us_titulo, :us_titulo_descripcion, :us_apellidos, :us_nombres, :us_shortname, :us_fullname, :us_login, :us_password, :us_foto, :us_genero, :us_activo)');
 
         //Vincular valores
+        $this->db->bind(':institucion_id', $datos['institucion_id']);
         $this->db->bind(':us_titulo', $datos['us_titulo']);
         $this->db->bind(':us_titulo_descripcion', $datos['us_titulo_descripcion']);
         $this->db->bind(':us_apellidos', $datos['us_apellidos']);

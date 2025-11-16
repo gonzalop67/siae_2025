@@ -1,7 +1,7 @@
 <div class="container-fluid px-4">
     <div class="card mt-2">
         <div class="card-header">
-            <i class="fas fa-address-card  me-1"></i>
+            <i class="fa-solid fa-calendar-days me-1"></i>
             Administración de Subperiodos de Evaluación
 
             <a href="<?= RUTA_URL . "subperiodos_evaluacion/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
@@ -43,7 +43,7 @@
                             ?>
                                     <tr>
                                         <td><?= $contador ?></td>
-                                        <td><?= $v->id_sub_periodo_evaluacion  ?></td>
+                                        <td><?= $v->id_sub_periodo_evaluacion ?></td>
                                         <td><?= $v->pe_nombre ?></td>
                                         <td><?= $v->pe_abreviatura ?></td>
                                         <td>

@@ -88,7 +88,10 @@ class Usuarios extends Controlador
             try {
                 $image = $this->upload_image();
 
+                $institucion_id = $_SESSION['institucion_id'];
+
                 $datos = [
+                    'institucion_id' => $institucion_id,
                     'us_titulo' => $us_titulo,
                     'us_titulo_descripcion' => $us_titulo_descripcion,
                     'us_apellidos' => $us_apellidos,

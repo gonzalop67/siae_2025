@@ -45,7 +45,7 @@
             </div>
             <div id="lista_estudiantes" class="row hide">
                 <div class="col-md-12 table-responsive">
-                    <table id="t_estudiantes" class="table table-striped table-hover form-control-sm">
+                    <table id="t_estudiantes" class="table table-striped table-hover fuente9">
                         <thead>
                             <tr>
                                 <th>#</th>

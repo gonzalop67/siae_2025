@@ -57,7 +57,7 @@ class Matriculacion extends Controlador
         $id_tipo_documento = trim($_POST['id_tipo_documento']);
         $es_cedula = strtoupper(trim($_POST['es_cedula']));
         $es_apellidos = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['es_apellidos'])));
-        $es_nombres = strtoupper(trim($_POST['es_nombres']));
+        $es_nombres = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['es_nombres'])));
         $es_nombre_completo = $es_apellidos . " " . $es_nombres;
         $es_fec_nacim = trim($_POST['es_fec_nacim']);
         $es_direccion = trim($_POST['es_direccion']);
