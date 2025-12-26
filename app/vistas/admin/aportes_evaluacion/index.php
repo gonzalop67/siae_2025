@@ -10,18 +10,9 @@
         </div>
         <div class="card-body">
 
-            <?php if (isset($_SESSION['mensaje'])) { ?>
-                <div class="alert alert-<?= isset($_SESSION['tipo']) ? $_SESSION['tipo'] : 'danger' ?> alert-dismissible fade show" role="alert">
-                    <p><i class="icon fa fa-<?= isset($_SESSION['icono']) ? $_SESSION['icono'] : 'ban' ?>"></i> <span><?php echo isset($_SESSION['mensaje']) ? $_SESSION['mensaje'] : '' ?></span></p>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            <?php } ?>
-
-            <?php if (isset($_SESSION['mensaje'])) unset($_SESSION['mensaje']) ?>
-            <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
-            <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
+            <?php
+            include RUTA_APP . "/vistas/layouts/includes/mensaje.php";
+            ?> 
 
             <div class="row">
                 <div class="col-md-12 table-responsive">
@@ -29,8 +20,9 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
+                                <th>SubPeriodo</th>
                                 <th>Nombre</th>
-                                <th>Activo</th>
+                                <th>Ponderación</th>
                                 <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
@@ -44,13 +36,8 @@
                                 <tr>
                                     <td><?= $v->id_area ?></td>
                                     <td><?= $v->ar_nombre ?></td>
-                                    <td>
-                                        <?php if ($v->ar_activo == 1) : ?>
-                                            <span class="badge bg-success">Activo</span>
-                                        <?php else : ?>
-                                            <span class="badge bg-danger">Inactivo</span>
-                                        <?php endif ?>
-                                    </td>
+                                    <td><?= $v->ar_nombre ?></td>
+                                    <td><?= $v->ar_nombre ?></td>
                                     <td>
                                         <div class="btn-group float-end">
                                             <a href="<?= RUTA_URL . "areas/edit/" . $v->id_area ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
