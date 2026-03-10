@@ -20,28 +20,28 @@
                         <thead>
                             <tr>
                                 <th>Id</th>
-                                <th>SubPeriodo</th>
                                 <th>Nombre</th>
-                                <th>Ponderación</th>
+                                <th>Abreviatura</th>
+                                <th>Descripción</th>
                                 <th class="text-end">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $areaModelo = $this->modelo('Area');
-                            $areas = $areaModelo->obtenerAreas();
+                            $aporteModelo = $this->modelo('Aporte_evaluacion');
+                            $aportes = $aporteModelo->obtenerAportesEvaluacion();
 
-                            foreach ($areas as $v) {
+                            foreach ($aportes as $v) {
                             ?>
                                 <tr>
-                                    <td><?= $v->id_area ?></td>
-                                    <td><?= $v->ar_nombre ?></td>
-                                    <td><?= $v->ar_nombre ?></td>
-                                    <td><?= $v->ar_nombre ?></td>
+                                    <td><?= $v->id_aporte_evaluacion ?></td>
+                                    <td><?= $v->ap_nombre ?></td>
+                                    <td><?= $v->ap_abreviatura ?></td>
+                                    <td><?= $v->ap_descripcion ?></td>
                                     <td>
                                         <div class="btn-group float-end">
-                                            <a href="<?= RUTA_URL . "areas/edit/" . $v->id_area ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
-                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_area ?>)" title="Eliminar"><i class="fa fa-trash"></i></button>
+                                            <a href="<?= RUTA_URL . "aportes_evaluacion/edit/" . $v->id_aporte_evaluacion ?>" class="btn btn-warning btn-sm" title="Editar"><span class="fa fa-pencil"></span></a>
+                                            <button type="button" class="btn btn-danger btn-sm item-delete" onclick="eliminar(<?= $v->id_aporte_evaluacion ?>)" title="Eliminar"><i class="fa fa-trash"></i></button>
                                         </div>
                                     </td>
                                 </tr>

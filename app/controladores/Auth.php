@@ -38,10 +38,11 @@ class Auth extends Controlador
         // Verify data login
         $clave = Encrypter::encrypt($password);
         $usuario = $this->usuarioModelo->obtenerUsuario($username, $clave, $id_perfil);
-        $perfil = strtolower($usuario->pe_slug);
 
         if (!empty($usuario)) {
             session_start();
+
+            $perfil = strtolower($usuario->pe_slug);
 
             if ($perfil !== "administrador" && $perfil !== "tutor" && $perfil !== "administrador-de-ue") {
                 $id_periodo_lectivo = $_POST["periodo"];

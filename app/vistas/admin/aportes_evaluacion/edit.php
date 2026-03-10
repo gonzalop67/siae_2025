@@ -2,12 +2,13 @@
     <div class="card mt-2 mb-4">
         <div class="card-header">
             <i class="fa-solid fa-marker me-1"></i>
-            Crear Nuevo Aporte de Evaluación
+            Editar Aporte de Evaluación
 
             <a href="<?= RUTA_URL . "aportes_evaluacion" ?>" class="btn btn-success btn-sm rounded-0 float-end"><i class="fa fa-backward"></i> Regresar</a>
         </div>
         <div class="card-body">
             <form id="formulario" action="" method="post">
+                <input type="hidden" name="id_aporte_evaluacion" value="<?= $datos['aporte']->id_aporte_evaluacion ?>">
                 <div class="mb-3">
                     <label for="tipos_aporte" class="form-label form-control-sm requerido">Tipo de Aporte de Evaluación:</label>
                     <select class="form-select form-control-sm" id="tipos_aporte" name="tipos_aporte">
@@ -15,7 +16,7 @@
                         <?php
                         foreach ($datos['tipos_aporte'] as $v) {
                         ?>
-                            <option value="<?= $v->id_tipo_aporte ?>"><?= $v->ta_descripcion ?></option>
+                            <option value="<?= $v->id_tipo_aporte ?>" <?= ($v->id_tipo_aporte == $datos['aporte']->id_tipo_aporte) ? 'selected' : '' ?>><?= $v->ta_descripcion ?></option>
                         <?php
                         }
                         ?>
@@ -24,12 +25,12 @@
                 </div>
                 <div class="mb-2">
                     <label for="nombre" class="form-label form-control-sm requerido">Nombre:</label>
-                    <input type="text" class="form-control text-uppercase form-control-sm" value="" name="nombre" id="nombre" required>
+                    <input type="text" class="form-control text-uppercase form-control-sm" value="<?= $datos['aporte']->ap_nombre ?>" name="nombre" id="nombre" required>
                     <p id="error-nombre" class="invalid-feedback">El nombre del aporte de evaluación debe contener de 4 a 48 caracteres alfabéticos y/o el caracter espacio en blanco.</p>
                 </div>
                 <div class="mb-2">
                     <label for="abreviatura" class="form-label form-control-sm requerido">Abreviatura:</label>
-                    <input type="text" class="form-control text-uppercase form-control-sm" value="" name="abreviatura" id="abreviatura" required>
+                    <input type="text" class="form-control text-uppercase form-control-sm" value="<?= $datos['aporte']->ap_abreviatura ?>" name="abreviatura" id="abreviatura" required>
                     <p id="error-abreviatura" class="invalid-feedback">La abreviatura del aporte de evaluación debe contener de 2 a 8 caracteres alfanuméricos y/o el caracter espacio en blanco.</p>
                 </div>
                 <!-- <div class="mb-2">
@@ -39,13 +40,13 @@
                 </div> -->
                 <div class="mb-2">
                     <label for="descripcion" class="form-label form-control-sm requerido">Descripción:</label>
-                    <textarea class="form-control text-uppercase form-control-sm" name="descripcion" id="descripcion" rows="2"></textarea>
+                    <textarea class="form-control text-uppercase form-control-sm" name="descripcion" id="descripcion" rows="2"><?= $datos['aporte']->ap_descripcion ?></textarea>
                     <p id="error-descripcion" class="invalid-feedback">La descripción del aporte de evaluación debe contener de 4 a 256 caracteres alfabéticos y espacios entre palabras.</p>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-12 text-center">
-                        <button id="btn-submit" type="submit" class="btn btn-primary btn-sm rounded-0"><i class="fa fa-save"></i> Guardar</button>
+                        <button id="btn-submit" type="submit" class="btn btn-success btn-sm rounded-0"><i class="fa fa-pencil"></i> Actualizar</button>
                     </div>
                 </div>
             </form>

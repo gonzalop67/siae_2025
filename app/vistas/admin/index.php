@@ -97,9 +97,9 @@ $nombrePeriodoLectivo = $periodo_lectivo->pe_anio_inicio . " - " . $periodo_lect
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <!-- InputMask -->
-	<script src="public/assets/js/input-mask/jquery.inputmask.js"></script>
-	<script src="public/assets/js/input-mask/jquery.inputmask.date.extensions.js"></script>
-	<script src="public/assets/js/input-mask/jquery.inputmask.extensions.js"></script>
+	<!-- <script src="public/assets/js/input-mask/jquery.inputmask.js"></script> -->
+	<!-- <script src="public/assets/js/input-mask/jquery.inputmask.date.extensions.js"></script> -->
+	<!-- <script src="public/assets/js/input-mask/jquery.inputmask.extensions.js"></script> -->
 
     <script src="<?= RUTA_URL ?>public/assets/js/scripts.js"></script>
 

@@ -38,6 +38,9 @@
                         <input type="text" class="form-control" value="" name="icono" id="icono">
                         <span id="error-icono" class="invalid-feedback">El icono del menú debe contener de 4 a 64 caracteres alfabéticos y el caracter guión bajo.</span>
                     </div>
+                    <div class="col-sm-1">
+                        <span id="mostrar-icono" class="fas fa-fw "></span>
+                    </div>
                 </div>
                 <div class="form-group row mb-3">
                     <div class="col-lg-3 text-end">

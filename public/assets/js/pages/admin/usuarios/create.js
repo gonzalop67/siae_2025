@@ -50,7 +50,7 @@ const expresiones = {
   nombre_corto: /^[a-zA-ZÀ-ÿ\s\.]{3,32}$/, // nombre corto del usuario e.g. Ing. Gonzalo Peñaherrera
   usuario: /^[a-zA-Z0-9\_\-]{4,16}$/, // Letras, numeros, guion y guion_bajo
   password:
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&+])[A-Za-z\d$@$!%*?&+]{8,15}$/, // La contraseña debe contener un dígito del 1 al 9, una letra minúscula, una letra mayúscula, un carácter especial ["$","@","!","%","*","?","&","+"], ningún espacio y debe tener entre 8 y 15 caracteres.
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&+])[A-Za-z\d$@$!%*?&+]{8,}$/, // La contraseña debe contener un dígito del 1 al 9, una letra minúscula, una letra mayúscula, un carácter especial ["$","@","!","%","*","?","&","+"], ningún espacio y debe tener al menos 8 caracteres.
   correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
 };
 

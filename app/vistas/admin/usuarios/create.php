@@ -45,7 +45,7 @@
                 <div class="mb-3">
                     <label for="password" class="form-label">Password:</label>
                     <input type="text" class="form-control" value="" name="password" id="password" placeholder="Clave del Usuario">
-                    <p id="error-password" class="invalid-feedback">La contraseña debe contener un dígito del 1 al 9, una letra minúscula, una letra mayúscula, un carácter especial ["$","@","!","%","*","?","&","+"], ningún espacio y debe tener entre 8 y 15 caracteres.</p>
+                    <p id="error-password" class="invalid-feedback">La contraseña debe contener un dígito del 1 al 9, una letra minúscula, una letra mayúscula, un carácter especial ["$","@","!","%","*","?","&","+"], ningún espacio y debe tener al menos 8 caracteres.</p>
                 </div>
                 <div class="mb-3">
                     <label for="genero" class="form-label">Género:</label>

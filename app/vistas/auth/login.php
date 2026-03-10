@@ -225,11 +225,11 @@
                     body: data,
                 });
                 json = await resp.json();
-                console.log(json);
+                // console.log(json);
                 if (!json.error) {
 
                     //No hay error se redirecciona al dashboard correspondiente
-                    // alert(json.slug);
+                    alert(json.slug);
 
                     switch (json.slug) {
                         case 'administrador':
