@@ -31,7 +31,7 @@
                     </optgroup>
                 <?php } ?>
             </select>
-            <button class="btn btn-secondary" id="btnNavbarSearch" type="button"><i class="fas fa-rotate"></i></button>
+            <button class="btn btn-warning" id="btnNavbarSearch" type="button"><i class="fas fa-rotate"></i></button>
         </div>
     </form>
     <!-- Navbar-->

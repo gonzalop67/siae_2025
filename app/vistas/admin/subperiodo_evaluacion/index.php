@@ -4,23 +4,14 @@
             <i class="fa-solid fa-calendar-days me-1"></i>
             Administración de Subperiodos de Evaluación
 
-            <a href="<?= RUTA_URL . "subperiodos_evaluacion/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
+            <a href="<?= RUTA_URL . "subperiodos_evaluacion/create" ?>" class="btn btn-block btn-success btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
         <div class="card-body">
-            <?php if (isset($_SESSION['mensaje'])) { ?>
-                <div class="alert alert-<?= isset($_SESSION['tipo']) ? $_SESSION['tipo'] : 'danger' ?> alert-dismissible fade show" role="alert">
-                    <p><i class="icon fa fa-<?= isset($_SESSION['icono']) ? $_SESSION['icono'] : 'ban' ?>"></i> <span><?php echo isset($_SESSION['mensaje']) ? $_SESSION['mensaje'] : '' ?></span></p>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            <?php } ?>
-
-            <?php if (isset($_SESSION['mensaje'])) unset($_SESSION['mensaje']) ?>
-            <?php if (isset($_SESSION['tipo'])) unset($_SESSION['tipo']) ?>
-            <?php if (isset($_SESSION['icono'])) unset($_SESSION['icono']) ?>
+            <?php
+            include RUTA_APP . "/vistas/layouts/includes/mensaje.php";
+            ?>
 
             <div class="row">
                 <div class="col-md-12 table-responsive">
