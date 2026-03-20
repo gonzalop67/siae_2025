@@ -4,7 +4,7 @@
             <i class="fas fa-building-columns me-1"></i>
             Administración de Instituciones Educativas
 
-            <a href="<?= RUTA_URL . "instituciones/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
+            <a href="<?= RUTA_URL . "instituciones/create" ?>" class="btn btn-block btn-success btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>

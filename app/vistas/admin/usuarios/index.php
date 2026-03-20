@@ -4,7 +4,7 @@
             <i class="fas fa-users me-1"></i>
             Administración de Usuarios
 
-            <a href="<?= RUTA_URL . "usuarios/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
+            <a href="<?= RUTA_URL . "usuarios/create" ?>" class="btn btn-block btn-success btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>

@@ -4,7 +4,7 @@
             <i class="fa-solid fa-marker me-1"></i>
             Administración de Aportes de Evaluación
 
-            <a href="<?= RUTA_URL . "aportes_evaluacion/create" ?>" class="btn btn-block btn-dark btn-sm float-end">
+            <a href="<?= RUTA_URL . "aportes_evaluacion/create" ?>" class="btn btn-block btn-primary btn-sm float-end">
                 <i class="fa fa-fw fa-plus-circle"></i> Nuevo registro
             </a>
         </div>
@@ -53,3 +53,22 @@
         </div>
     </div>
 </div>
+
+<script>
+    function eliminar(id) {
+        Swal.fire({
+            title: '¿Está seguro de eliminar este aporte de evaluación?',
+            text: "¡Esta acción no se puede deshacer!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "<?= RUTA_URL . "aportes_evaluacion/delete/" ?>" + id;
+            }
+        });
+    }
+</script>

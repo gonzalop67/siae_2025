@@ -158,4 +158,21 @@ class Aportes_evaluacion extends Controlador
             'tipo_mensaje' => $tipo_mensaje
         ));
     }
+
+    public function delete($id)
+    {
+        try {
+            // Eliminar el registro de la base de datos
+            $this->aporteEvaluacionModelo->eliminar($id);
+            // Mensaje de éxito
+            $_SESSION['mensaje'] = "Aporte de Evaluación eliminado exitosamente de la base de datos.";
+            $_SESSION['tipo'] = "success";
+            $_SESSION['icono'] = "check";
+        } catch (PDOException $e) {
+            $_SESSION['mensaje'] = "El Aporte de Evaluación no fue eliminado exitosamente ya que está siendo utilizado en otras partes del sistema.";
+            $_SESSION['tipo'] = "danger";
+            $_SESSION['icono'] = "ban";
+        }
+        redireccionar('aportes_evaluacion');
+    }
 }

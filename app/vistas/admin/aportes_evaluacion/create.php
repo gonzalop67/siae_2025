@@ -3,8 +3,6 @@
         <div class="card-header">
             <i class="fa-solid fa-marker me-1"></i>
             Crear Nuevo Aporte de Evaluación
-
-            <a href="<?= RUTA_URL . "aportes_evaluacion" ?>" class="btn btn-success btn-sm rounded-0 float-end"><i class="fa fa-backward"></i> Regresar</a>
         </div>
         <div class="card-body">
             <form id="formulario" action="" method="post">
@@ -44,8 +42,9 @@
                 </div>
                 
                 <div class="row">
-                    <div class="col-12 text-center">
-                        <button id="btn-submit" type="submit" class="btn btn-primary btn-sm rounded-0"><i class="fa fa-save"></i> Guardar</button>
+                    <div class="col-12">
+                        <button id="btn-submit" type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar</button>
+                        <a href="<?= RUTA_URL . "aportes_evaluacion" ?>" class="btn btn-success btn-sm"><i class="fa fa-backward"></i> Regresar</a>
                     </div>
                 </div>
             </form>

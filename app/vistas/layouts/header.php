@@ -1,4 +1,4 @@
-<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-primary">
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="<?= RUTA_URL . $datos['dashboard'] ?>/dashboard">SIAE <?= isset($nombrePeriodoLectivo) ? $nombrePeriodoLectivo : '' ?></a>
     <!-- Sidebar Toggle-->
@@ -31,14 +31,14 @@
                     </optgroup>
                 <?php } ?>
             </select>
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-rotate"></i></button>
+            <button class="btn btn-secondary" id="btnNavbarSearch" type="button"><i class="fas fa-rotate"></i></button>
         </div>
     </form>
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item">
             <a class="nav-link d-inline-block" style="width: 75px;" id="navbarComments" href="#" role="button" aria-expanded="false">
-                <i class="fa-solid fa-comments"></i>
+                <i class="fa-regular fa-comments"></i>
                 <span class="badge badge-danger"><?= $nro_comentarios ?></span>
             </a>
         </li>

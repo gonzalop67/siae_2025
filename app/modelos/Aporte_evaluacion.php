@@ -16,7 +16,7 @@ class Aporte_evaluacion
 
     public function obtenerAportesEvaluacion()
     {
-        $this->db->query("SELECT * FROM sw_aporte_evaluacion ORDER BY id_aporte_evaluacion");
+        $this->db->query("SELECT * FROM sw_aporte_evaluacion ORDER BY ap_orden");
         return $this->db->registros();
     }
 
@@ -40,7 +40,7 @@ class Aporte_evaluacion
 
     public function actualizar($datos)
     {
-        $this->db->query('UPDATE sw_aporte_evaluacion SET ap_nombre = :ap_nombre, ap_abreviatura = :ap_abreviatura, ap_descripcion = :ap_descripcion WHERE id_aporte_evaluacion = :id_aporte_evaluacion');
+        $this->db->query("UPDATE sw_aporte_evaluacion SET ap_nombre = :ap_nombre, ap_abreviatura = :ap_abreviatura, ap_descripcion = :ap_descripcion WHERE id_aporte_evaluacion = :id_aporte_evaluacion");
 
         //Vincular valores
         $this->db->bind(':id_aporte_evaluacion', $datos['id_aporte_evaluacion']);
@@ -51,4 +51,9 @@ class Aporte_evaluacion
         return $this->db->execute();
     }
 
+    public function eliminar($id_aporte_evaluacion)
+    {
+        $this->db->query("DELETE FROM sw_aporte_evaluacion WHERE id_aporte_evaluacion = $id_aporte_evaluacion");
+        return $this->db->execute();
+    }
 }
