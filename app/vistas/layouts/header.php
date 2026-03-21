@@ -37,7 +37,7 @@
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item">
-            <a class="nav-link d-inline-block" style="width: 75px;" id="navbarComments" href="#" role="button" aria-expanded="false">
+            <a class="nav-link d-inline-block" style="width: 75px; color: white;" id="navbarComments" href="#" role="button" aria-expanded="false">
                 <i class="fa-regular fa-comments"></i>
                 <span class="badge badge-danger"><?= $nro_comentarios ?></span>
             </a>

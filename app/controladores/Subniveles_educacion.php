@@ -1,6 +1,7 @@
 <?php
 class Subniveles_educacion extends Controlador
 {
+    private $nivelEducacionModelo;
     private $subNivelEducacionModelo;
 
     public function __construct()
@@ -9,38 +10,40 @@ class Subniveles_educacion extends Controlador
         if (!isset($_SESSION['usuario_logueado'])) {
             redireccionar('/auth');
         }
+        $this->nivelEducacionModelo = $this->modelo('Nivel_educacion');
         $this->subNivelEducacionModelo = $this->modelo('Subnivel_educacion');
     }
 
     public function index()
     {
-        $institucion_id = $_SESSION['institucion_id'];
-        $subniveles_educacion = $this->subNivelEducacionModelo->obtenerSubniveles($institucion_id);
+        $subniveles_educacion = $this->subNivelEducacionModelo->obtenerSubniveles();
         $datos = [
             'titulo' => 'CRUD Sub Nivel de Educación',
-            'dashboard' => 'AdminUE',
+            'dashboard' => 'Admin',
             'subniveles_educacion' => $subniveles_educacion,
-            'nombreVista' => 'admin-ue/subnivel_educacion/index.php'
+            'nombreVista' => 'admin/subnivel_educacion/index.php'
         ];
         $this->vista('admin/index', $datos);
     }
 
     public function create()
     {
+        $niveles_educacion = $this->nivelEducacionModelo->obtenerNiveles();
         $datos = [
             'titulo' => 'Crear Subnivel de Educación',
-            'dashboard' => 'AdminUE',
-            'nombreVista' => 'admin-ue/subnivel_educacion/create.php'
+            'dashboard' => 'Admin',
+            'niveles_educacion' => $niveles_educacion,
+            'nombreVista' => 'admin/subnivel_educacion/create.php'
         ];
         $this->vista('admin/index', $datos);
     }
 
     public function store()
     {
-        $nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $nivel_id = trim($_POST['nivel_id']);
+        $nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
+        $slug = trim($_POST['slug']);
         $es_bachillerato = trim($_POST['es_bachillerato']);
-
-        $institucion_id = $_SESSION['institucion_id'];
 
         $ok = false;
         $titulo = "";
@@ -48,8 +51,9 @@ class Subniveles_educacion extends Controlador
         $tipo_mensaje = "";
 
         $datos = [
-            'institucion_id' => $institucion_id,
+            'nivel_id' => $nivel_id,
             'nombre' => $nombre,
+            'slug' => $slug,
             'es_bachillerato' => $es_bachillerato
         ];
 
@@ -84,12 +88,14 @@ class Subniveles_educacion extends Controlador
     public function edit($id)
     {
         $subnivelActual = $this->subNivelEducacionModelo->obtenerSubnivel($id);
+        $niveles_educacion = $this->nivelEducacionModelo->obtenerNiveles();
 
         $datos = [
             'titulo' => 'Editar Perfil',
-            'dashboard' => 'AdminUE',
+            'dashboard' => 'Admin',
             'subnivel' => $subnivelActual,
-            'nombreVista' => 'admin-ue/subnivel_educacion/edit.php'
+            'niveles_educacion' => $niveles_educacion,
+            'nombreVista' => 'admin/subnivel_educacion/edit.php'
         ];
         $this->vista('admin/index', $datos);
     }
@@ -97,7 +103,9 @@ class Subniveles_educacion extends Controlador
     public function update()
     {
         $id = $_POST['id_nivel_educacion'];
-        $nombre = preg_replace('/\s+/', ' ', strtoupper(trim($_POST['nombre'])));
+        $nivel_id = trim($_POST['nivel_id']);
+        $nombre = preg_replace('/\s+/', ' ', trim($_POST['nombre']));
+        $slug = trim($_POST['slug']);
         $es_bachillerato = trim($_POST['es_bachillerato']);
 
         $ok = false;
@@ -107,7 +115,9 @@ class Subniveles_educacion extends Controlador
 
         $datos = [
             'id' => $id,
+            'nivel_id' => $nivel_id,
             'nombre' => $nombre,
+            'slug' => $slug,
             'es_bachillerato' => $es_bachillerato
         ];
 

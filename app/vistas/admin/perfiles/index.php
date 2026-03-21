@@ -9,6 +9,7 @@
             </a>
         </div>
         <div class="card-body">
+            
             <?php
             include RUTA_APP . "/vistas/layouts/includes/mensaje.php";
             ?>

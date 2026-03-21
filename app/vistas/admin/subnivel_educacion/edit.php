@@ -5,18 +5,34 @@
             Editar Subnivel de Educación
         </div>
         <div class="card-body">
-            <?php if (isset($_SESSION['msg'])) : ?>
-                <div class="alert alert-<?= $_SESSION['msg.type'] ?> alert-dismissible fade show" role="alert">
-                    <p><i class="icon fa fa-<?= $_SESSION['msg.icon'] ?>"></i> <?= $_SESSION['msg.body'] ?></p>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif ?>
+            <?php
+            include RUTA_APP . "/vistas/layouts/includes/mensaje.php";
+            ?>
             <form id="formulario" action="" method="post">
                 <input type="hidden" name="id_nivel_educacion" value="<?= $datos['subnivel']->id ?>">
+                <div class="mb-3">
+                    <label for="nivel_id" class="form-label requerido">Nivel de Educación:</label>
+                    <select class="form-select" id="nivel_id" name="nivel_id">
+                        <option value="">Seleccione...</option>
+                        <?php
+                        foreach ($datos['niveles_educacion'] as $nivel_educacion) {
+                        ?>
+                            <option value="<?= $nivel_educacion->id ?>" <?= $datos['subnivel']->nivel_id == $nivel_educacion->id ? 'selected' : '' ?>><?= $nivel_educacion->nombre ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                    <p id="error-nivel_id" class="invalid-feedback">Debe seleccionar una opción...</p>
+                </div>
                 <div class="mb-3">
                     <label for="nombre" class="form-label requerido">Nombre:</label>
                     <input type="text" class="form-control text-uppercase" value="<?= $datos['subnivel']->nombre ?>" name="nombre" id="nombre" required>
                     <p id="error-nombre" class="invalid-feedback">El nombre del subnivel de educación debe contener de 4 a 64 caracteres alfabéticos y el caracter espacio en blanco.</p>
+                </div>
+                <div class="mb-3">
+                    <label for="slug" class="form-label">Slug:</label>
+                    <input type="text" class="form-control" value="<?= $datos['subnivel']->slug ?>" name="slug" id="slug" required>
+                    <p id="error-slug" class="invalid-feedback">El slug del subnivel de educación debe contener de 4 a 64 caracteres alfabéticos y el caracter guión medio.</p>
                 </div>
                 <div class="mb-3">
                     <label for="es_bachillerato" class="form-label requerido">¿Es Bachillerato?:</label>
