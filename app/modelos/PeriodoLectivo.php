@@ -16,7 +16,7 @@ class PeriodoLectivo
 
     public function obtenerPorInstitucion($institucion_id)
     {
-        $this->db->query("SELECT p.*, pe_descripcion, mo_nombre FROM sw_periodo_lectivo p, sw_periodo_estado pe, sw_modalidad m WHERE pe.id_periodo_estado = p.id_periodo_estado AND m.id_modalidad = p.id_modalidad AND p.institucion_id = $institucion_id ORDER BY mo_nombre, pe_fecha_inicio DESC");
+        $this->db->query("SELECT p.*, pe_descripcion, mo_nombre FROM sw_periodo_lectivo p, sw_periodo_estado pe, sw_modalidad m WHERE pe.id_periodo_estado = p.id_periodo_estado AND m.id_modalidad = p.id_modalidad AND p.id_institucion = $institucion_id ORDER BY mo_orden, pe_estado, pe_fecha_inicio DESC");
         return $this->db->registros();
     }
 

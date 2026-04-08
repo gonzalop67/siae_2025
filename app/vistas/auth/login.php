@@ -146,7 +146,7 @@
             perfilSeleccionado = perfil.options[perfil.selectedIndex].innerHTML;
             perfilSeleccionado = perfilSeleccionado.toLowerCase();
 
-            if (perfilSeleccionado === 'administrador' || perfilSeleccionado === 'tutor' || perfilSeleccionado === 'administrador de u.e.' || valorSeleccionado === "") {
+            if (perfilSeleccionado === 'administrador' || perfilSeleccionado === 'tutor' || perfilSeleccionado === 'administrador de u.e.' || perfilSeleccionado === 'docente' || valorSeleccionado === "") {
                 periodo_group.style.display = "none";
             } else {
                 periodo_group.style.display = "block";
@@ -187,7 +187,7 @@
 
             } else {
 
-                if (perfilSeleccionado !== 'administrador' && perfilSeleccionado !== 'tutor' && perfilSeleccionado !== 'administrador de u.e.') {
+                if (perfilSeleccionado !== 'administrador' && perfilSeleccionado !== 'tutor' && perfilSeleccionado !== 'administrador de u.e.' && perfilSeleccionado !== 'docente') {
                     if (periodo.value == "") {
                         periodo.classList.add("is-invalid");
                         document.getElementById("error-periodo").innerHTML = "El campo Periodo Lectivo es obligatorio.";
@@ -242,6 +242,10 @@
 
                         case 'administrador-de-ue':
                             location.href = "<?php echo RUTA_URL ?>AdminUE/dashboard";
+                            break;
+
+                        case 'docente':
+                            location.href = "<?php echo RUTA_URL ?>Docentes/dashboard";
                             break;
 
                         case 'secretaria':

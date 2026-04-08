@@ -44,7 +44,7 @@ class Auth extends Controlador
 
             $perfil = strtolower($usuario->pe_slug);
 
-            if ($perfil !== "administrador" && $perfil !== "tutor" && $perfil !== "administrador-de-ue") {
+            if ($perfil !== "administrador" && $perfil !== "administrador-de-ue" && $perfil !== 'docente' && $perfil !== "tutor" ) {
                 $id_periodo_lectivo = $_POST["periodo"];
             } else {
                 $id_periodo_lectivo = $this->periodoLectivoModelo->obtenerIdPeriodoLectivoActual();
