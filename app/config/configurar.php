@@ -9,6 +9,6 @@
     define('RUTA_APP', dirname(dirname(__FILE__)));
 
     // Ruta url Ejemplo: http://localhost/rubrica/
-    define('RUTA_URL', 'http://localhost/siae_2025/');
+    define('RUTA_URL', 'http://localhost/siae_2025');
 
-    define('NOMBRESITIO', 'SIAE Web | ');
+    define('APP_NAME', 'SIAE 2025');
