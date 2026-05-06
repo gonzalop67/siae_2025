@@ -18,6 +18,12 @@ class Model
     protected mysqli $connection;
     protected mixed $query = null;
 
+    protected string $select = "*";
+    protected string $where;
+    protected array $values = [];
+
+    protected string $orderBy = "";
+
     public array $errors      = [];
 
     public function __construct()
@@ -32,6 +38,9 @@ class Model
         if ($this->connection->connect_error) {
             die('Error de conexión: ' . $this->connection->connect_error);
         }
+
+        // ESTABLECER UTF-8 AQUÍ
+        $this->connection->set_charset("utf8mb4"); // utf8mb4 es recomendado sobre utf8
     }
 
     public function query(string $sql, array $data = [], ?string $params = null)
@@ -43,6 +52,8 @@ class Model
             }
 
             $stmt = $this->connection->prepare($sql);
+            // echo "SQL: " . $sql;
+            // echo "Params Count: " . count($data);
             $stmt->bind_param($params, ...$data);
             $stmt->execute();
 
@@ -54,14 +65,120 @@ class Model
         return $this;
     }
 
+    public function select(...$columns)
+    {
+        $this->select = implode(', ', $columns);
+
+        return $this;
+    }
+
+    public function orderBy(string $column, $order = 'ASC')
+    {
+        if (empty($this->orderBy)) {
+            $this->orderBy = "{$column} {$order}";
+        } else {
+            $this->orderBy .= ", {$column} {$order}";
+        }
+
+        return $this;
+    }
+
     public function first()
     {
+        if (empty($this->query)) {
+
+            $sql = "SELECT {$this->select} FROM {$this->table}";
+
+            if (isset($this->where) && !empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
+            }
+
+            if ($this->orderBy) {
+                $sql .= " ORDER BY {$this->orderBy}";
+            }
+
+            // Para depurar
+            // return $sql;
+
+            $this->query($sql, $this->values);
+        }
+
         return $this->query->fetch_assoc();
     }
 
     public function get()
     {
+        if (empty($this->query)) {
+
+            $sql = "SELECT {$this->select} FROM {$this->table}";
+
+            if (isset($this->where) && !empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
+            }
+
+            if ($this->orderBy) {
+                $sql .= " ORDER BY {$this->orderBy}";
+            }
+
+            // Para depurar
+            // return $sql;
+
+            $this->query($sql, $this->values);
+        }
+
         return $this->query->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function paginate($cant = 15)
+    {
+        $page = $_GET['page'] ?? 1;
+
+        if (empty($this->query)) {
+
+            $sql = "SELECT {$this->select} FROM {$this->table}";
+
+            if (isset($this->where) && !empty($this->where)) {
+                $sql .= " WHERE {$this->where}";
+            }
+
+            if ($this->orderBy) {
+                $sql .= " ORDER BY {$this->orderBy}";
+            }
+
+            $sql .= " LIMIT " . ($page - 1) * $cant . ",{$cant}";
+
+            // Para depurar
+            // return $sql;
+
+            $data = $this->query($sql, $this->values)->get();
+        }
+
+
+        $total = $this->query("SELECT FOUND_ROWS() as total")->first()['total'];
+
+        // Limpiar la URI
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        $basePath = str_replace(['\\', '/public'], ['/', ''], dirname($_SERVER['SCRIPT_NAME']));
+
+        $uri = trim(str_replace($basePath, '', $uri), '/');
+
+        if (strpos($uri, '?')) {
+            $uri = substr($uri, 0, strpos($uri, '?'));
+        }
+
+        $last_page = ceil($total / $cant);
+
+        return [
+            'total' => $total,
+            'from' => ($page - 1) * $cant + 1,
+            'to' => ($page - 1) * $cant + count($data),
+            'current_page' => $page,
+            'last_page' => $last_page,
+            'next_page_url' => $page < $last_page ? "/" . $uri . '?page=' . $page + 1 : "/" . $uri . '?page=' . $last_page,
+            'prev_page_url' => $page > 1 ? "/" . $uri . '?page=' . $page - 1 : "/" . $uri . '?page=1',
+            'data' => $data,
+        ];
     }
 
     // Consultas
@@ -84,9 +201,13 @@ class Model
             $operator = "=";
         }
 
-        $sql = "SELECT * FROM {$this->table} WHERE {$column} {$operator} ?";
+        if (isset($this->where) && !empty($this->where)) {
+            $this->where .= " AND {$column} {$operator} ?";
+        } else {
+            $this->where = "{$column} {$operator} ?";
+        }
 
-        $this->query($sql, [$value]);
+        $this->values[] = $value;
 
         return $this;
     }

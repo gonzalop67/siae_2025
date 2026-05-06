@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-class HomeController extends Controller
+class InstitucionController extends Controller
 {
     public function __construct()
     {

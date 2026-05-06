@@ -85,4 +85,11 @@
             </main>
         </div>
     </div>
+    <div id="layoutAuthentication_footer">
+        <footer>
+            .: &copy; {{ date("  Y") }} - {{ $nom_institucion }} :.
+        </footer>
+    </div>
 </body>
+
+</html>
