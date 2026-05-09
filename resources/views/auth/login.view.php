@@ -75,7 +75,7 @@
                                         <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
                                             <!-- ¿Olvidó su contraseña? -->
                                             <a class="small" href="{{ RUTA_URL }}/forgot_password">¿Olvidó su contraseña?</a>
-                                            <button class="btn btn-primary" type="submit" onclick="frmLogin(event);"><i class="fas fa-sign-in"></i> Ingresar</button>
+                                            <button class="btn btn-primary" type="submit"><i class="fas fa-sign-in"></i> Ingresar</button>
                                         </div>
                                     </form>
                                 </div>
@@ -90,6 +90,10 @@
             .: &copy; {{ date("  Y") }} - {{ $nom_institucion }} :.
         </footer>
     </div>
+    <script>
+        const base_url = "{{ RUTA_URL }}";
+    </script>
+    <script src="{{ RUTA_URL }}/public/assets/js/pages/auth/login.js"></script>
 </body>
 
 </html>

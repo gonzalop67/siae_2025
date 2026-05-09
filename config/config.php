@@ -2,10 +2,10 @@
 session_start(); // start session
 
 //Configuración de acceso a la base de datos
-    define('DB_HOST', 'localhost');
-    define('DB_USER', 'colegion_1');
-    define('DB_PASS', 'AQSWDE123');
-    define('DB_NAME', 'colegion_1');
+define('DB_HOST', 'localhost');
+define('DB_USER', 'colegion_1');
+define('DB_PASS', 'AQSWDE123');
+define('DB_NAME', 'colegion_1');
 
 // define global constants
 

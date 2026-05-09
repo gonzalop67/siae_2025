@@ -88,6 +88,6 @@ class Route
             }
         }
 
-        echo "404 Not Found";
+        echo "404 $uri Not Found";
     }
 }
