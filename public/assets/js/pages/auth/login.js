@@ -101,32 +101,27 @@ async function verificar_login() {
         // Desplegar el loader image
         document.querySelector("#img_loader").style.display = "none";
         if (!json.error) {
-            //No hay error se redirecciona al dashboard correspondiente
-            // alert(json.slug);
+            // Construimos la base de la URL de forma limpia
+            const urlDestino = base_url.endsWith('/') ? base_url : base_url + '/';
 
             switch (json.slug) {
                 case 'administrador':
-                    location.href = base_url + "/admin/dashboard";
+                    location.href = urlDestino + "admin/dashboard";
                     break;
-
                 case 'autoridad':
-                    location.href = "<?php echo RUTA_URL ?>Autoridad/dashboard";
+                    location.href = urlDestino + "Autoridad/dashboard";
                     break;
-
                 case 'administrador-de-ue':
-                    location.href = "<?php echo RUTA_URL ?>AdminUE/dashboard";
+                    location.href = urlDestino + "AdminUE/dashboard";
                     break;
-
                 case 'docente':
-                    location.href = "<?php echo RUTA_URL ?>Docentes/dashboard";
+                    location.href = urlDestino + "Docentes/dashboard";
                     break;
-
                 case 'secretaria':
-                    location.href = "<?php echo RUTA_URL ?>Secretaria/dashboard";
+                    location.href = urlDestino + "Secretaria/dashboard";
                     break;
-
                 default:
-                    alert("Todavía no se ha implementado el dashboard correspondiente.");
+                    alert("Perfil no reconocido: " + json.slug);
                     break;
             }
         } else {

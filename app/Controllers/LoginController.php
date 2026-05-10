@@ -58,7 +58,10 @@ class LoginController extends Controller
                 ->where('id_perfil', $id_perfil)
                 ->first();
             if (!empty($usuarioPerfil)) {
-                // $_SESSION['authenticated'] = true;
+                // ASEGÚRATE DE QUE session_start() se ejecutó antes
+                if (session_status() === PHP_SESSION_NONE) session_start();
+
+                $_SESSION['authenticated'] = true;
                 // $_SESSION['username'] = $usuario['username'];
                 $perfil = $this->perfilModel->where('id_perfil', $id_perfil)->first();
                 return json_encode([
@@ -85,10 +88,27 @@ class LoginController extends Controller
 
     public function logout()
     {
-        session_start(); // Unirse a la sesión actual
-        session_unset(); // Limpiar las variables de sesión
-        session_destroy(); // Destruir la sesión en el servidor
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $_SESSION = []; // Forma más segura de limpiar que session_unset()
+        session_destroy();
+
+        // Borrar la cookie de sesión del navegador (esto evita el "limbo" al reingresar)
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
 
         redireccionar('/');
+        exit();
     }
 }

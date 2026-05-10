@@ -12,6 +12,6 @@ class AdminDashboardController extends Controller
     public function index()
     {
         $title = "Bienvenido a " . APP_NAME;
-        return $this->view('admin.dashboard', compact('title'));
+        echo $this->view('admin.dashboard', compact('title'));
     }
 }

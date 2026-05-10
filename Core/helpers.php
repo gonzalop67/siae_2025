@@ -10,5 +10,5 @@ function show(mixed $stuff)
 //Para redireccionar página
 function redireccionar(string $pagina): void
 {
-    header('Location: ' . BASE_URL . $pagina);
+    header('Location: ' . RUTA_URL . $pagina);
 }

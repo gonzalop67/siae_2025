@@ -1,5 +1,4 @@
 <?php
-session_start(); // start session
 
 //Configuración de acceso a la base de datos
 define('DB_HOST', 'localhost');

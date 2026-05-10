@@ -1,7 +1,7 @@
 <?php
 
 //Para redireccionar página
-function redireccionar($pagina)
+function redirect(string $pagina)
 {
     header('Location: ' . RUTA_URL . $pagina);
 }

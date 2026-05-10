@@ -1,37 +1,51 @@
-<?php namespace Core;
+<?php
 
-class MiniBlade {
+namespace Core;
+
+class MiniBlade
+{
     protected array $sections = [];
     protected ?string $layout = null;
     protected string $viewsPath;
     protected string $cachePath;
     protected bool $useCache = true; // Activado por defecto para performance
 
-    public function __construct(string $viewsPath, string $cachePath, bool $useCache = true) {
+    public function __construct(string $viewsPath, string $cachePath, bool $useCache = true)
+    {
         $this->viewsPath = rtrim($viewsPath, '/') . '/';
         $this->cachePath = rtrim($cachePath, '/') . '/';
         $this->useCache = $useCache;
-        
+
         if (!is_dir($this->cachePath)) {
             mkdir($this->cachePath, 0777, true);
         }
     }
 
-    public function render(string $viewName, array $data = []) {
-        $this->layout = null; // Reset layout
+    public function render(string $viewName, array $data = [])
+    {
+        $this->layout = null;
+
+        // Necesitamos saber si la vista tiene un @extends ANTES de decidir qué retornar
+        $path = $this->viewsPath . str_replace('.', '/', $viewName) . ".view.php";
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
+            if (preg_match('/@extends\(\'(.*?)\'\)/', $content, $matches)) {
+                $this->layout = $matches[1];
+            }
+        }
+
         $content = $this->renderView($viewName, $data);
 
-        // Si la vista definió un layout, lo renderizamos y metemos el contenido
         if ($this->layout) {
             return $this->renderView($this->layout, $data);
         }
-
         return $content;
     }
 
-    protected function renderView(string $viewName, array $data) {
+    protected function renderView(string $viewName, array $data)
+    {
         $path = $this->viewsPath . str_replace('.', '/', $viewName) . ".view.php";
-        
+
         if (!file_exists($path)) {
             return "<!-- Vista [$viewName] no encontrada -->";
         }
@@ -49,7 +63,8 @@ class MiniBlade {
         return ob_get_clean();
     }
 
-    protected function compile(string $code): string {
+    protected function compile(string $code): string
+    {
         $patterns = [
             '/@php(.*?)@endphp/s'       => '<?php $1 ?>',
             '/\{\{\s*(.*?)\s*\}\}/s'    => '<?php echo htmlspecialchars((string)($1), ENT_QUOTES, "UTF-8"); ?>',
