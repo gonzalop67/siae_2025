@@ -11,7 +11,7 @@ class Controller
     public function __construct()
     {
         // Configuramos el motor una sola vez
-        $this->blade = new MiniBlade(RUTA_APP . '/resources/views');
+        $this->blade = new MiniBlade(RUTA_APP . '/resources/views', RUTA_APP . '/cache');
     }
 
     // Métodos comunes para controladores

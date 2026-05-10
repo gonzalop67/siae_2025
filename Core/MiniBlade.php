@@ -1,132 +1,90 @@
-<?php
+<?php namespace Core;
 
-namespace Core;
-
-class MiniBlade
-{
+class MiniBlade {
     protected array $sections = [];
-    protected mixed $layout = null;
-    protected mixed $viewsPath;
+    protected ?string $layout = null;
+    protected string $viewsPath;
+    protected string $cachePath;
+    protected bool $useCache = true; // Activado por defecto para performance
 
-    public function __construct(string $viewsPath)
-    {
+    public function __construct(string $viewsPath, string $cachePath, bool $useCache = true) {
         $this->viewsPath = rtrim($viewsPath, '/') . '/';
+        $this->cachePath = rtrim($cachePath, '/') . '/';
+        $this->useCache = $useCache;
+        
+        if (!is_dir($this->cachePath)) {
+            mkdir($this->cachePath, 0777, true);
+        }
     }
 
-    public function render(string $viewName, array $data = [])
-    {
-        $viewName = str_replace('.', '/', $viewName);
+    public function render(string $viewName, array $data = []) {
+        $this->layout = null; // Reset layout
+        $content = $this->renderView($viewName, $data);
 
-        // 1. Convertimos ['titulo' => 'Hola'] en $titulo
-        // Usamos EXTR_SKIP para no sobreescribir variables internas de la función
-        extract($data, EXTR_SKIP);
-
-        $path = $this->viewsPath . $viewName . '.view.php';
-
-        if (!file_exists($path)) {
-            die("Error: La vista [$viewName] no existe en $path");
-        }
-
-        $content = file_get_contents($path);
-        $compiled = $this->compile($content);
-
-        ob_start();
-        // Solo para probar:
-        // return "<pre>" . htmlspecialchars($compiled) . "</pre>";
-        // Usamos eval para ejecutar el PHP resultante de la compilación
-        try {
-            eval('?>' . $compiled);
-        } catch (\Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-
-        $output = ob_get_clean();
-
+        // Si la vista definió un layout, lo renderizamos y metemos el contenido
         if ($this->layout) {
-            $parent = $this->layout;
-            $this->layout = null;
-            return $this->render($parent, $data);
+            return $this->renderView($this->layout, $data);
         }
 
-        return $output;
+        return $content;
     }
 
-    protected function compile(string $code)
-    {
-        // 1. Directivas de Control: @if, @else, @foreach
-        // @if(condicion)
-        $code = preg_replace('/@if\((.*)\)/', '<?php if($1): ?>', $code);
+    protected function renderView(string $viewName, array $data) {
+        $path = $this->viewsPath . str_replace('.', '/', $viewName) . ".view.php";
+        
+        if (!file_exists($path)) {
+            return "<!-- Vista [$viewName] no encontrada -->";
+        }
 
-        // @else
-        $code = preg_replace('/@else/', '<?php else: ?>', $code);
+        $cacheFile = $this->cachePath . md5($viewName) . '.php';
 
-        // @endif
-        $code = preg_replace('/@endif/', '<?php endif; ?>', $code);
+        // Solo compilamos si es necesario
+        if (!$this->useCache || !file_exists($cacheFile) || filemtime($path) > filemtime($cacheFile)) {
+            file_put_contents($cacheFile, $this->compile(file_get_contents($path)));
+        }
 
-        // @foreach($items as $item)
-        // Soporta tanto ($items as $item) como ($items as $key => $value)
-        $code = preg_replace('/@foreach\s*\((.*)\)/', '<?php foreach($1): ?>', $code);
+        extract($data, EXTR_SKIP);
+        ob_start();
+        include($cacheFile);
+        return ob_get_clean();
+    }
 
-        // @endforeach
-        $code = preg_replace('/@endforeach/', '<?php endforeach; ?>', $code);
+    protected function compile(string $code): string {
+        $patterns = [
+            '/@php(.*?)@endphp/s'       => '<?php $1 ?>',
+            '/\{\{\s*(.*?)\s*\}\}/s'    => '<?php echo htmlspecialchars((string)($1), ENT_QUOTES, "UTF-8"); ?>',
+            '/@if\s*\((.*?)\)/s'        => '<?php if($1): ?>',
+            '/@else/'                   => '<?php else: ?>',
+            '/@endif/'                  => '<?php endif; ?>',
+            '/@foreach\s*\((.*?)\)/s'   => '<?php foreach($1): ?>',
+            '/@endforeach/'             => '<?php endforeach; ?>',
+            '/@include\(\'(.*?)\'\)/'   => '<?php echo $this->renderView(\'$1\', get_defined_vars()); ?>',
+            '/@yield\(\'(.*?)\'\)/'     => '<?php echo $this->sections[\'$1\'] ?? ""; ?>',
+        ];
 
-        // 2. Directiva @include('nombre_vista')
-        // Esto llamará al método includeView de la clase en tiempo de ejecución
-        $code = preg_replace('/@include\(\'(.*)\'\)/', '<?php echo $this->includeView("$1", get_defined_vars()); ?>', $code);
+        $code = preg_replace(array_keys($patterns), array_values($patterns), $code);
 
-        // 3. Compilamos las variables {{ }}
-        $code = preg_replace('/\{\{\s*(.*?)\s*\}\}/', '<?php echo htmlspecialchars((string)$1, ENT_QUOTES, "UTF-8"); ?>', $code);
-
-        // 4. Luego las secciones (para que guarden el código PHP de las variables ya traducido)
-        $code = preg_replace_callback('/@section\(\'(.*)\'\)(.*?)@endsection/s', function ($m) {
-            return "<?php \$this->sections['$m[1]'] = <<<'EOT'\n$m[2]\nEOT;\n ?>";
+        // Manejo de Extends
+        $code = preg_replace_callback('/@extends\(\'(.*?)\'\)/', function ($m) {
+            $this->layout = $m[1];
+            return '';
         }, $code);
 
-        // 5. Después el resto
-        $code = preg_replace('/@yield\(\'(.*)\'\)/', '<?php eval("?>".($this->sections["$1"] ?? "")); ?>', $code);
-
-        // Directiva @extends
-        $code = preg_replace_callback('/@extends\(\'(.*)\'\)/', function ($m) {
-            $this->layout = $m[1];
+        // Manejo de Secciones (Captura el contenido y lo guarda en el array)
+        $code = preg_replace_callback('/@section\(\'(.*?)\'\)(.*?)@endsection/s', function ($m) {
+            $this->sections[$m[1]] = $m[2];
             return '';
         }, $code);
 
         return $code;
     }
 
-    protected function includeView(string $viewName, array $data): string
+    public function clearCache()
     {
-        // Reutilizamos la lógica de renderizado para el parcial
-        // pero sin permitir que el parcial use @extends (por simplicidad)
-        $viewName = str_replace('.', '/', $viewName);
-        $path = $this->viewsPath . $viewName . '.view.php';
-
-        if (!file_exists($path)) {
-            return "<!-- Error: Parcial [$viewName] no encontrado -->";
+        $files = glob($this->cachePath . '*.php');
+        foreach ($files as $file) {
+            if (is_file($file)) unlink($file);
         }
-
-        $content = file_get_contents($path);
-        $compiled = $this->compile($content);
-
-        // 1. Convertimos ['titulo' => 'Hola'] en $titulo
-        // Usamos EXTR_SKIP para no sobreescribir variables internas de la función
-        extract($data, EXTR_SKIP);
-
-        // Solo para probar:
-        // return "<pre>" . htmlspecialchars($compiled) . "</pre>";
-        // return "<pre>" . print_r($data) . "</pre>";
-
-        ob_start();
-        try {
-            eval('?>' . $compiled);
-        } catch (\Exception $e) {
-            ob_end_clean();
-            throw $e;
-        }
-
-        $output = ob_get_clean();
-
-        return $output;
+        return count($files);
     }
 }

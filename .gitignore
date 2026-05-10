@@ -4,4 +4,7 @@
 # Directorio de imágenes subidas
 public/uploads/
 
+# Directorias de caché
+cache/
+
 .git/

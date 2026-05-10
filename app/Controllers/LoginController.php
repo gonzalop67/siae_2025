@@ -82,4 +82,13 @@ class LoginController extends Controller
             ]);
         }
     }
+
+    public function logout()
+    {
+        session_start(); // Unirse a la sesión actual
+        session_unset(); // Limpiar las variables de sesión
+        session_destroy(); // Destruir la sesión en el servidor
+
+        redireccionar('/');
+    }
 }
