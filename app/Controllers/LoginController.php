@@ -2,9 +2,9 @@
 
 namespace App\Controllers;
 
-use App\Models\Institucion;
 use App\Models\Perfil;
 use App\Models\Usuario;
+use App\Models\Institucion;
 use App\Models\UsuarioPerfil;
 
 use Core\Encrypter;
@@ -12,17 +12,17 @@ use Core\Encrypter;
 class LoginController extends Controller
 {
     protected Perfil $perfilModel;
-    protected Institucion $institucionModel;
-    protected UsuarioPerfil $usuarioPerfil;
     protected Usuario $userModel;
+    protected UsuarioPerfil $usuarioPerfil;
+    protected Institucion $institucionModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
-        $this->institucionModel = new Institucion;
-        $this->usuarioPerfil = new UsuarioPerfil;
-        $this->perfilModel = new Perfil;
         $this->userModel = new Usuario;
+        $this->perfilModel = new Perfil;
+        $this->usuarioPerfil = new UsuarioPerfil;
+        $this->institucionModel = new Institucion;
     }
 
     public function showLoginForm()
@@ -63,6 +63,13 @@ class LoginController extends Controller
 
                 $_SESSION['authenticated'] = true;
                 // $_SESSION['username'] = $usuario['username'];
+
+                // Obtener los datos de la unidad educativa...
+                $institucion = $this->institucionModel->find(1);
+
+                $_SESSION['nombreInstitucion'] = $institucion['in_nombre'];
+                $_SESSION['urlInstitucion'] = $institucion['in_url'];
+
                 $perfil = $this->perfilModel->where('id_perfil', $id_perfil)->first();
                 return json_encode([
                     'error' => false,
@@ -72,7 +79,7 @@ class LoginController extends Controller
                 return json_encode([
                     'error' => true,
                     'errors' => [
-                        'mensaje' => 'El Usuario no tiene asignado el perfil seleccionado.'
+                        'mensaje' => 'Usuario, contraseña o perfil incorrectos.'
                     ]
                 ]);
             }

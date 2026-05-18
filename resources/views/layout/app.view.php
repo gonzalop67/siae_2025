@@ -11,6 +11,10 @@
 
     <title>{{ $title }}</title>
 
+    <!-- sweetalert 2 -->
+    <link rel="stylesheet" href="{{ RUTA_URL }}/public/assets/js/sweetalert2/sweetalert2.min.css">
+    <script src="{{ RUTA_URL }}/public/assets/js/sweetalert2/sweetalert2.min.js"></script>
+
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Custom fonts for this template-->
     <link href="{{ RUTA_URL }}/public/assets/css/fontawesome-free/all.min.css" rel="stylesheet" type="text/css">
@@ -20,6 +24,9 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ RUTA_URL }}/public/assets/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{{ RUTA_URL }}/public/assets/css/estilos.css">
 
 </head>
 
@@ -56,9 +63,11 @@
             <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
+                    @if ($_SESSION['authenticated'])
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; <a href="{{ $_SESSION['urlInstitucion'] }}" target="_blank">{{ $_SESSION['nombreInstitucion'] }}</a> {{ date("Y") }}</span>
                     </div>
+                    @endif
                 </div>
             </footer>
             <!-- End of Footer -->

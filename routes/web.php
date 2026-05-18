@@ -19,5 +19,9 @@ Route::get('admin/dashboard', [AdminDashboardController::class, 'index'], [$auth
 
 /** Rutas para Usuarios */
 Route::get('/users', [UserController::class, 'index'], [$authMiddleware]);
+Route::get('/users/create', [UserController::class, 'create'], [$authMiddleware]);
+Route::post('/users', [UserController::class, 'store'], [$authMiddleware]);
+Route::get('/users/:id/roles', [UserController::class, 'roles'], [$authMiddleware]);
+Route::post('/users/:id/roles', [UserController::class, 'updateRoles'], [$authMiddleware]);
 
 Route::dispatch();

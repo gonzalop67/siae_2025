@@ -5,6 +5,7 @@ namespace App\Models;
 class Institucion extends Model
 {
     protected string $table = 'sw_institucion';
+    protected string $primaryKey = 'id_institucion';
     protected array $fillable = [
         'admin_id', 
         'in_nombre',

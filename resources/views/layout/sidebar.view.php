@@ -93,7 +93,7 @@
 
             <!-- Nav Item - Usuarios -->
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ RUTA_URL }}/users">
                     <i class="fa fa-fw fa-users"></i>
                     <span>Usuarios</span></a>
             </li>

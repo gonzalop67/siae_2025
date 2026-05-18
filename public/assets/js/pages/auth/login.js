@@ -54,7 +54,7 @@ form.addEventListener('submit', function (event) {
     }
 
     if (clave.value.length < 5) {
-        password.classList.add("is-invalid");
+        clave.classList.add("is-invalid");
         document.getElementById("error-clave").innerHTML = "El campo Contraseña debe tener al menos 5 caracteres.";
         errores++;
     }

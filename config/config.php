@@ -13,4 +13,8 @@ define('RUTA_APP', dirname(dirname(__FILE__)));
 
 define('APP_NAME', 'SIAE_2025');
 
-define('RUTA_URL', 'http://localhost/siae_2025'); // the home url of the website
+// Reemplaza tu define('RUTA_URL', ...) viejo por este:
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$host = $_SERVER['HTTP_HOST']; // Captura dinámicamente si el usuario entró con www. o sin www.
+
+define('RUTA_URL', $protocol . $host . '/siae_2025');
