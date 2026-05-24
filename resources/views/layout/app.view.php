@@ -52,6 +52,10 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
+                    <script>
+                        const base_url = "{{ RUTA_URL }}";
+                    </script>
+
                     @yield('content')
 
                 </div>

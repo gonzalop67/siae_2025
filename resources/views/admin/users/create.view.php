@@ -142,8 +142,5 @@
         </div>
     </div>
 </div>
-<script>
-    const base_url = "{{ RUTA_URL }}";
-</script>
 <script src="{{ RUTA_URL }}/public/assets/js/pages/admin/usuarios/crear.js"></script>
 @endsection

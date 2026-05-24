@@ -13,10 +13,15 @@ class Model
     protected mysqli $connection;
     protected mixed $query = null;
     protected string $select = "*";
-    protected string $where = "";
-    protected array $values = [];
+    public string $where = "";
+    public array $values = [];
     protected string $orderBy = "";
     public array $errors = [];
+
+    // SOFT DELETE: Propiedades de control de estado
+    protected bool $useSoftDeletes = false; // Activa/desactiva softdelete globalmente en este modelo
+    protected bool $withTrashed = false;   // Bandera para incluir eliminados
+    protected bool $onlyTrashed = false;   // Bandera para mostrar SOLO eliminados
 
     public function __construct()
     {
@@ -42,6 +47,50 @@ class Model
         $this->connection = self::$sharedConnection;
     }
 
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * Obtiene el último ID autoincremental generado en la base de datos.
+     * 
+     * @return int
+     */
+    public function getInsertId(): int
+    {
+        return (int)($this->connection->insert_id ?? 0);
+    }
+
+    // SOFT DELETE: Métodos modificadores de flujo estilo Laravel
+    public function withTrashed(): self
+    {
+        $this->withTrashed = true;
+        return $this;
+    }
+
+    public function onlyTrashed(): self
+    {
+        $this->onlyTrashed = true;
+        return $this;
+    }
+
+    // Restauración lógica
+    public function restore(int $id): bool
+    {
+        $sql = "UPDATE {$this->table} SET deleted_at = NULL WHERE {$this->primaryKey} = ?";
+        $this->query($sql, [$id], 'i');
+        return $this->query > 0;
+    }
+
+    // Eliminación física definitiva de la Base de Datos
+    public function forceDelete(int $id): bool
+    {
+        $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
+        $this->query($sql, [$id], 'i');
+        return $this->query > 0;
+    }
+
     public function query(string $sql, array $data = [], ?string $params = null)
     {
         if ($data) {
@@ -56,30 +105,28 @@ class Model
 
             $stmt = $this->connection->prepare($sql);
             if (!$stmt) {
-                die('Error en la preparación SQL: ' . $this->connection->error . ' | SQL: ' . $sql);
+                // CAMBIO: Lanzar excepción en lugar de matar el script con die()
+                throw new \mysqli_sql_exception('Error en la preparación SQL: ' . $this->connection->error . ' | SQL: ' . $sql, $this->connection->errno);
             }
 
             $stmt->bind_param($params, ...$data);
 
-            // CORRECCIÓN CLAVE: Verificar si la ejecución realmente tuvo éxito
             if (!$stmt->execute()) {
-                die('Error al ejecutar la consulta: ' . $stmt->error . ' | Datos: ' . json_encode($data));
+                // CORRECCIÓN CLAVE: Lanzar excepción nativa con el código de error (ej: 1451)
+                throw new \mysqli_sql_exception($stmt->error, $stmt->errno);
             }
 
-            // CONTROL SEGURO DE RESULTADOS
             if ($stmt->field_count > 0) {
                 $this->query = $stmt->get_result();
             } else {
-                // Para INSERT/UPDATE almacenamos el número de filas afectadas
                 $this->query = $stmt->affected_rows;
             }
 
-            // Cerrar el stmt libera el proceso y obliga al motor MySQL a consolidar el INSERT
             $stmt->close();
         } else {
             $this->query = $this->connection->query($sql);
             if (!$this->query) {
-                die('Error en consulta directa: ' . $this->connection->error);
+                throw new \mysqli_sql_exception('Error en consulta directa: ' . $this->connection->error, $this->connection->errno);
             }
         }
         return $this;
@@ -106,18 +153,39 @@ class Model
         return $this;
     }
 
+    // SOFT DELETE: Modificación crucial para inyectar las cláusulas automáticamente
     protected function buildSelectSql(): string
     {
         $sql = "SELECT {$this->select} FROM {$this->table}";
-        if (!empty($this->where)) {
+
+        // Generamos el filtro dinámico de SoftDelete
+        $softDeleteWhere = "";
+        if ($this->useSoftDeletes) {
+            if ($this->onlyTrashed) {
+                $softDeleteWhere = "{$this->table}.deleted_at IS NOT NULL";
+            } elseif (!$this->withTrashed) {
+                $softDeleteWhere = "{$this->table}.deleted_at IS NULL";
+            }
+        }
+
+        // Combinamos el softdelete con el $this->where del usuario de forma segura
+        if (!empty($softDeleteWhere)) {
+            if (!empty($this->where)) {
+                $sql .= " WHERE ({$this->where}) AND {$softDeleteWhere}";
+            } else {
+                $sql .= " WHERE {$softDeleteWhere}";
+            }
+        } elseif (!empty($this->where)) {
             $sql .= " WHERE {$this->where}";
         }
+
         if (!empty($this->orderBy)) {
             $sql .= " ORDER BY {$this->orderBy}";
         }
         return $sql;
     }
 
+    // SOFT DELETE: Limpiar los estados para no afectar a la siguiente consulta del script
     protected function resetQuery()
     {
         $this->select = "*";
@@ -125,6 +193,8 @@ class Model
         $this->values = [];
         $this->orderBy = "";
         $this->query = null;
+        $this->withTrashed = false; // Reset de bandera
+        $this->onlyTrashed = false; // Reset de bandera
     }
 
     public function first()
@@ -159,39 +229,61 @@ class Model
         return $result;
     }
 
+    // SOFT DELETE: Adaptado para heredar la lógica de conteo limpia de buildSelectSql()
     public function paginate($cant = 15)
     {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         if ($page < 1) $page = 1;
 
-        // MEJORA: Reemplazo de SQL_CALC_FOUND_ROWS (Obsoleto en MySQL 8.0+) por un COUNT alternativo.
+        // MEJORA: El conteo ahora usa la misma estructura de buildSelectSql para respetar SoftDeletes
+        $softDeleteWhere = "";
+        if ($this->useSoftDeletes) {
+            if ($this->onlyTrashed) {
+                $softDeleteWhere = "deleted_at IS NOT NULL";
+            } elseif (!$this->withTrashed) {
+                $softDeleteWhere = "deleted_at IS NULL";
+            }
+        }
+
         $countSql = "SELECT COUNT(*) as total FROM {$this->table}";
-        if (!empty($this->where)) {
+        if (!empty($softDeleteWhere)) {
+            $countSql .= !empty($this->where) ? " WHERE ({$this->where}) AND {$softDeleteWhere}" : " WHERE {$softDeleteWhere}";
+        } elseif (!empty($this->where)) {
             $countSql .= " WHERE {$this->where}";
         }
 
         $countQuery = $this->connection->prepare($countSql);
+
+        // ¡BLINDAJE CRÍTICO AQUÍ! Si la consulta falla, detenemos con el error real de MySQL
+        if (!$countQuery) {
+            die("Error preparando el conteo de paginación: " . $this->connection->error . " | SQL generado: " . $countSql);
+        }
+
         if ($this->values) {
-            $params = str_repeat('s', count($this->values)); // Ajuste rápido string genérico para el conteo
+            $params = str_repeat('s', count($this->values));
             $countQuery->bind_param($params, ...$this->values);
         }
         $countQuery->execute();
         $total = $countQuery->get_result()->fetch_assoc()['total'] ?? 0;
 
-        // Ejecutar consulta de datos paginados
+        // IMPORTANTE: Cerrar el countQuery para liberar los hilos de Mysqli
+        $countQuery->close();
+
         $sql = $this->buildSelectSql();
+
         $offset = ($page - 1) * $cant;
         $sql .= " LIMIT {$offset}, {$cant}";
 
         $this->query($sql, $this->values);
         $data = ($this->query instanceof \mysqli_result) ? $this->query->fetch_all(MYSQLI_ASSOC) : [];
-        $this->resetQuery();
 
-        // URLs y Enlaces
+        // Conservamos temporalmente el URI antes del resetQuery
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
         $basePath = str_replace(['\\', '/public'], ['/', ''], dirname($scriptName));
         $uri = trim(str_replace($basePath, '', $uri), '/');
+
+        $this->resetQuery();
 
         $last_page = (int)ceil($total / $cant);
         if ($last_page < 1) $last_page = 1;
@@ -208,25 +300,29 @@ class Model
         ];
     }
 
+    // SOFT DELETE: Ahora utiliza buildSelectSql() en vez de SQL duro para respetar los filtros
     public function all()
     {
-        $sql = "SELECT * FROM {$this->table}";
-        return $this->query($sql)->get();
+        $sql = $this->buildSelectSql();
+        return $this->query($sql, $this->values)->get();
     }
 
     public function pluck($value, $key = null)
     {
         $columns = $key ? "{$key}, {$value}" : $value;
-        $sql = "SELECT {$columns} FROM {$this->table}";
-        $data = $this->query($sql)->get();
+        // SOFT DELETE: Cambiado para usar buildSelectSql heredando los filtros activos de columnas
+        $this->select = $columns;
+        $sql = $this->buildSelectSql();
+        $data = $this->query($sql, $this->values)->get();
         if (empty($data)) return [];
         return is_null($key) ? array_column($data, $value) : array_column($data, $value, $key);
     }
 
+    // SOFT DELETE: Usa el motor buildSelectSql() nativo añadiendo el ID al stack de valores
     public function find(int $id)
     {
-        $sql = "SELECT * FROM {$this->table} WHERE {$this->primaryKey} = ?";
-        return $this->query($sql, [$id], 'i')->first();
+        $this->where($this->primaryKey, '=', $id);
+        return $this->first();
     }
 
     public function where(string $column, string $operator, $value = null): self
@@ -269,29 +365,39 @@ class Model
         return $this;
     }
 
-    public function exists(string $column, $value, $excludeId = null, string $idColumn = 'id'): bool
+    public function exists(string $column, string $value, ?int $id = null): bool
     {
-        // 1. Limpiar y sanitizar el nombre de la columna
-        $column = trim(str_replace('`', '', $column));
-        $idColumn = trim(str_replace('`', '', $idColumn));
-
-        // 2. Construcción base de la consulta
-        $sql = "SELECT 1 FROM {$this->table} WHERE {$column} = ?";
+        // Construimos la consulta base
+        $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE {$column} = ?";
         $params = [$value];
 
-        // 3. Excluir el registro actual si se proporciona un ID (Útil para actualizaciones)
-        if ($excludeId !== null) {
-            $sql .= " AND {$idColumn} != ?";
-            $params[] = $excludeId;
+        // Si nos pasan un ID, lo excluimos de la búsqueda de duplicados
+        if ($id !== null) {
+            $sql .= " AND {$this->primaryKey} != ?";
+            $params[] = $id;
         }
 
-        // 4. Agregar límite para optimizar rendimiento de la base de datos
-        $sql .= " LIMIT 1";
+        // Si tu modelo maneja Soft Deletes de forma global,
+        // asegúrate de que no choque con usuarios ya eliminados en la verificación
+        if ($this->useSoftDeletes && !$this->withTrashed) {
+            $sql .= " AND deleted_at IS NULL";
+        }
 
-        // 5. Ejecutar consulta
-        $result = $this->query($sql, $params)->first();
-        return !empty($result);
+        // Ejecutamos la consulta usando el motor preparado de tu clase Model base
+        $this->query($sql, $params);
+
+        $result = 0;
+        if ($this->query instanceof \mysqli_result) {
+            $row = $this->query->fetch_assoc();
+            $result = (int)($row['total'] ?? 0);
+        }
+
+        // Es de vital importancia resetear el query para no arrastrar cadenas WHERE cruzadas
+        $this->resetQuery();
+
+        return $result > 0;
     }
+
 
     public function create(array $data)
     {
@@ -321,15 +427,29 @@ class Model
         $values = array_values($data);
         $values[] = $id;
 
+        // Ejecutamos la consulta preparada
         $this->query($sql, $values);
-        return $this->find($id);
+
+        // CORRECCIÓN CRÍTICA: Si no hay código de error (errno === 0), la consulta fue exitosa
+        // independientemente de si se modificaron filas en los textos o no.
+        return $this->connection->errno === 0;
     }
 
-    public function delete(int $id)
+    // Eliminación inteligente adaptada al estado del modelo
+    public function delete(int $id): bool
     {
-        $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
-        $this->query($sql, [$id], 'i');
-        $this->resetQuery();
+        if ($this->useSoftDeletes) {
+            // Si SoftDelete está activo: Eliminación lógica (UPDATE)
+            $now = date('Y-m-d H:i:s');
+            $sql = "UPDATE {$this->table} SET deleted_at = ? WHERE {$this->primaryKey} = ?";
+            $this->query($sql, [$now, $id], 'si');
+        } else {
+            // Si SoftDelete está inactivo: Eliminación física tradicional (DELETE)
+            $sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey} = ?";
+            $this->query($sql, [$id], 'i');
+        }
+
+        return $this->query > 0; // Verifica filas afectadas
     }
 
     // Inicia la transacción desactivando el autocommit

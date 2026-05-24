@@ -191,7 +191,7 @@ document.addEventListener("change", function (e) {
 // 6. PROCESAMIENTO Y ENVÍO DE DATOS (FETCH)
 // ==========================================
 async function fntProcesar() {
-    const url = buttonSubmit.innerHTML === "Actualizar" ? "usuarios/update" : "/users";
+    const url = buttonSubmit.innerText.trim() === "Actualizar" ? "/users/" + inputIdUsuario.value + "/update" : "/users";
     try {
         const formData = new FormData(formulario);
         let resp = await fetch(base_url + url, {
