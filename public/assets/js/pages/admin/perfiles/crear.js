@@ -16,7 +16,7 @@ const generarSlug = () => {
     return {
       à: 'a', á: 'a', ä: 'a', â: 'a', è: 'e', é: 'e', ë: 'e', ê: 'e',
       ì: 'i', í: 'i', ï: 'i', î: 'i', ò: 'o', ó: 'o', ö: 'o', ô: 'o',
-      ù: 'u', ú: 'u', ü: 'u', ü: 'u', ñ: 'n', ç: 'c'
+      ù: 'u', ú: 'u', ü: 'u', ñ: 'n', ç: 'c'
     }[match];
   });
 
@@ -71,6 +71,8 @@ async function fntProcesar() {
   const url = buttonSubmit.innerText.trim() === 'Actualizar'
     ? '/roles/' + inputIdRole.value + '/update'
     : '/roles';
+
+  console.log(url);
 
   try {
     const formData = new FormData(formulario);
@@ -139,12 +141,9 @@ formulario.addEventListener('submit', (e) => {
 
   inputs.forEach((input) => {
     const nombreCampo = input.name || input.id;
-    if (!nombreCampo) return;
+    if (!nombreCampo || !expresiones[nombreCampo]) return; // Salta si no hay reglas
 
-    const expresionAsociada = expresiones[nombreCampo] || null;
-    // Corregido: Ahora captura correctamente si el campo falló
-    const esValido = validarCampo(expresionAsociada, input, nombreCampo);
-
+    const esValido = validarCampo(expresiones[nombreCampo], input, nombreCampo);
     if (!esValido) {
       formularioValido = false;
     }

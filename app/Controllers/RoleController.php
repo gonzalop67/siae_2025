@@ -91,4 +91,60 @@ class RoleController extends Controller
             ]);
         }
     }
+
+    public function edit(int $id)
+    {
+        $role = $this->roleModel->find($id);
+        $title = "Editar Usuario";
+
+        return $this->view('admin.roles.edit', compact('title', 'role'));
+    }
+
+    public function update(int $id)
+    {
+        // Indicar al navegador/JS que la respuesta siempre será un JSON
+        header('Content-Type: application/json');
+
+        // 1. Capturar datos directamente de $_POST (compatible al 100% con FormData de JS)
+        $input = $_POST ?? [];
+
+        // 2. Validar datos de entrada
+        if (!$this->roleModel->validate($input, $id)) {
+            return json_encode([
+                'ok' => false,
+                'errors' => $this->roleModel->errors
+            ]);
+        }
+
+        // 3. Preparación del set de datos (limpiando espacios)
+        $datos = [
+            'pe_nombre' => trim($input['nombre'] ?? ''),
+            'pe_slug'   => trim($input['slug'] ?? ''),
+        ];
+
+        // 4. Persistencia con manejo de transacciones atómicas
+        try {
+            $this->roleModel->beginTransaction();
+            // echo "<pre>"; print_r($datos); echo "</pre>"; die();
+
+            // Ejecutar actualización
+            $this->roleModel->update($id, $datos);
+
+            // Confirmar cambios en la base de datos
+            $this->roleModel->commit();
+
+            return json_encode([
+                'ok' => true,
+                'mensaje' => 'Perfil procesado con éxito.'
+            ]);
+        } catch (\Throwable $e) {
+            // Deshace cualquier cambio si algo falla en el proceso
+            $this->roleModel->rollBack();
+
+            return json_encode([
+                'ok' => false,
+                'mensaje' => "Ocurrió un error inesperado: " . $e->getMessage()
+            ]);
+        }
+    }
 }

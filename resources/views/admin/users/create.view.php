@@ -130,7 +130,7 @@
                             <div class="col-sm-2">
                             </div>
                             <div class="col-sm-10">
-                                <button id="btn-save" type="submit" class="btn btn-success"><i class="fa fa-save"></i> Guardar</button>
+                                <button id="btn-save" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
                             </div>
                         </div>
                     </form>

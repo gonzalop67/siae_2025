@@ -39,5 +39,7 @@ Route::post('/users/:id/roles', [UserController::class, 'updateRoles'], [$authMi
 Route::get('/roles', [RoleController::class, 'index'], [$authMiddleware]);
 Route::get('/roles/create', [RoleController::class, 'create'], [$authMiddleware]);
 Route::post('/roles', [RoleController::class, 'store'], [$authMiddleware]);
+Route::get('/roles/:id/edit', [RoleController::class, 'edit'], [$authMiddleware]);
+Route::post('/roles/:id/update', [RoleController::class, 'update'], [$authMiddleware]);
 
 Route::dispatch();
