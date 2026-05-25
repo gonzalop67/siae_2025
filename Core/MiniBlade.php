@@ -155,4 +155,13 @@ class MiniBlade
         $friendlyError = str_replace($cacheFile, $originalPath, $details);
         throw new \ParseError("Error de sintaxis en la vista compilada.\nDetalles:\n" . trim($friendlyError));
     }
+
+    public function clearCache()
+    {
+        $files = glob($this->cachePath . '*.php');
+        foreach ($files as $file) {
+            if (is_file($file)) unlink($file);
+        }
+        return count($files);
+    }
 }

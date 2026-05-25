@@ -367,32 +367,37 @@ class Model
 
     public function exists(string $column, string $value, ?int $id = null): bool
     {
-        // Construimos la consulta base
+        // 1. Construimos la consulta base
         $sql = "SELECT COUNT(*) as total FROM {$this->table} WHERE {$column} = ?";
         $params = [$value];
 
-        // Si nos pasan un ID, lo excluimos de la búsqueda de duplicados
+        // 2. Si pasan un ID (caso Update), lo excluimos de la búsqueda
         if ($id !== null) {
             $sql .= " AND {$this->primaryKey} != ?";
             $params[] = $id;
         }
 
-        // Si tu modelo maneja Soft Deletes de forma global,
-        // asegúrate de que no choque con usuarios ya eliminados en la verificación
+        // 3. Soporte para Soft Deletes
         if ($this->useSoftDeletes && !$this->withTrashed) {
             $sql .= " AND deleted_at IS NULL";
         }
 
-        // Ejecutamos la consulta usando el motor preparado de tu clase Model base
+        // Ejecutamos la consulta en el modelo
         $this->query($sql, $params);
 
         $result = 0;
+
+        // CORREGIDO: Evaluamos la propiedad interna $this->query, no el retorno del método
         if ($this->query instanceof \mysqli_result) {
+            // Obtenemos la fila de la propiedad interna
             $row = $this->query->fetch_assoc();
             $result = (int)($row['total'] ?? 0);
+
+            // Liberamos la memoria del resultado interno
+            $this->query->free();
         }
 
-        // Es de vital importancia resetear el query para no arrastrar cadenas WHERE cruzadas
+        // 4. Resetear el estado de consultas del modelo
         $this->resetQuery();
 
         return $result > 0;

@@ -37,8 +37,6 @@
                 </div>
             </nav>
 
-            @include('includes.message')
-
             @if (count($users) > 0)
                 <div class="table-responsive-sm">
                     <table class="table table-bordered">

@@ -91,18 +91,18 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Roles -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ RUTA_URL }}/roles">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Roles</span></a>
+            </li>
+
             <!-- Nav Item - Usuarios -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ RUTA_URL }}/users">
                     <i class="fa fa-fw fa-users"></i>
                     <span>Usuarios</span></a>
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span></a>
             </li>
 
             <!-- Divider -->
