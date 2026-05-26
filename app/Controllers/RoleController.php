@@ -3,15 +3,21 @@
 namespace App\Controllers;
 
 use App\Models\Perfil;
+use App\Models\Permiso;
+use App\Models\PerfilPermiso;
 
 class RoleController extends Controller
 {
     protected Perfil $roleModel;
+    protected Permiso $permissionModel;
+    protected PerfilPermiso $perfilPermisoModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
         $this->roleModel = new Perfil;
+        $this->permissionModel = new Permiso;
+        $this->perfilPermisoModel = new PerfilPermiso;
     }
 
     public function index()
@@ -285,5 +291,38 @@ class RoleController extends Controller
             ]);
         }
         exit;
+    }
+
+    public function permissions(int $id)
+    {
+        // 1. El rol que estamos editando
+        $rol = $this->roleModel->find($id);
+
+        // 2. TODOS los permisos que existen en el sistema (para los checkboxes)
+        // Asumo que tienes un roleModel o tabla 'roles'
+        $permissions = $this->permissionModel
+            ->orderBy('nombre')
+            ->get();
+
+        // 3. Los IDs de los roles que este Usuario ya tiene asignados
+        // Esta es la simulación real de: $user->roles->pluck('id')->toArray();
+        $rolePermissions = $this->permissionModel->getPermissionIds($id);
+
+        $title = "Asignación de Permisos";
+
+        return $this->view('admin.roles.permissions', compact('title', 'rol', 'permissions', 'rolePermissions'));
+    }
+
+    public function updatePermissions(int $id)
+    {
+        // $id es el id del perfil
+        $PermissionIds = $_POST['permissions'];
+        $this->perfilPermisoModel->sync($id, $PermissionIds);
+
+        // Mensaje de éxito
+        $_SESSION['mensaje'] = "Permisos actualizados satisfactoriamente.";
+        $_SESSION['tipo'] = "success";
+        $_SESSION['icono'] = "check";
+        redireccionar('/roles/' . $id . '/permissions');
     }
 }
