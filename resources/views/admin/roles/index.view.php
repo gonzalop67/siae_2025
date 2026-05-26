@@ -80,10 +80,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?php
-                $paginate = 'roles';
-                ?>
-                @include('assets.pagination')
+                @include('includes.pagination')
             @else
                 <div class="text-center">
                     Aún no se han registrado Perfiles.

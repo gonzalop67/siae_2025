@@ -111,10 +111,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?php
-                $paginate = 'users';
-                ?>
-                @include('assets.pagination')
+                @include('includes.pagination')
             @else
                 <div class="text-center">
                     Aún no se han registrado Usuarios.

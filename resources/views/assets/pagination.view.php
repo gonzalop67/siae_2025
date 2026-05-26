@@ -1,36 +1,41 @@
-<div class="d-flex justify-content-between align-items-center">
+<div class="d-flex justify-content-between align-items-center mt-3">
     <div>
         Mostrando de {{ $$paginate['from'] }} a {{ $$paginate['to'] }} de {{ $$paginate['total'] }} registros
     </div>
-    <nav>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-end">
-                <!-- Botón Anterior -->
-                <li class="page-item {{ empty($$paginate['prev_page_url']) ? 'disabled' : '' }}">
-                    <a class="page-link" href="{{ !empty($$paginate['prev_page_url']) ? RUTA_URL . $$paginate['prev_page_url'] . (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') : '#' }}" aria-label="Previous">
-                        <span aria-hidden="true">&lt;</span>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-end mb-0">
+            
+            <!-- Botón Anterior -->
+            <li class="page-item {{ empty($$paginate['prev_page_url']) ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ !empty($$paginate['prev_page_url']) ? $$paginate['prev_page_url'] : '#' }}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                </a>
+            </li>
+
+            <!-- Números de Página -->
+            <?php 
+            // Obtenemos la URL limpia del navegador y preparamos los query params existentes menos 'page'
+            $currentUrlPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $queryParams = $_GET;
+            unset($queryParams['page']);
+            $queryString = count($queryParams) > 0 ? '&' . http_build_query($queryParams) : '';
+            
+            for ($i = 1; $i <= $$paginate['last_page']; $i++): 
+            ?>
+                <li class="page-item {{ $$paginate['current_page'] == $i ? 'active' : '' }}">
+                    <a class="page-link" href="<?= $currentUrlPath ?>?page=<?= $i ?><?= $queryString ?>">
+                        <?= $i ?>
                     </a>
                 </li>
+            <?php endfor; ?>
 
-                <?php 
-                // Detectamos automáticamente la URL actual del navegador limpia de parámetros (?page=)
-                $currentUrlPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-                
-                for ($i = 1; $i <= $$paginate['last_page']; $i++): 
-                ?>
-                    <li class="page-item {{ $$paginate['current_page'] == $i ? 'active' : '' }}">
-                        <!-- CORRECCIÓN CLAVE: Usamos $currentUrlPath en lugar de /{{ $paginate }} -->
-                        <a class="page-link" href="<?= $currentUrlPath ?>?page={{ $i }}<?= isset($_GET['search']) ? "&search=" . urlencode($_GET['search']) : "" ?>" aria-current="page">{{ $i }}</a>
-                    </li>
-                <?php endfor ?>
-
-                <!-- Botón Siguiente -->
-                <li class="page-item {{ empty($$paginate['next_page_url']) ? 'disabled' : '' }}">
-                    <a class="page-link" href="{{ !empty($$paginate['next_page_url']) ? RUTA_URL . $$paginate['next_page_url'] . (isset($_GET['search']) ? '&search=' . urlencode($_GET['search']) : '') : '#' }}" aria-label="Next">
-                        <span aria-hidden="true">&gt;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+            <!-- Botón Siguiente -->
+            <li class="page-item {{ empty($$paginate['next_page_url']) ? 'disabled' : '' }}">
+                <a class="page-link" href="{{ !empty($$paginate['next_page_url']) ? $$paginate['next_page_url'] : '#' }}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                </a>
+            </li>
+            
+        </ul>
     </nav>
 </div>

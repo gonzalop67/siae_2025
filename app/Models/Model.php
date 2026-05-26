@@ -259,10 +259,17 @@ class Model
             die("Error preparando el conteo de paginación: " . $this->connection->error . " | SQL generado: " . $countSql);
         }
 
+        // CORRECCIÓN CLAVE: Detección dinámica de tipos idéntica a tu método query()
         if ($this->values) {
-            $params = str_repeat('s', count($this->values));
+            $params = '';
+            foreach ($this->values as $val) {
+                if (is_int($val)) $params .= 'i';
+                elseif (is_double($val)) $params .= 'd';
+                else $params .= 's';
+            }
             $countQuery->bind_param($params, ...$this->values);
         }
+
         $countQuery->execute();
         $total = $countQuery->get_result()->fetch_assoc()['total'] ?? 0;
 
@@ -270,8 +277,9 @@ class Model
         $countQuery->close();
 
         $sql = $this->buildSelectSql();
-
         $offset = ($page - 1) * $cant;
+
+        // Mantenemos tu asignación directa pero segura para el LIMIT
         $sql .= " LIMIT {$offset}, {$cant}";
 
         $this->query($sql, $this->values);
@@ -283,10 +291,17 @@ class Model
         $basePath = str_replace(['\\', '/public'], ['/', ''], dirname($scriptName));
         $uri = trim(str_replace($basePath, '', $uri), '/');
 
+        // Recuperamos los parámetros GET actuales (como 'search') para mantenerlos en la URL de paginación
+        $queryParams = $_GET;
+        unset($queryParams['page']); // Eliminamos la página actual para sobrescribirla después
+
         $this->resetQuery();
 
         $last_page = (int)ceil($total / $cant);
         if ($last_page < 1) $last_page = 1;
+
+        // Construcción de strings de consulta para preservar el buscador en los enlaces
+        $queryString = count($queryParams) > 0 ? '&' . http_build_query($queryParams) : '';
 
         return [
             'total'        => $total,
@@ -294,8 +309,8 @@ class Model
             'to'           => $offset + count($data),
             'current_page' => $page,
             'last_page'    => $last_page,
-            'next_page_url' => $page < $last_page ? "/{$uri}?page=" . ($page + 1) : null,
-            'prev_page_url' => $page > 1 ? "/{$uri}?page=" . ($page - 1) : null,
+            'next_page_url' => $page < $last_page ? "/{$uri}?page=" . ($page + 1) . $queryString : null,
+            'prev_page_url' => $page > 1 ? "/{$uri}?page=" . ($page - 1) . $queryString : null,
             'data'         => $data,
         ];
     }

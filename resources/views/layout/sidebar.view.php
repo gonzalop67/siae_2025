@@ -91,11 +91,18 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Permisos -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{ RUTA_URL }}/permissions">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Permisos</span></a>
+            </li>
+
             <!-- Nav Item - Roles -->
             <li class="nav-item">
                 <a class="nav-link" href="{{ RUTA_URL }}/roles">
                     <i class="fa-solid fa-users-gear"></i>
-                    <span>Roles</span></a>
+                    <span>Perfiles</span></a>
             </li>
 
             <!-- Nav Item - Usuarios -->

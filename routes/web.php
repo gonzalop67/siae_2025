@@ -8,6 +8,7 @@ require_once RUTA_APP . '/Core/middlewares.php';
 
 use App\Controllers\LoginController;
 use App\Controllers\AdminDashboardController;
+use App\Controllers\PermissionController;
 use App\Controllers\RoleController;
 use App\Controllers\UserController;
 
@@ -48,5 +49,8 @@ Route::get('/roles/:id/edit', [RoleController::class, 'edit'], [$authMiddleware]
 Route::post('/roles/:id/update', [RoleController::class, 'update'], [$authMiddleware]);
 // Ruta para la eliminación "suave"
 Route::post('/roles/:id/delete', [RoleController::class, 'delete'], [$authMiddleware]);
+
+/** Rutas para Permisos */
+Route::get('/permissions', [PermissionController::class, 'index'], [$authMiddleware]);
 
 Route::dispatch();

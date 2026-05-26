@@ -72,10 +72,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?php
-                $paginate = 'roles';
-                ?>
-                @include('assets.pagination')
+                @include('includes.pagination')
             @else
                 <div class="text-center">
                     La papelera está vacía.

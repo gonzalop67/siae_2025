@@ -96,11 +96,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?php
-                // Mantenlo como 'users' para que $$paginate se convierta en $users
-                $paginate = 'users';
-                ?>
-                @include('assets.pagination')
+                @include('includes.pagination')
             @else
                 <div class="text-center">
                     La papelera está vacía.
