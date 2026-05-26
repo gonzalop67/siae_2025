@@ -39,6 +39,10 @@ const expresiones = {
 const campos = { nombre: false, slug: false };
 
 const validarFormulario = (e) => {
+  // Si el usuario hizo clic en un elemento con la clase 'btn-volver', ignoramos el blur
+  if (e.relatedTarget && e.relatedTarget.classList.contains('btn-volver')) {
+    return;
+  }
   switch (e.target.name) {
     case 'nombre': validarCampo(expresiones.nombre, e.target, 'nombre'); break;
     case 'slug': validarCampo(expresiones.slug, e.target, 'slug'); break;

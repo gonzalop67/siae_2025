@@ -3,8 +3,8 @@
 @section('content')
     <div class="row">
         <div class="col-md-12">
-            <!-- Page Heading (Modificado para la papelera) -->
-            <h1 class="h3 mb-4 text-gray-800">Usuarios Eliminados (Papelera)</h1>
+            <!-- Page Heading -->
+            <h1 class="h3 mb-4 text-gray-800">Perfiles Eliminados (Papelera)</h1>
 
             <?php
             $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -15,12 +15,12 @@
 
                     <!-- Contenedor para los botones (Modificado: Botón para volver a la lista principal) -->
                     <div class="d-flex align-items-center">
-                        <a href="<?= RUTA_URL ?>/users" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i>
-                            Volver a Usuarios</a>
+                        <a href="<?= RUTA_URL ?>/roles" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i>
+                            Volver a Perfiles</a>
                     </div>
 
                     <!-- Formulario de búsqueda (Modificado: Apunta a la ruta de la papelera) -->
-                    <form action="<?= RUTA_URL ?>/users/wastebasket" class="form-inline" role="search">
+                    <form action="<?= RUTA_URL ?>/roles/wastebasket" class="form-inline" role="search">
                         <input class="form-control form-control-sm mr-2" type="search" name="search"
                             value="{{ $search }}" placeholder="Buscar en papelera..." aria-label="Search">
                         <button class="btn btn-outline-primary btn-sm" type="submit">Buscar</button>
@@ -29,63 +29,39 @@
                 </div>
             </nav>
 
-            @include('includes.message')
-
-            @if (count($users) > 0)
+            @if (count($roles) > 0)
                 <div class="table-responsive-sm">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Avatar</th>
-                                <th>Nombre de Usuario</th>
-                                <th>Nombre Completo</th>
-                                <th>Email</th>
-                                <!-- Se removió la columna de Roles por no ser relevante aquí -->
+                                <th>Nombre del Rol</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
-                                $contador = $users['from'] - 1;
+                                $contador = $roles['from'] - 1;
                             @endphp
-                            @foreach ($users['data'] as $user)
+                            @foreach ($roles['data'] as $role)
                                 @php
                                     $contador++;
                                 @endphp
                                 <tr>
                                     <td>{{ $contador }}</td>
-                                    @php
-                                        $fotoNombre = !empty($user['us_foto']) ? $user['us_foto'] : 'no-disponible.png';
-                                        $rutaFisica = dirname($_SERVER['SCRIPT_FILENAME']) . '/uploads/' . $fotoNombre;
-
-                                        if (!file_exists($rutaFisica)) {
-                                            $fotoNombre = 'no-disponible.png';
-                                        }
-
-                                        $avatarUrl = RUTA_URL . '/public/uploads/' . $fotoNombre;
-                                    @endphp
-
-                                    <td>
-                                        <img src="{{ $avatarUrl }}" style="border-radius: 50%" width="45"
-                                            alt="Avatar del Usuario">
-                                    </td>
-                                    <td>{{ $user['us_login'] }}</td>
-                                    <td>{{ $user['us_fullname'] }}</td>
-                                    <td>{{ $user['us_email'] }}</td>
-
+                                    <td>{{ $role['pe_nombre'] }}</td>
                                     <!-- Acciones de la Papelera: Restaurar y Eliminar Definitivamente -->
                                     <td class="text-center">
                                         <div class="btn-group" role="group" aria-label="Acciones Papelera">
                                             <!-- Botón Restaurar -->
                                             <button type="button" class="btn btn-success btn-sm"
-                                                onclick="confirmarRestauracion({{ $user['id_usuario'] }})"
+                                                onclick="confirmarRestauracion({{ $role['id_perfil'] }})"
                                                 title="Restaurar Usuario">
                                                 <i class="fa-solid fa-rotate-left"></i>
                                             </button>
                                             <!-- Botón Eliminar Permanentemente -->
                                             <button type="button" class="btn btn-danger btn-sm"
-                                                onclick="confirmarEliminacionDefinitiva({{ $user['id_usuario'] }})"
+                                                onclick="confirmarEliminacionDefinitiva({{ $role['id_perfil'] }})"
                                                 title="Eliminar Permanentemente">
                                                 <i class="fa-solid fa-trash-can"></i>
                                             </button>
@@ -97,8 +73,7 @@
                     </table>
                 </div>
                 <?php
-                // Mantenlo como 'users' para que $$paginate se convierta en $users
-                $paginate = 'users';
+                $paginate = 'roles';
                 ?>
                 @include('assets.pagination')
             @else
@@ -108,14 +83,13 @@
             @endif
         </div>
     </div>
-
     <!-- Scripts de Confirmación con SweetAlert2 -->
     <script>
-        // 1. Función para Restaurar el Usuario
-        function confirmarRestauracion(idUsuario) {
+        // 1. Función para Restaurar el Perfil
+        function confirmarRestauracion(idPerfil) {
             Swal.fire({
-                title: '¿Restaurar usuario?',
-                text: "El usuario volverá a estar activo en la lista principal.",
+                title: '¿Restaurar perfil?',
+                text: "El perfil volverá a estar activo en la lista principal.",
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#28a745',
@@ -124,7 +98,7 @@
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`${base_url}/users/${idUsuario}/restore`, {
+                    fetch(`${base_url}/roles/${idPerfil}/restore`, {
                             method: 'POST',
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -133,10 +107,10 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                Swal.fire('¡Restaurado!', 'El usuario ha sido activado.', 'success')
+                                Swal.fire('¡Restaurado!', 'El perfil ha sido activado.', 'success')
                                     .then(() => location.reload());
                             } else {
-                                Swal.fire('Error', 'No se pudo restaurar el usuario.', 'error');
+                                Swal.fire('Error', 'No se pudo restaurar el perfil.', 'error');
                             }
                         });
                 }
@@ -144,7 +118,7 @@
         }
 
         // 2. Función para Eliminar Permanentemente de la Base de Datos
-        function confirmarEliminacionDefinitiva(idUsuario) {
+        function confirmarEliminacionDefinitiva(idPerfil) {
             Swal.fire({
                 title: '¿Eliminar permanentemente?',
                 text: "Esta acción no se puede deshacer de ninguna manera.",
@@ -156,7 +130,7 @@
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`${base_url}/users/${idUsuario}/destroy`, {
+                    fetch(`${base_url}/roles/${idPerfil}/destroy`, {
                             method: 'POST',
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -165,7 +139,7 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                Swal.fire('¡Eliminado!', 'El usuario ha sido borrado para siempre.', 'success')
+                                Swal.fire('¡Eliminado!', 'El perfil ha sido borrado para siempre.', 'success')
                                     .then(() => location.reload());
                             } else {
                                 // Muestra el mensaje específico enviado desde el controlador (Restricción de integridad)

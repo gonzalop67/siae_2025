@@ -14,9 +14,6 @@ class UserController extends Controller
     protected Perfil $roleModel;
     protected UsuarioPerfil $roleUserModel;
 
-    // Activas la funcionalidad exclusivamente para este modelo
-    protected bool $useSoftDeletes = true;
-
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO

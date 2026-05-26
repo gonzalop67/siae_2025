@@ -8,7 +8,7 @@
                 <div class="card-header d-flex justify-content-between">
                     <h5><strong>Editar Perfil: {{ $role['pe_nombre'] }}</strong></h5>
                     <div>
-                        <a href="{{ RUTA_URL }}/roles">Volver al Listado de Perfiles</a>
+                        <a href="{{ RUTA_URL }}/roles" class="btn-volver">Volver al Listado de Perfiles</a>
                     </div>
                 </div>
                 <div class="card-body">

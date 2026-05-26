@@ -8,6 +8,9 @@ class Perfil extends Model
     protected string $primaryKey = 'id_perfil';
     protected array $fillable = ['pe_nombre', 'pe_slug'];
 
+    // Activas la funcionalidad exclusivamente para este modelo
+    protected bool $useSoftDeletes = true;
+
     public function validate(array $data, ?int $id = null): bool
     {
         $this->errors = [];

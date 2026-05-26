@@ -15,13 +15,13 @@
 
                     <!-- Contenedor para los botones (Alineados a la izquierda) -->
                     <div class="d-flex align-items-center">
-                        <?php // if (tiene_permiso('crear-perfil')):
-                        ?>
+                        <?php // if (tiene_permiso('crear-perfil')): ?>
                         <!-- Se cambió me-3 por mr-3 (Bootstrap 4) y se quitó el mb-3 para alinearlos bien -->
                         <a href="<?= RUTA_URL ?>/roles/create" class="btn btn-primary btn-sm mr-1"><i
                                 class="fa-solid fa-user-gear"></i> Nuevo Perfil</a>
-                        <?php // endif;
-                        ?>
+                        <a href="<?= RUTA_URL ?>/roles/wastebasket" class="btn btn-danger btn-sm"><i
+                                class="fa-solid fa-trash"></i> Papelera</a>
+                        <?php // endif; ?>
                     </div>
 
                     <!-- Formulario de búsqueda (Alineado a la derecha) -->
@@ -92,21 +92,23 @@
         </div>
     </div>
     <script>
-        function confirmarEliminacion(idRole) {
+        function confirmarEliminacion(idPerfil) {
             // 1. Mostrar alerta de confirmación previa al borrado
             Swal.fire({
-                title: '¿Eliminar permanentemente?',
-                text: "Esta acción no se puede deshacer de ninguna manera.",
-                icon: 'warning', // 'danger' no es un icono válido en SweetAlert2, se usa 'warning' o 'error'
+                title: '¿Estás seguro?',
+                text: "El perfil será enviado a la papelera.",
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar definitivo',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
+                // 2. Si el usuario confirma, enviamos la petición vía Fetch (AJAX)
                 if (result.isConfirmed) {
-                    fetch(`${base_url}/roles/${idUsuario}/destroy`, {
-                            method: 'POST',
+                    // Reemplaza esta URL por la ruta real que apunte a tu método destroy
+                    fetch(`${base_url}/roles/${idPerfil}/delete`, {
+                            method: 'POST', // O 'DELETE' según manejes tus rutas en PHP puro
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest'
                             }
@@ -114,19 +116,23 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                Swal.fire('¡Eliminado!', 'El perfil ha sido borrado para siempre.', 'success')
-                                    .then(() => location.reload());
-                            } else {
-                                // Muestra el mensaje específico enviado desde el controlador (Restricción de integridad)
-                                Swal.fire({
-                                    title: 'No se puede eliminar',
-                                    text: data.mensaje,
-                                    icon: 'error'
+                                // 3. Alerta de éxito total
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    // Recargamos la página o removemos la fila de la tabla dinámicamente
+                                    location.reload();
                                 });
+                            } else {
+                                // Alerta en caso de error lógico
+                                Swal.fire('Error', data.message, 'error');
                             }
                         })
                         .catch(error => {
-                            Swal.fire('Error', 'Ocurrió un fallo en la comunicación con el servidor.', 'error');
+                            // Alerta en caso de error de red
+                            Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error');
                         });
                 }
             });
