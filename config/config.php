@@ -15,6 +15,8 @@ define('APP_NAME', 'SIAE_2025');
 
 // Reemplaza tu define('RUTA_URL', ...) viejo por este:
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-$host = $_SERVER['HTTP_HOST']; // Captura dinámicamente si el usuario entró con www. o sin www.
+
+// Si HTTP_HOST no existe (consola), asignamos tu URL local por defecto
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
 define('RUTA_URL', $protocol . $host . '/siae_2025');

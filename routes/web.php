@@ -52,5 +52,7 @@ Route::post('/roles/:id/delete', [RoleController::class, 'delete'], [$authMiddle
 
 /** Rutas para Permisos */
 Route::get('/permissions', [PermissionController::class, 'index'], [$authMiddleware]);
+Route::get('/permissions/create', [PermissionController::class, 'create'], [$authMiddleware]);
+Route::post('/permissions', [PermissionController::class, 'store'], [$authMiddleware]);
 
 Route::dispatch();
