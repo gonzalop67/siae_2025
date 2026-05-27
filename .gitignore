@@ -7,9 +7,6 @@ public/uploads/
 # Directorio de caché
 cache/
 
-# Directorio actual del archivo de configuraciones
-config/
-
 # Directorio de archivos de configuración
 App/config
 

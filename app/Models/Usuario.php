@@ -167,4 +167,44 @@ class Usuario extends Model
         // Aquí es donde simulamos el pluck('id')->toArray()
         return array_column($data, 'id_perfil');
     }
+
+    /**
+     * Verifica si el perfil actual del usuario tiene un permiso mediante su slug.
+     */
+    public function hasPermission(string $permissionSlug): bool
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        $userId   = $_SESSION['user_id'] ?? 0;
+        $perfilId = $_SESSION['perfil_id'] ?? 0;
+
+        if ($userId === 0 || $perfilId === 0) {
+            return false;
+        }
+
+        // Si tienes un perfil Administrador Supremo (por ejemplo id_perfil = 1) 
+        // puedes darle acceso total automáticamente sin validar la tabla pivote:
+        if ($perfilId === 1) {
+            return true;
+        }
+
+        // Consulta adaptada: Relaciona el perfil de la sesión con los permisos
+        // Asumimos que tu tabla pivote de permisos se llama 'sw_perfil_permiso' 
+        // y tiene las columnas 'id_perfil' e 'id_permiso'
+        $sql = "SELECT COUNT(*) as total FROM sw_perfil_permiso pp
+                JOIN sw_permiso p ON pp.id_permiso = p.id_permiso
+                WHERE pp.id_perfil = ? AND p.slug = ?";
+
+        $stmt = $this->connection->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->bind_param('is', $perfilId, $permissionSlug);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        return ($result['total'] ?? 0) > 0;
+    }
 }

@@ -15,12 +15,24 @@ class MiniBlade
 
     protected array $sharedData = []; // 📦 Almacén de variables globales
 
-    public function __construct(string $viewsPath, string $cachePath, bool $useCache = true, bool $debug = true)
-    {
-        $this->viewsPath = rtrim($viewsPath, '/') . '/';
-        $this->cachePath = rtrim($cachePath, '/') . '/';
+    public function __construct(
+        ?string $viewsPath = null,
+        ?string $cachePath = null,
+        bool $useCache = true,
+        bool $debug = true
+    ) {
+        // 1. Si no se pasa una ruta de vistas, calculamos automáticamente la carpeta resources en la raíz
+        $defaultViews = RAIZ_PROYECTO . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'views';
+        $this->viewsPath = rtrim($viewsPath ?? $defaultViews, '/\\') . DIRECTORY_SEPARATOR;
+
+        // 2. Si no se pasa una ruta de caché, usamos la carpeta cache de la raíz
+        $defaultCache = RAIZ_PROYECTO . DIRECTORY_SEPARATOR . 'cache';
+        $this->cachePath = rtrim($cachePath ?? $defaultCache, '/\\') . DIRECTORY_SEPARATOR;
+
         $this->useCache = $useCache;
         $this->debug = $debug;
+
+        // 3. Validación de seguridad nativa intacta
         if (!is_dir($this->cachePath)) {
             mkdir($this->cachePath, 0777, true);
         }

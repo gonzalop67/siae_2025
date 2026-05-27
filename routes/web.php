@@ -4,7 +4,8 @@
 
 use Core\Route;
 
-require_once RUTA_APP . '/Core/middlewares.php';
+// Ahora sí encontrará perfectamente la carpeta Core en la raíz del proyecto
+require_once RAIZ_PROYECTO . '/Core/middlewares.php';
 
 use App\Controllers\LoginController;
 use App\Controllers\AdminDashboardController;
@@ -57,5 +58,8 @@ Route::post('/roles/:id/delete', [RoleController::class, 'delete'], [$authMiddle
 Route::get('/permissions', [PermissionController::class, 'index'], [$authMiddleware]);
 Route::get('/permissions/create', [PermissionController::class, 'create'], [$authMiddleware]);
 Route::post('/permissions', [PermissionController::class, 'store'], [$authMiddleware]);
+
+Route::get('/permissions/:id/edit', [PermissionController::class, 'edit'], [$authMiddleware]);
+Route::post('/permissions/:id/update', [PermissionController::class, 'update'], [$authMiddleware]);
 
 Route::dispatch();

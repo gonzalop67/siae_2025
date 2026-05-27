@@ -62,6 +62,14 @@ class LoginController extends Controller
                 if (session_status() === PHP_SESSION_NONE) session_start();
 
                 $_SESSION['authenticated'] = true;
+
+                // GUARDAR EN SESIÓN PARA EL MENÚ DINÁMICO
+                $_SESSION['user_id']   = $usuario['id_usuario']; // ID del usuario logueado
+                $_SESSION['perfil_id'] = $id_perfil;             // ID del perfil seleccionado activo
+
+                $menuModel = new \App\Models\Menu();
+                $_SESSION['menuItems'] = $menuModel->getMenuByPerfil((int)$id_perfil);
+                
                 // $_SESSION['username'] = $usuario['username'];
 
                 // Obtener los datos de la unidad educativa...

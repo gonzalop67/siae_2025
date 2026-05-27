@@ -1,7 +1,7 @@
 // Corregido: Selectores con comillas
 const formulario = document.getElementById('formulario');
 const inputs = document.querySelectorAll('#formulario input, #formulario textarea');
-const inputIdRole = document.getElementById('id_perfil');
+const inputIdPermiso = document.getElementById('id_permiso');
 const inputNombre = document.getElementById('nombre');
 const inputSlug = document.getElementById('slug');
 const buttonSubmit = document.getElementById('btn-submit');
@@ -77,7 +77,7 @@ inputs.forEach((input) => {
 
 async function fntProcesar() {
   const url = buttonSubmit.innerText.trim() === 'Actualizar'
-    ? '/permissions/' + inputIdRole.value + '/update'
+    ? '/permissions/' + inputIdPermiso.value + '/update'
     : '/permissions';
 
   try {
