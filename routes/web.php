@@ -62,4 +62,16 @@ Route::post('/permissions', [PermissionController::class, 'store'], [$authMiddle
 Route::get('/permissions/:id/edit', [PermissionController::class, 'edit'], [$authMiddleware]);
 Route::post('/permissions/:id/update', [PermissionController::class, 'update'], [$authMiddleware]);
 
+
+/** Rutas para Ofertas_educativas */
+Route::get('/ofertas_educativas', [\App\Controllers\OfertasEducativaController::class, 'index'], [$authMiddleware]);
+Route::get('/ofertas_educativas/create', [\App\Controllers\OfertasEducativaController::class, 'create'], [$authMiddleware]);
+Route::post('/ofertas_educativas', [\App\Controllers\OfertasEducativaController::class, 'store'], [$authMiddleware]);
+Route::get('/ofertas_educativas/wastebasket', [\App\Controllers\OfertasEducativaController::class, 'wastebasket'], [$authMiddleware]);
+Route::post('/ofertas_educativas/:id/restore', [\App\Controllers\OfertasEducativaController::class, 'restore'], [$authMiddleware]);
+Route::post('/ofertas_educativas/:id/destroy', [\App\Controllers\OfertasEducativaController::class, 'destroy'], [$authMiddleware]);
+Route::post('/ofertas_educativas/:id/delete', [\App\Controllers\OfertasEducativaController::class, 'delete'], [$authMiddleware]);
+Route::get('/ofertas_educativas/:id/edit', [\App\Controllers\OfertasEducativaController::class, 'edit'], [$authMiddleware]);
+Route::post('/ofertas_educativas/:id/update', [\App\Controllers\OfertasEducativaController::class, 'update'], [$authMiddleware]);
+
 Route::dispatch();
