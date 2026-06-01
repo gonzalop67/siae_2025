@@ -78,4 +78,79 @@ class Menu extends Model
 
         return array_values($menuTree);
     }
+
+    public function getMenus($id_perfil)
+    {
+        // Filtramos directamente por el ID del perfil seleccionado
+        $sql = "SELECT m.*, pe_nombre FROM `sw_menu` m
+            INNER JOIN `sw_menu_perfil` mp ON m.id_menu = mp.id_menu
+            INNER JOIN `sw_perfil` p ON p.id_perfil = mp.id_perfil 
+            WHERE mp.id_perfil = ?
+            ORDER BY m.mnu_padre, m.mnu_orden";
+
+        $stmt = $this->connection->prepare($sql);
+        if (!$stmt) {
+            return [];
+        }
+
+        $stmt->bind_param("i", $id_perfil);
+        $stmt->execute();
+        $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $menuTree = [];
+        $submenus = [];
+
+        // 1. SEPARAR PADRES E HIJOS
+        foreach ($rows as $row) {
+            if ((int)$row['mnu_padre'] === 0) {
+                $row['submenu'] = [];
+                $menuTree[$row['id_menu']] = $row;
+            } else {
+                $submenus[] = $row;
+            }
+        }
+
+        // 2. ASOCIACIÓN DE SUBMENÚS (Soporta múltiples niveles mediante referencia)
+        foreach ($submenus as $sub) {
+            $padreId = $sub['mnu_padre'];
+            if (isset($menuTree[$padreId])) {
+                $menuTree[$padreId]['submenu'][] = $sub;
+            } else {
+                // Si es un submenú profundo (nieto), buscamos a su padre dentro de los submenús ya procesados
+                $asignado = false;
+                foreach ($menuTree as &$padreRaiz) {
+                    if ($this->insertarEnHijo($padreRaiz, $sub)) {
+                        $asignado = true;
+                        break;
+                    }
+                }
+                // Si el padre no existe en el perfil, se muestra en la raíz
+                if (!$asignado) {
+                    $sub['submenu'] = [];
+                    $menuTree[$sub['id_menu']] = $sub;
+                }
+            }
+        }
+
+        return array_values($menuTree);
+    }
+
+    // Función auxiliar interna para soportar árboles de más de 2 niveles (Nietos)
+    private function insertarEnHijo(&$padre, $sub)
+    {
+        if (isset($padre['id_menu']) && $padre['id_menu'] == $sub['mnu_padre']) {
+            $sub['submenu'] = [];
+            $padre['submenu'][] = $sub;
+            return true;
+        }
+        if (!empty($padre['submenu'])) {
+            foreach ($padre['submenu'] as &$hijo) {
+                if ($this->insertarEnHijo($hijo, $sub)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

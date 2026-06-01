@@ -25,6 +25,8 @@
     <!-- Custom styles for this template-->
     <link href="{{ RUTA_URL }}/public/assets/css/sb-admin-2.min.css" rel="stylesheet">
 
+    @yield('styles')
+
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="{{ RUTA_URL }}/public/assets/css/estilos.css">
 
@@ -117,6 +119,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ RUTA_URL }}/public/assets/js/sb-admin-2.js"></script>
+
+    @yield('scripts')
 
 </body>
 

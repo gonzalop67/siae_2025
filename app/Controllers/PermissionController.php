@@ -16,7 +16,7 @@ class PermissionController extends Controller
 
     public function index()
     {
-        $title = 'Permissions Admin';
+        $title = 'Permisos | ' . APP_NAME;
         $search = trim($_GET['search'] ?? '');
 
         if ($search !== '') {
