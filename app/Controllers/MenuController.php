@@ -134,7 +134,8 @@ class MenuController extends Controller
     public function edit(int $id)
     {
         $title = 'Editar Menú';
-        // $data = $this->model->find($id);
+        $menu = $this->menuModel->find($id);
+        return $menu;
         // return $this->view('admin.menu.edit', compact('data', 'title'));
     }
 
@@ -143,8 +144,55 @@ class MenuController extends Controller
      */
     public function update(int $id)
     {
-        // $this->model->update($id, $_POST);
-        // return redirect('/menu');
+        // Indicar al navegador/JS que la respuesta siempre será un JSON
+        header('Content-Type: application/json');
+
+        // 1. Capturar datos directamente de $_POST (compatible al 100% con FormData de JS)
+        $input = $_POST ?? [];
+
+        // 2. Validar datos de entrada
+        if (!$this->menuModel->validate($input, $id)) {
+            return json_encode([
+                'ok' => false,
+                'errors' => $this->menuModel->errors
+            ]);
+        }
+
+        // Limpiar espacios múltiples en el icono
+        $icono = preg_replace('/\s+/', ' ', trim($input['mnu_icono'] ?? ''));
+
+        // 3. Preparación del set de datos (limpiando espacios)
+        $datos = [
+            'mnu_texto' => trim($input['mnu_texto'] ?? ''),
+            'mnu_link'  => trim($input['mnu_link'] ?? ''),
+            'mnu_icono' => trim($icono ?? ''),
+            'mnu_publicado' => trim($input['mnu_publicado'] ?? ''),
+        ];
+
+        // 4. Persistencia con manejo de transacciones atómicas
+        try {
+            $this->menuModel->beginTransaction();
+            // echo "<pre>"; print_r($datos); echo "</pre>"; die();
+
+            // Ejecutar actualización
+            $this->menuModel->update($id, $datos);
+
+            // Confirmar cambios en la base de datos
+            $this->menuModel->commit();
+
+            return json_encode([
+                'ok' => true,
+                'mensaje' => 'Menú procesado con éxito.'
+            ]);
+        } catch (\Throwable $e) {
+            // Deshace cualquier cambio si algo falla en el proceso
+            $this->menuModel->rollBack();
+
+            return json_encode([
+                'ok' => false,
+                'mensaje' => "Ocurrió un error inesperado: " . $e->getMessage()
+            ]);
+        }
     }
 
     /**

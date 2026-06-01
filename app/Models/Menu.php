@@ -79,7 +79,7 @@ class Menu extends Model
         return array_values($menuTree);
     }
 
-    public function getMenus($id_perfil)
+    public function getMenus(int $id_perfil)
     {
         // Filtramos directamente por el ID del perfil seleccionado
         $sql = "SELECT m.*, pe_nombre FROM `sw_menu` m
@@ -152,5 +152,38 @@ class Menu extends Model
             }
         }
         return false;
+    }
+
+    public function validate(array $data, ?int $id = null): bool
+    {
+        $this->errors = [];
+
+        // Limpiar espacios múltiples en el texto
+        $texto = preg_replace('/\s+/', ' ', trim($data['mnu_texto'] ?? ''));
+
+        // CORREGIDO: Rescatar y limpiar la descripción de la data recibida
+        $enlace = trim($data['mnu_link'] ?? '');
+
+        // -------------------------------------------------------------
+        // VALIDACIÓN: TEXTO
+        // -------------------------------------------------------------
+        if (empty($texto)) {
+            $this->errors['textou'] = "El campo Texto es obligatorio.";
+        } elseif (!preg_match('/^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{3,64})$/i', $texto)) {
+            $this->errors['textou'] = "El texto del menú tiene que ser de 3 a 64 caracteres (alfabéticos con acentos y espacio).";
+        } elseif ($this->exists('mnu_texto', $texto, $id)) {
+            $this->errors['textou'] = "Ya existe el Texto del Menú en la base de datos.";
+        }
+
+        // -------------------------------------------------------------
+        // VALIDACIÓN: ENLACE
+        // -------------------------------------------------------------
+        if (empty($enlace)) {
+            $this->errors['enlaceu'] = "El campo Enlace es obligatorio.";
+        } elseif ($this->exists('mnu_link', $enlace, $id)) {
+            $this->errors['enlaceu'] = "Ya existe el Enlace del Menú en la base de datos.";
+        }
+
+        return empty($this->errors);
     }
 }

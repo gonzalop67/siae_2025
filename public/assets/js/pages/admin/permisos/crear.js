@@ -1,4 +1,4 @@
-// Corregido: Selectores con comillas
+// Selectores de elementos
 const formulario = document.getElementById('formulario');
 const inputs = document.querySelectorAll('#formulario input, #formulario textarea');
 const inputIdPermiso = document.getElementById('id_permiso');
@@ -6,11 +6,10 @@ const inputNombre = document.getElementById('nombre');
 const inputSlug = document.getElementById('slug');
 const buttonSubmit = document.getElementById('btn-submit');
 
+// Generación automática del slug (mantiene su ejecución al salir del campo nombre)
 const generarSlug = () => {
-  // Corregido: Se añade 'let' para evitar variable global
   let nombre = inputNombre.value;
-  let slug = nombre.trim();
-  slug = slug.toLowerCase();
+  let slug = nombre.trim().toLowerCase();
 
   slug = slug.replace(/[àáäâèéëêìíïîòóöôùúüûñç]/g, function (match) {
     return {
@@ -24,57 +23,36 @@ const generarSlug = () => {
   slug = slug.replace(/[\s-]+/g, '-');
   slug = slug.replace(/^-+|-+$/g, '');
   inputSlug.value = slug;
-
-  // Al generar el slug, lo validamos automáticamente
-  validarCampo(expresiones.slug, inputSlug, 'slug');
 };
 
 inputNombre.addEventListener('blur', generarSlug);
 
+// Reglas de validación
 const expresiones = {
   nombre: /^[a-zA-ZÀ-ÿ.\s]{4,64}$/,
-  slug: /^[a-z0-9_-]{4,64}$/, // Corregido: Minúsculas para coincidir con generarSlug
-  descripcion: /^[a-zA-Z0-9À-ÿ\s.,#\-\(\)\n]{10,500}$/ // Permite letras, números, saltos de línea (\n) y puntuación básica
+  slug: /^[a-z0-9_-]{4,64}$/, 
+  descripcion: /^[a-zA-Z0-9À-ÿ\s.,#\-\(\)\n]{10,500}$/ 
 };
 
-const campos = { nombre: false, slug: false, descripcion: false };
-
-const validarFormulario = (e) => {
-  // Si el usuario hizo clic en un elemento con la clase 'btn-volver', ignoramos el blur
-  if (e.relatedTarget && e.relatedTarget.classList.contains('btn-volver')) {
-    return;
-  }
-
-  const campo = e.target.name;
-
-  // Valida automáticamente cualquier campo si existe su expresión regular definida
-  if (expresiones[campo]) {
-    validarCampo(expresiones[campo], e.target, campo);
-  }
-};
-
-// Corregido: Ahora la función retorna un booleano para el evento submit
+// Función para validar un campo individualmente
 const validarCampo = (expresion, input, campo) => {
+  const errorEl = document.getElementById(`error-${campo}`);
+  
   if (expresion && expresion.test(input.value)) {
     input.classList.remove('is-invalid');
-    const errorEl = document.getElementById(`error-${campo}`);
     if (errorEl) errorEl.style.display = 'none';
-    campos[campo] = true;
-    return true; // Retorno indispensable
+    return true; 
   } else {
     input.classList.add('is-invalid');
-    const errorEl = document.getElementById(`error-${campo}`);
-    if (errorEl) errorEl.style.display = 'block';
-    campos[campo] = false;
-    return false; // Retorno indispensable
+    if (errorEl) {
+      errorEl.textContent = `El campo ${campo} no cumple con el formato requerido.`;
+      errorEl.style.display = 'block';
+    }
+    return false; 
   }
 };
 
-inputs.forEach((input) => {
-  input.addEventListener('keyup', validarFormulario);
-  input.addEventListener('blur', validarFormulario);
-});
-
+// Envío a la API 
 async function fntProcesar() {
   const url = buttonSubmit.innerText.trim() === 'Actualizar'
     ? '/permissions/' + inputIdPermiso.value + '/update'
@@ -103,31 +81,23 @@ async function fntProcesar() {
         window.location.href = base_url + '/permissions';
       });
     } else if (json.errors) {
-      // Recorremos el diccionario de errores que envió el backend [campo => mensaje]
       Object.keys(json.errors).forEach((campo) => {
         const mensajeError = json.errors[campo];
-
-        // 1. Buscamos el div contenedor del error (ej: error-nombre, error-slug)
         const errorContainer = document.getElementById(`error-${campo}`);
-
-        // CORREGIDO: Buscamos el elemento visual asegurando extraer el índice [0] de la colección
         const elementosByName = document.getElementsByName(campo);
         let elemento = (elementosByName.length > 0) ? elementosByName[0] : document.getElementById(campo);
 
-        // 2. Inyectamos el texto del backend y mostramos los estilos de alerta
         if (errorContainer) {
           errorContainer.innerHTML = mensajeError;
           errorContainer.style.display = 'block';
         }
 
-        // 3. Agregamos la clase de Bootstrap al input para que se marque en rojo
         if (elemento) {
           elemento.classList.remove('is-valid');
           elemento.classList.add('is-invalid');
         }
       });
 
-      // CORREGIDO: Alerta SweetAlert2 para notificar al usuario
       Swal.fire({
         title: 'Error de Validación',
         text: 'Por favor, corrige los campos remarcados en rojo.',
@@ -141,13 +111,14 @@ async function fntProcesar() {
   }
 }
 
+// Evento Submit: Único punto de validación frontend
 formulario.addEventListener('submit', (e) => {
   e.preventDefault();
   let formularioValido = true;
 
   inputs.forEach((input) => {
     const nombreCampo = input.name || input.id;
-    if (!nombreCampo || !expresiones[nombreCampo]) return; // Salta si no hay reglas
+    if (!nombreCampo || !expresiones[nombreCampo]) return; 
 
     const esValido = validarCampo(expresiones[nombreCampo], input, nombreCampo);
     if (!esValido) {

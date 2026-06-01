@@ -1,6 +1,8 @@
 <?php
-
 namespace Core;
+
+$configFile = __DIR__ . '/../App/config/config.php';
+require_once $configFile;
 
 class MiniBlade
 {
