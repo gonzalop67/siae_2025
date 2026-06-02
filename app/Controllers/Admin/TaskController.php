@@ -1,52 +1,56 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
-use App\Models\Permiso;
+use App\Controllers\Controller;
 
-class PermissionController extends Controller
+use App\Models\Task;
+
+class TaskController extends Controller
 {
-    protected Permiso $permissionModel;
+    protected Task $taskModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
-        $this->permissionModel = new Permiso;
+        $this->taskModel = new Task;
     }
 
+    /**
+     * Muestra el listado del recurso.
+     */
     public function index()
     {
-        $title = 'Permisos | ' . APP_NAME;
-        $search = trim($_GET['search'] ?? '');
+        $title = 'Tareas | ' . APP_NAME;
 
-        if ($search !== '') {
-            // 1. Creamos la estructura SQL agrupada con paréntesis para proteger la lógica
-            $this->permissionModel->where = "(nombre LIKE ? OR slug LIKE ? OR descripcion LIKE ?)";
+        $search = isset($_GET['search']) ? $_GET['search'] : "";
 
-            // 2. Preparamos los comodines de forma segura
-            $term = "%{$search}%";
-
-            // 3. Pasamos los valores al arreglo que procesará el prepare del ORM
-            $this->permissionModel->values = [$term, $term, $term];
+        if ($search !== "") {
+            $tasks = $this->taskModel
+                ->where('tarea', 'LIKE', '%' . $_GET['search'] . '%')
+                ->orderBy('fecha', 'DESC')
+                ->paginate(5);
+        } else {
+            $tasks = $this->taskModel
+                ->orderBy('fecha', 'DESC')
+                ->paginate(5);
         }
-
-        // El ORM inyectará de forma automática el ORDER BY y resolverá la paginación
-        $permissions = $this->permissionModel
-            ->orderBy('nombre')
-            ->paginate(5);
-
-        // return $permissions;
-
-        return $this->view('admin.permissions.index', compact('permissions', 'title'));
+        
+        return $this->view('admin.tasks.index', compact('tasks', 'title'));
     }
 
+    /**
+     * Muestra el formulario para crear un nuevo recurso.
+     */
     public function create()
     {
-        $title = "Crear Permiso";
-
-        return $this->view('admin.permissions.create', compact('title'));
+        $title = 'Crear Tarea';
+        return $this->view('admin.tasks.create', compact('title'));
     }
 
+    /**
+     * Almacena un recurso recién creado en la base de datos.
+     */
     public function store()
     {
         // Indicar al navegador/JS que la respuesta siempre será un JSON
@@ -56,38 +60,36 @@ class PermissionController extends Controller
         $input = $_POST ?? [];
 
         // 2. Validar datos de entrada
-        if (!$this->permissionModel->validate($input)) {
+        if (!$this->taskModel->validate($input)) {
             return json_encode([
                 'ok' => false,
-                'errors' => $this->permissionModel->errors
+                'errors' => $this->taskModel->errors
             ]);
         }
 
         // 3. Preparación del set de datos (limpiando espacios)
         $datos = [
-            'nombre' => trim($input['nombre'] ?? ''),
-            'slug'   => trim($input['slug'] ?? ''),
-            'descripcion'   => trim($input['descripcion'] ?? ''),
+            'tarea' => trim($input['tarea'] ?? ''),
         ];
 
         // 4. Persistencia con manejo de transacciones
         try {
             // Iniciar transacción SQL
-            $this->permissionModel->beginTransaction();
+            $this->taskModel->beginTransaction();
 
             // Ejecutamos la creación en la base de datos
-            $this->permissionModel->create($datos);
+            $this->taskModel->create($datos);
 
             // Confirmar cambios si todo salió bien
-            $this->permissionModel->commit();
+            $this->taskModel->commit();
 
             return json_encode([
                 'ok' => true,
-                'mensaje' => 'Permiso procesado con éxito.'
+                'mensaje' => 'Tarea procesada con éxito.'
             ]);
         } catch (\Throwable $e) {
             // Revertir transacción SQL ante cualquier fallo
-            $this->permissionModel->rollBack();
+            $this->taskModel->rollBack();
 
             return json_encode([
                 'ok' => false,
@@ -96,14 +98,18 @@ class PermissionController extends Controller
         }
     }
 
+    /**
+     * Muestra el formulario para editar un recurso específico.
+     */
     public function edit(int $id)
     {
-        $permission = $this->permissionModel->find($id);
-        $title = "Editar Permiso";
-
-        return $this->view('admin.permissions.edit', compact('title', 'permission'));
+        $task = $this->taskModel->find($id);
+        return $task;
     }
 
+    /**
+     * Actualiza un recurso específico en la base de datos.
+     */
     public function update(int $id)
     {
         // Indicar al navegador/JS que la respuesta siempre será un JSON
@@ -113,43 +119,50 @@ class PermissionController extends Controller
         $input = $_POST ?? [];
 
         // 2. Validar datos de entrada
-        if (!$this->permissionModel->validate($input, $id)) {
+        if (!$this->taskModel->validate($input, $id)) {
             return json_encode([
                 'ok' => false,
-                'errors' => $this->permissionModel->errors
+                'errors' => $this->taskModel->errors
             ]);
         }
 
         // 3. Preparación del set de datos (limpiando espacios)
         $datos = [
-            'nombre' => trim($input['nombre'] ?? ''),
-            'slug'   => trim($input['slug'] ?? ''),
-            'descripcion'   => trim($input['descripcion'] ?? ''),
+            'tarea' => trim($input['tarea'] ?? ''),
         ];
 
         // 4. Persistencia con manejo de transacciones atómicas
         try {
-            $this->permissionModel->beginTransaction();
+            $this->taskModel->beginTransaction();
             // echo "<pre>"; print_r($datos); echo "</pre>"; die();
 
             // Ejecutar actualización
-            $this->permissionModel->update($id, $datos);
+            $this->taskModel->update($id, $datos);
 
             // Confirmar cambios en la base de datos
-            $this->permissionModel->commit();
+            $this->taskModel->commit();
 
             return json_encode([
                 'ok' => true,
-                'mensaje' => 'Permiso procesado con éxito.'
+                'mensaje' => 'Tarea procesada con éxito.'
             ]);
         } catch (\Throwable $e) {
             // Deshace cualquier cambio si algo falla en el proceso
-            $this->permissionModel->rollBack();
+            $this->taskModel->rollBack();
 
             return json_encode([
                 'ok' => false,
                 'mensaje' => "Ocurrió un error inesperado: " . $e->getMessage()
             ]);
         }
+    }
+
+    /**
+     * Elimina un recurso específico de la base de datos.
+     */
+    public function destroy($id)
+    {
+        // $this->model->delete($id);
+        // return redirect('/task');
     }
 }

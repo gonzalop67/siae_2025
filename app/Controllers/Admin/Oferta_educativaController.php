@@ -1,47 +1,46 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Modalidad;
+use App\Models\Oferta_educativa;
 
-class ModalidadController extends Controller
+class Oferta_educativaController extends Controller
 {
-    protected Modalidad $modalidadModel;
+    protected Oferta_educativa $ofertaEducativaModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
-        $this->modalidadModel = new Modalidad;
+        $this->ofertaEducativaModel = new Oferta_educativa;
     }
-
+    
     /**
      * Muestra el listado del recurso.
      */
     public function index()
     {
-        $title = 'Listado de Modalidades';
-
+        $title = 'Listado de Ofertas Educativas';
         $search = trim($_GET['search'] ?? '');
 
         if ($search !== '') {
             // 1. Creamos la estructura SQL agrupada con paréntesis para proteger la lógica
-            $this->modalidadModel->where = "(nombre LIKE ?)";
+            $this->ofertaEducativaModel->where = "(nombre LIKE ?)";
 
             // 2. Preparamos los comodines de forma segura
             $term = "%{$search}%";
 
             // 3. Pasamos los valores al arreglo que procesará el prepare del ORM
-            $this->modalidadModel->values = [$term];
+            $this->ofertaEducativaModel->values = [$term];
         }
 
         // El ORM inyectará de forma automática el ORDER BY y resolverá la paginación
-        $modalidades = $this->modalidadModel
-            ->orderBy('orden')
+        $ofertas_educativas = $this->ofertaEducativaModel
+            ->orderBy('nombre')
             ->paginate(5);
-
-        return $this->view('admin.modalidades.index', compact('modalidades', 'title'));
+            
+        return $this->view('admin.ofertas_educativas.index', compact('ofertas_educativas', 'title'));
     }
 
     /**
@@ -49,8 +48,8 @@ class ModalidadController extends Controller
      */
     public function create()
     {
-        $title = 'Crear ModalidadeController';
-        return $this->view('admin.modalidades.create', compact('title'));
+        $title = 'Crear Ofertas Educativas';
+        return $this->view('admin.ofertas_educativas.create', compact('title'));
     }
 
     /**
@@ -58,8 +57,8 @@ class ModalidadController extends Controller
      */
     public function store()
     {
-        $this->model->create($_POST);
-        return redirect('/modalidade');
+        $this->ofertaEducativaModel->create($_POST);
+        return redirect('/ofertas_educativas');
     }
 
     /**
@@ -67,8 +66,8 @@ class ModalidadController extends Controller
      */
     public function show($id)
     {
-        $data = $this->model->find($id);
-        return $this->view('admin.modalidade.show', compact('data'));
+        $data = $this->ofertaEducativaModel->find($id);
+        return $this->view('admin.ofertas_educativas.show', compact('data'));
     }
 
     /**
@@ -76,9 +75,9 @@ class ModalidadController extends Controller
      */
     public function edit($id)
     {
-        $title = 'Editar ModalidadeController';
-        $data = $this->model->find($id);
-        return $this->view('admin.modalidade.edit', compact('data', 'title'));
+        $title = 'Editar Ofertas Educativas';
+        $data = $this->ofertaEducativaModel->find($id);
+        return $this->view('admin.ofertas_educativas.edit', compact('data', 'title'));
     }
 
     /**
@@ -86,8 +85,8 @@ class ModalidadController extends Controller
      */
     public function update($id)
     {
-        $this->model->update($id, $_POST);
-        return redirect('/modalidade');
+        $this->ofertaEducativaModel->update($id, $_POST);
+        return redirect('/ofertas_educativas');
     }
 
     /**
@@ -95,7 +94,7 @@ class ModalidadController extends Controller
      */
     public function destroy($id)
     {
-        $this->model->delete($id);
-        return redirect('/modalidade');
+        $this->ofertaEducativaModel->delete($id);
+        return redirect('/ofertas_educativas');
     }
 }

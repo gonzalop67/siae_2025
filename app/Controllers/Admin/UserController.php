@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Admin;
+
+use App\Controllers\Controller;
 
 use App\Models\Usuario;
 use App\Models\Perfil;

@@ -2,17 +2,18 @@
 
 // Definir rutas
 
+use App\Controllers\Admin\AdminDashboardController;
+use App\Controllers\Admin\MenuController;
+use App\Controllers\Admin\PermissionController;
+use App\Controllers\Admin\RoleController;
+use App\Controllers\Admin\TaskController;
+use App\Controllers\Admin\UserController;
+use App\Controllers\LoginController;
+
 use Core\Route;
 
 // Ahora sí encontrará perfectamente la carpeta Core en la raíz del proyecto
 require_once RAIZ_PROYECTO . '/Core/middlewares.php';
-
-use App\Controllers\LoginController;
-use App\Controllers\AdminDashboardController;
-use App\Controllers\MenuController;
-use App\Controllers\PermissionController;
-use App\Controllers\RoleController;
-use App\Controllers\UserController;
 
 Route::get('/', [LoginController::class, 'showLoginForm']);
 
@@ -70,14 +71,14 @@ Route::post('/menus/:id/edit', [MenuController::class, 'edit'], [$authMiddleware
 Route::post('/menus/:id/update', [MenuController::class, 'update'], [$authMiddleware]);
 
 /** Rutas para Tasks */
-Route::get('/tasks', [\App\Controllers\TaskController::class, 'index'], [$authMiddleware]);
-Route::get('/tasks/create', [\App\Controllers\TaskController::class, 'create'], [$authMiddleware]);
-Route::post('/tasks', [\App\Controllers\TaskController::class, 'store'], [$authMiddleware]);
-Route::get('/tasks/wastebasket', [\App\Controllers\TaskController::class, 'wastebasket'], [$authMiddleware]);
-Route::post('/tasks/:id/restore', [\App\Controllers\TaskController::class, 'restore'], [$authMiddleware]);
-Route::post('/tasks/:id/destroy', [\App\Controllers\TaskController::class, 'destroy'], [$authMiddleware]);
-Route::post('/tasks/:id/delete', [\App\Controllers\TaskController::class, 'delete'], [$authMiddleware]);
-Route::post('/tasks/:id/edit', [\App\Controllers\TaskController::class, 'edit'], [$authMiddleware]);
-Route::post('/tasks/:id/update', [\App\Controllers\TaskController::class, 'update'], [$authMiddleware]);
+Route::get('/tasks', [TaskController::class, 'index'], [$authMiddleware]);
+Route::get('/tasks/create', [TaskController::class, 'create'], [$authMiddleware]);
+Route::post('/tasks', [TaskController::class, 'store'], [$authMiddleware]);
+Route::get('/tasks/wastebasket', [TaskController::class, 'wastebasket'], [$authMiddleware]);
+Route::post('/tasks/:id/restore', [TaskController::class, 'restore'], [$authMiddleware]);
+Route::post('/tasks/:id/destroy', [TaskController::class, 'destroy'], [$authMiddleware]);
+Route::post('/tasks/:id/delete', [TaskController::class, 'delete'], [$authMiddleware]);
+Route::post('/tasks/:id/edit', [TaskController::class, 'edit'], [$authMiddleware]);
+Route::post('/tasks/:id/update', [TaskController::class, 'update'], [$authMiddleware]);
 
 Route::dispatch();
