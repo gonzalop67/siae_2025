@@ -38,24 +38,33 @@
                         </thead>
                         <tbody>
                             @php $contador = $tasks['from'] - 1; @endphp
-                            @foreach ($tasks['data'] as $reg)
+                            @foreach ($tasks['data'] as $row)
                                 @php $contador++; @endphp
                                 <tr>
                                     <td>{{ $contador }}</td>
-                                    <td>{{ $reg['tarea'] }}</td>
+                                    @php
+                                        $clase = $row['hecho'] ? 'taskDone' : '';
+                                    @endphp
+                                    <td>
+                                        <div class="{{ $clase }}">
+                                            {{ $row['tarea'] }}
+                                        </div>
+                                    </td>
                                     <td>
                                         @php
-                                            $checked = $reg['hecho'] ? 'checked' : '';
+                                            $checked = $row['hecho'] ? 'checked' : '';
                                         @endphp
-                                        <input type='checkbox' onclick="checkTask(this,{{ $reg['id'] }})"
+                                        <input type='checkbox' onclick="checkTask(this,{{ $row['id'] }})"
                                             {{ $checked }}>
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="#" onclick="obtenerDatos({{ $reg['id'] }})"
-                                                class="btn btn-success btn-sm" data-toggle="modal" data-target="#editarTareaModal" title="Editar"><i class="fa-solid fa-pencil"></i></a>
+                                            <a href="#" onclick="obtenerDatos({{ $row['id'] }})"
+                                                class="btn btn-success btn-sm" data-toggle="modal"
+                                                data-target="#editarTareaModal" title="Editar"><i
+                                                    class="fa-solid fa-pencil"></i></a>
                                             <button type="button" class="btn btn-danger btn-sm"
-                                                onclick="confirmarEliminacion({{ $reg['id'] }})" title="Eliminar"><i
+                                                onclick="confirmarEliminacion({{ $row['id'] }})" title="Eliminar"><i
                                                     class="fa-solid fa-trash"></i></button>
                                         </div>
                                     </td>
@@ -82,11 +91,32 @@
                 insertarTarea();
             });
 
-            $('#form_update').submit(function(e){
+            $('#form_update').submit(function(e) {
                 e.preventDefault();
                 actualizarTarea();
             });
         });
+
+        function checkTask(obj, id) {
+            var done = obj.checked;
+            $.ajax({
+                type: "POST",
+                url: "<?= RUTA_URL ?>/tasks/" + id + "/update_done",
+                data: "id=" + id + "&done=" + done,
+                success: function(r) {
+                    if (r.ok) {
+                        // Recarga la página para verificar la actualización
+                        window.location.reload();
+                    } else if (r.mensaje) {
+                        Swal.fire({
+                            title: 'Error de Proceso',
+                            text: r.mensaje,
+                            icon: 'error'
+                        });
+                    }
+                }
+            });
+        }
 
         function insertarTarea() {
             let cont_errores = 0;
@@ -186,7 +216,7 @@
             if (cont_errores == 0) {
                 $.ajax({
                     type: "POST",
-                    url: "<?= RUTA_URL ?>/tasks/"+id+"/update",
+                    url: "<?= RUTA_URL ?>/tasks/" + id + "/update",
                     data: {
                         id: id,
                         tarea: tarea
@@ -241,20 +271,23 @@
             }
         }
 
-        function confirmarEliminacion(id) {
+        function confirmarEliminacion(idTarea) {
+            // 1. Mostrar alerta de confirmación previa al borrado
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: 'El registro será enviado a la papelera.',
+                text: "La Tarea será enviada a la papelera.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, enviar',
+                confirmButtonText: 'Sí, eliminar',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
+                // 2. Si el usuario confirma, enviamos la petición vía Fetch (AJAX)
                 if (result.isConfirmed) {
-                    fetch(`${base_url}/tasks/${id}/delete`, {
-                            method: 'POST',
+                    // Reemplaza esta URL por la ruta real que apunte a tu método destroy
+                    fetch(`${base_url}/tasks/${idTarea}/delete`, {
+                            method: 'POST', // O 'DELETE' según manejes tus rutas en PHP puro
                             headers: {
                                 'X-Requested-With': 'XMLHttpRequest'
                             }
@@ -262,10 +295,23 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                Swal.fire('¡Eliminado!', data.message, 'success').then(() => location.reload());
+                                // 3. Alerta de éxito total
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    // Recargamos la página o removemos la fila de la tabla dinámicamente
+                                    location.reload();
+                                });
                             } else {
-                                Swal.fire('Error', data.message || 'No se pudo eliminar', 'error');
+                                // Alerta en caso de error lógico
+                                Swal.fire('Error', data.message, 'error');
                             }
+                        })
+                        .catch(error => {
+                            // Alerta en caso de error de red
+                            Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error');
                         });
                 }
             });

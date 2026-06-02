@@ -3,3 +3,7 @@
     color: #fff;
 }
 
+/* Estilos para Tareas */
+.taskDone {
+    text-decoration: line-through;
+}

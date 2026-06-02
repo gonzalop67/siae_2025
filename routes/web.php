@@ -81,4 +81,6 @@ Route::post('/tasks/:id/delete', [TaskController::class, 'delete'], [$authMiddle
 Route::post('/tasks/:id/edit', [TaskController::class, 'edit'], [$authMiddleware]);
 Route::post('/tasks/:id/update', [TaskController::class, 'update'], [$authMiddleware]);
 
+Route::post('/tasks/:id/update_done', [TaskController::class, 'update_done'], [$authMiddleware]);
+
 Route::dispatch();

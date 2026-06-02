@@ -36,4 +36,12 @@ class Task extends Model
 
         return empty($this->errors);
     }
+
+    // Actualización del estado del campo hecho
+    public function update_done(int $id, bool $done): bool
+    {
+        $sql = "UPDATE {$this->table} SET hecho = ? WHERE {$this->primaryKey} = ?";
+        $this->query($sql, [$done, $id], 'ii');
+        return $this->query > 0;
+    }
 }

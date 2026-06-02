@@ -446,6 +446,7 @@ class Model
             $fields[] = "{$key} = ?";
         }
         $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE {$this->primaryKey} = ?";
+
         $values = array_values($data);
         $values[] = $id;
 

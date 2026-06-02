@@ -297,23 +297,22 @@ class UserController extends Controller
             $eliminado = $this->userModel->delete($id);
 
             if ($eliminado) {
-                echo json_encode([
+                return json_encode([
                     'success' => true,
                     'message' => 'El registro ha sido eliminado correctamente.'
                 ]);
             } else {
-                echo json_encode([
+                return json_encode([
                     'success' => false,
                     'message' => 'No se encontró el registro o ya fue eliminado.'
                 ]);
             }
         } catch (\Throwable $e) {
-            echo json_encode([
+            return json_encode([
                 'success' => false,
                 'message' => 'Error en el servidor: ' . $e->getMessage()
             ]);
         }
-        exit; // Detiene la ejecución para que solo devuelva el JSON
     }
 
     // Método para restaurar un usuario (Botón Verde)
