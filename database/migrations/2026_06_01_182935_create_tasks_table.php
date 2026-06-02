@@ -12,6 +12,8 @@ class CreateTasksTable extends Model
         $sql = "CREATE TABLE IF NOT EXISTS tasks (
             id INT AUTO_INCREMENT PRIMARY KEY,
             -- Agrega tus columnas aquí
+            tarea VARCHAR(255) NOT NULL,
+            hecho TINYINT(1) NOT NULL DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP NULL

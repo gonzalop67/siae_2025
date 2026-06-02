@@ -69,4 +69,15 @@ Route::post('/menus/get_menu_ajax', [MenuController::class, 'get_menu_ajax'], [$
 Route::post('/menus/:id/edit', [MenuController::class, 'edit'], [$authMiddleware]);
 Route::post('/menus/:id/update', [MenuController::class, 'update'], [$authMiddleware]);
 
+/** Rutas para Tasks */
+Route::get('/tasks', [\App\Controllers\TaskController::class, 'index'], [$authMiddleware]);
+Route::get('/tasks/create', [\App\Controllers\TaskController::class, 'create'], [$authMiddleware]);
+Route::post('/tasks', [\App\Controllers\TaskController::class, 'store'], [$authMiddleware]);
+Route::get('/tasks/wastebasket', [\App\Controllers\TaskController::class, 'wastebasket'], [$authMiddleware]);
+Route::post('/tasks/:id/restore', [\App\Controllers\TaskController::class, 'restore'], [$authMiddleware]);
+Route::post('/tasks/:id/destroy', [\App\Controllers\TaskController::class, 'destroy'], [$authMiddleware]);
+Route::post('/tasks/:id/delete', [\App\Controllers\TaskController::class, 'delete'], [$authMiddleware]);
+Route::get('/tasks/:id/edit', [\App\Controllers\TaskController::class, 'edit'], [$authMiddleware]);
+Route::post('/tasks/:id/update', [\App\Controllers\TaskController::class, 'update'], [$authMiddleware]);
+
 Route::dispatch();
