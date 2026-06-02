@@ -77,7 +77,7 @@ Route::get('/tasks/wastebasket', [\App\Controllers\TaskController::class, 'waste
 Route::post('/tasks/:id/restore', [\App\Controllers\TaskController::class, 'restore'], [$authMiddleware]);
 Route::post('/tasks/:id/destroy', [\App\Controllers\TaskController::class, 'destroy'], [$authMiddleware]);
 Route::post('/tasks/:id/delete', [\App\Controllers\TaskController::class, 'delete'], [$authMiddleware]);
-Route::get('/tasks/:id/edit', [\App\Controllers\TaskController::class, 'edit'], [$authMiddleware]);
+Route::post('/tasks/:id/edit', [\App\Controllers\TaskController::class, 'edit'], [$authMiddleware]);
 Route::post('/tasks/:id/update', [\App\Controllers\TaskController::class, 'update'], [$authMiddleware]);
 
 Route::dispatch();

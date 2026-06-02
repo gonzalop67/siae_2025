@@ -52,9 +52,8 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ RUTA_URL }}/tasks/{{ $reg['id'] }}/edit"
-                                                class="btn btn-success btn-sm" title="Editar"><i
-                                                    class="fa-solid fa-pencil"></i></a>
+                                            <a href="#" onclick="obtenerDatos({{ $reg['id'] }})"
+                                                class="btn btn-success btn-sm" data-toggle="modal" data-target="#editarTareaModal" title="Editar"><i class="fa-solid fa-pencil"></i></a>
                                             <button type="button" class="btn btn-danger btn-sm"
                                                 onclick="confirmarEliminacion({{ $reg['id'] }})" title="Eliminar"><i
                                                     class="fa-solid fa-trash"></i></button>
@@ -72,6 +71,7 @@
         </div>
     </div>
     <?php require_once RAIZ_PROYECTO . '/resources/views/admin/tasks/modalInsert.php'; ?>
+    <?php require_once RAIZ_PROYECTO . '/resources/views/admin/tasks/modalUpdate.php'; ?>
 @endsection
 
 @section('scripts')
@@ -80,6 +80,11 @@
             $('#form_insert').submit(function(e) {
                 e.preventDefault();
                 insertarTarea();
+            });
+
+            $('#form_update').submit(function(e){
+                e.preventDefault();
+                actualizarTarea();
             });
         });
 
@@ -114,6 +119,91 @@
                             });
                             $('#form_insert')[0].reset(); //limpiar formulario
                             $('#nuevaTareaModal').modal('hide');
+                            window.location.reload();
+                        } else if (r.errors) {
+                            Object.keys(json.errors).forEach((campo) => {
+                                const mensajeError = json.errors[campo];
+                                const errorContainer = document.getElementById(`error-${campo}`);
+                                const elementosByName = document.getElementsByName(campo);
+                                let elemento = (elementosByName.length > 0) ? elementosByName[0] :
+                                    document.getElementById(campo);
+
+                                if (errorContainer) {
+                                    errorContainer.innerHTML = mensajeError;
+                                    errorContainer.style.display = 'block';
+                                }
+
+                                if (elemento) {
+                                    elemento.classList.remove('is-valid');
+                                    elemento.classList.add('is-invalid');
+                                }
+                            });
+
+                            Swal.fire({
+                                title: 'Error de Validación',
+                                text: 'Por favor, corrige los campos remarcados en rojo.',
+                                icon: 'error'
+                            });
+                        } else if (r.mensaje) {
+                            Swal.fire({
+                                title: 'Error de Proceso',
+                                text: r.mensaje,
+                                icon: 'error'
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        function obtenerDatos(id) {
+            $.ajax({
+                url: "<?= RUTA_URL ?>/tasks/" + id + "/edit",
+                type: "POST",
+                data: "id=" + id,
+                dataType: "json",
+                success: function(r) {
+                    console.log(r);
+                    $("#id_task").val(r.id);
+                    $("#tareau").val(r.tarea);
+                }
+            });
+        }
+
+        function actualizarTarea() {
+            const cont_errores = 0;
+            const id = $("#id_task").val();
+            const tarea = $("#tareau").val().trim();
+
+            if (tarea == "") {
+                $("#error-tarea").html("Debes ingresar la tarea editada...");
+                $("#error-tarea").fadeIn();
+                cont_errores++;
+            } else {
+                $("#error-tarea").fadeOut();
+            }
+
+            if (cont_errores == 0) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?= RUTA_URL ?>/tasks/"+id+"/update",
+                    data: {
+                        id: id,
+                        tarea: tarea
+                    },
+                    dataType: "json",
+                    success: function(r) {
+                        // console.log(r);
+                        if (r.ok) {
+                            Swal.fire({
+                                title: '¡Completado!',
+                                text: r.mensaje,
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $('#form_update')[0].reset(); //limpiar formulario
+                            $('#editarTareaModal').modal('hide');
                             window.location.reload();
                         } else if (r.errors) {
                             Object.keys(json.errors).forEach((campo) => {

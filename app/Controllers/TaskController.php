@@ -99,31 +99,62 @@ class TaskController extends Controller
     }
 
     /**
-     * Muestra un recurso específico.
-     */
-    public function show($id)
-    {
-        // $data = $this->model->find($id);
-        // return $this->view('admin.task.show', compact('data'));
-    }
-
-    /**
      * Muestra el formulario para editar un recurso específico.
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        $title = 'Editar TaskController';
-        // $data = $this->model->find($id);
-        // return $this->view('admin.task.edit', compact('data', 'title'));
+        $task = $this->taskModel->find($id);
+        return $task;
     }
 
     /**
      * Actualiza un recurso específico en la base de datos.
      */
-    public function update($id)
+    public function update(int $id)
     {
-        // $this->model->update($id, $_POST);
-        // return redirect('/task');
+        // Indicar al navegador/JS que la respuesta siempre será un JSON
+        header('Content-Type: application/json');
+
+        // 1. Capturar datos directamente de $_POST (compatible al 100% con FormData de JS)
+        $input = $_POST ?? [];
+
+        // 2. Validar datos de entrada
+        if (!$this->taskModel->validate($input, $id)) {
+            return json_encode([
+                'ok' => false,
+                'errors' => $this->taskModel->errors
+            ]);
+        }
+
+        // 3. Preparación del set de datos (limpiando espacios)
+        $datos = [
+            'tarea' => trim($input['tarea'] ?? ''),
+        ];
+
+        // 4. Persistencia con manejo de transacciones atómicas
+        try {
+            $this->taskModel->beginTransaction();
+            // echo "<pre>"; print_r($datos); echo "</pre>"; die();
+
+            // Ejecutar actualización
+            $this->taskModel->update($id, $datos);
+
+            // Confirmar cambios en la base de datos
+            $this->taskModel->commit();
+
+            return json_encode([
+                'ok' => true,
+                'mensaje' => 'Tarea procesada con éxito.'
+            ]);
+        } catch (\Throwable $e) {
+            // Deshace cualquier cambio si algo falla en el proceso
+            $this->taskModel->rollBack();
+
+            return json_encode([
+                'ok' => false,
+                'mensaje' => "Ocurrió un error inesperado: " . $e->getMessage()
+            ]);
+        }
     }
 
     /**
