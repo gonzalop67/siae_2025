@@ -159,34 +159,36 @@ class TaskController extends Controller
 
     public function update_done(int $id)
     {
-        // Indicar al navegador/JS que la respuesta siempre será un JSON
         header('Content-Type: application/json');
 
-        // 1. Capturar datos directamente de $_POST (compatible al 100% con FormData de JS)
         $input = $_POST ?? [];
+
+        // Validar y convertir el string "false" a un booleano real de PHP
+        $doneValue = isset($input['done']) ? filter_var($input['done'], FILTER_VALIDATE_BOOLEAN) : false;
 
         try {
             $this->taskModel->beginTransaction();
-            // echo "<pre>"; print_r($datos); echo "</pre>"; die();
 
-            // Ejecutar actualización
-            $this->taskModel->update_done($id, $input['done']);
+            // Pasar la variable ya convertida a booleano
+            $this->taskModel->update_done($id, $doneValue);
 
-            // Confirmar cambios en la base de datos
             $this->taskModel->commit();
 
-            return json_encode([
+            // Es obligatorio usar echo para que JavaScript reciba el JSON
+            echo json_encode([
                 'ok' => true,
                 'mensaje' => 'Tarea procesada con éxito.'
             ]);
+            exit; // Detiene la ejecución para evitar código basura en la respuesta
+
         } catch (\Throwable $e) {
-            // Deshace cualquier cambio si algo falla en el proceso
             $this->taskModel->rollBack();
 
-            return json_encode([
+            echo json_encode([
                 'ok' => false,
                 'mensaje' => "Ocurrió un error inesperado: " . $e->getMessage()
             ]);
+            exit;
         }
     }
 

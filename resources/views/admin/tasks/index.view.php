@@ -46,7 +46,8 @@
                                         $clase = $row['hecho'] ? 'taskDone' : '';
                                     @endphp
                                     <td>
-                                        <div class="{{ $clase }}">
+                                        <!-- Agregamos la clase "task-text" como ancla para JavaScript -->
+                                        <div class="task-text {{ $clase }}">
                                             {{ $row['tarea'] }}
                                         </div>
                                     </td>
@@ -105,15 +106,31 @@
                 data: "id=" + id + "&done=" + done,
                 success: function(r) {
                     if (r.ok) {
-                        // Recarga la página para verificar la actualización
-                        window.location.reload();
+                        // 1. Sube al <tr> más cercano. 
+                        // 2. Busca el <div> con la clase .task-text dentro de esa fila y altera su clase.
+                        var taskDiv = $(obj).closest('tr').find('.task-text');
+
+                        if (done) {
+                            taskDiv.addClass('taskDone');
+                        } else {
+                            taskDiv.removeClass('taskDone');
+                        }
                     } else if (r.mensaje) {
+                        obj.checked = !done;
                         Swal.fire({
                             title: 'Error de Proceso',
                             text: r.mensaje,
                             icon: 'error'
                         });
                     }
+                },
+                error: function() {
+                    obj.checked = !done;
+                    Swal.fire({
+                        title: 'Error de Red',
+                        text: 'No se pudo conectar con el servidor.',
+                        icon: 'error'
+                    });
                 }
             });
         }
