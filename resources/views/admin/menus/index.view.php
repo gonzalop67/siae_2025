@@ -70,26 +70,13 @@
                     '<div class="text-muted text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando menús...</div>'
                 );
 
-                $.ajax({
-                    url: '<?= RUTA_URL ?>/menus/get_menu_ajax', // Ajusta esta ruta a tu enrutador de Laravel/PHP
-                    type: 'POST',
-                    data: {
-                        perfil_id: perfilId
-                    },
-                    success: function(htmlResponse) {
-                        $('#nestable').html(htmlResponse);
+                cargar_menus_asociados(perfilId);
 
-                        // Reinicializar Nestable
-                        $('#nestable').removeData('nestable');
-                        $('#nestable').nestable({});
-                    },
-                    error: function() {
-                        $('#nestable').html(
-                            '<div class="dd-empty text-danger text-center py-4">Error al cargar los menús.</div>'
-                        );
-                    }
-                });
+            });
 
+            $('#form_insert').submit(function(e) {
+                e.preventDefault();
+                insertarMenu();
             });
 
             $('#form_update').submit(function(e) {
@@ -97,6 +84,28 @@
                 actualizarMenu();
             });
         });
+
+        function cargar_menus_asociados(idPerfil) {
+            $.ajax({
+                url: '<?= RUTA_URL ?>/menus/get_menu_ajax',
+                type: 'POST',
+                data: {
+                    perfil_id: idPerfil
+                },
+                success: function(htmlResponse) {
+                    $('#nestable').html(htmlResponse);
+
+                    // Reinicializar Nestable
+                    $('#nestable').removeData('nestable');
+                    $('#nestable').nestable({});
+                },
+                error: function() {
+                    $('#nestable').html(
+                        '<div class="dd-empty text-danger text-center py-4">Error al cargar los menús.</div>'
+                    );
+                }
+            });
+        }
 
         function obtenerDatos(id) {
             $.ajax({
@@ -115,8 +124,111 @@
             });
         }
 
+        function insertarMenu() {
+            let cont_errores = 0;
+            const texto = $("#texto").val().trim();
+            const enlace = $("#enlace").val().trim();
+            const icono = $("#icono").val().trim();
+            const publicado = $("#publicado").val();
+            const id_perfil = $("#select-perfil").val();
+
+            var reg_texto = /^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{3,64})$/i;
+
+            // Validación Texto
+            if (texto == "") {
+                $("#error-texto").html("Debe ingresar el texto del menú...").fadeIn();
+                cont_errores++;
+            } else if (!reg_texto.test(texto)) {
+                $("#error-texto").html("El texto del menú debe contener al menos tres caracteres alfabéticos.").fadeIn();
+                cont_errores++;
+            } else {
+                $("#error-texto").fadeOut();
+            }
+
+            // Validación Enlace
+            if (enlace == "") {
+                $("#error-enlace").html("Debe ingresar el enlace del menú...").fadeIn();
+                cont_errores++;
+            } else {
+                $("#error-enlace").fadeOut();
+            }
+
+            // Validación Perfil (CORREGIDO: Ahora sí suma error)
+            if (id_perfil === "" || id_perfil === null) {
+                Swal.fire({
+                    title: 'Error de Validación',
+                    text: 'Por favor, selecciona un perfil.',
+                    icon: 'error'
+                });
+                cont_errores++;
+            }
+
+            // Envío AJAX
+            if (cont_errores == 0) {
+                const boton = $('#button-save');
+                boton.prop('disabled', true).html(
+                    "<i class='fa-solid fa-spinner fa-spin mr-2'></i> Insertando nuevo menú...");
+
+                $.ajax({
+                    url: "<?= RUTA_URL ?>/menus/store",
+                    type: "POST",
+                    data: {
+                        mnu_texto: texto,
+                        mnu_link: enlace,
+                        mnu_icono: icono,
+                        mnu_publicado: publicado,
+                        id_perfil: id_perfil
+                    },
+                    dataType: "json",
+                    success: function(r) {
+                        boton.prop('disabled', false).html(
+                            "<i class='fa fa-save'></i> Guardar"); // Restaurar botón
+
+                        if (r.ok) {
+                            Swal.fire({
+                                title: '¡Completado!',
+                                text: r.mensaje,
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            $('#form_save')[0].reset(); // Asegúrate de que el id del form coincida
+                            $('#nuevoMenuModal').modal('hide');
+                            cargar_menus_asociados(id_perfil);
+                        } else if (r.errors) {
+                            // CORREGIDO: Se cambió 'json' por 'r'
+                            Object.keys(r.errors).forEach((campo) => {
+                                const mensajeError = r.errors[campo];
+                                $(`#error-${campo}`).html(mensajeError).fadeIn();
+                                $(`[name="${campo}"], #${campo}`).removeClass('is-valid').addClass(
+                                    'is-invalid');
+                            });
+
+                            Swal.fire({
+                                title: 'Error de Validación',
+                                text: 'Por favor, corrige los campos remarcados.',
+                                icon: 'error'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error de Proceso',
+                                text: r.mensaje || 'Ocurrió un error inesperado.',
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function() {
+                        boton.prop('disabled', false).html("<i class='fa fa-save'></i> Guardar");
+                        Swal.fire('Error', 'No se pudo conectar con el servidor', 'error');
+                    }
+                });
+            }
+
+            return false;
+        }
+
         function actualizarMenu() {
-            const cont_errores = 0;
+            let cont_errores = 0;
             const id = $("#id_menu").val();
             const texto = $("#textou").val().trim();
             const enlace = $("#enlaceu").val().trim();
@@ -173,8 +285,9 @@
                             $('#form_update')[0].reset(); //limpiar formulario
                             $('#editarMenuModal').modal('hide');
                             $('#button-update').html("<i class='fa fa-pencil'></i> Actualizar");
+                            cargar_menus_asociados(id_perfil);
                         } else if (r.errors) {
-                            Object.keys(json.errors).forEach((campo) => {
+                            Object.keys(r.errors).forEach((campo) => {
                                 const mensajeError = json.errors[campo];
                                 const errorContainer = document.getElementById(`error-${campo}`);
                                 const elementosByName = document.getElementsByName(campo);

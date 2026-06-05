@@ -127,7 +127,7 @@ class UserController extends Controller
             // Captura del ID a través de tu método público
             $idUsuario = $this->userModel->getInsertId();
             if ($idUsuario === 0 && is_array($usuario)) {
-                $idUsuario = (int)($usuario['id_usuario'] ?? $usuario['id'] ?? 0);
+                $idUsuario = (int)($usuario['id_usuario'] ?? 0);
             }
 
             if ($idUsuario === 0) {

@@ -8,7 +8,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="formulario" action="" method="post">
+            <form id="form_insert" action="<?= RUTA_URL ?>/menus/store" method="POST">
                 <div class="modal-body">
                     <div class="row mb-2">
                         <label for="texto" class="col-sm-2 col-form-label">Texto:</label>
@@ -30,7 +30,7 @@
                         <label for="icono" class="col-sm-2 col-form-label">Icono:</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="icono" id="icono" value=""
-                                placeholder="" required>
+                                placeholder="">
                             <div id="error-icono" class="invalid-feedback"></div>
                         </div>
                         <div class="col-sm-1">
@@ -40,7 +40,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                    <button type="submit" id="button-save" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
                 </div>
             </form>
         </div>

@@ -6,17 +6,20 @@ use App\Controllers\Controller;
 
 use App\Models\Menu;
 use App\Models\Perfil;
+use App\Models\MenuPerfil;
 
 class MenuController extends Controller
 {
     protected Menu $menuModel;
     protected Perfil $perfilModel;
+    protected MenuPerfil $menuPerfilModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
         $this->menuModel = new Menu;
         $this->perfilModel = new Perfil;
+        $this->menuPerfilModel = new MenuPerfil;
     }
 
     /**
@@ -102,41 +105,86 @@ class MenuController extends Controller
     }
 
     /**
-     * Muestra el formulario para crear un nuevo recurso.
-     */
-    public function create()
-    {
-        $title = 'Crear Menú';
-        // return $this->view('admin.menu.create', compact('title'));
-    }
-
-    /**
      * Almacena un recurso recién creado en la base de datos.
      */
     public function store()
     {
-        // $this->model->create($_POST);
-        // return redirect('/menu');
+        // Indicar al navegador/JS que la respuesta siempre será un JSON
+        header('Content-Type: application/json');
+
+        // 1. Capturar datos directamente de $_POST (compatible al 100% con FormData de JS)
+        $input = $_POST ?? [];
+
+        // 2. Validar datos de entrada
+        if (!$this->menuModel->validate($input)) {
+            return json_encode([
+                'ok' => false,
+                'errors' => $this->menuModel->errors
+            ]);
+        }
+
+        // Limpiar espacios múltiples en el icono
+        $icono = preg_replace('/\s+/', ' ', trim($input['mnu_icono'] ?? ''));
+
+        $id_perfil = trim($input['id_perfil'] ?? '');
+
+        // 3. Preparación del set de datos (limpiando espacios)
+        $datos = [
+            'mnu_texto' => trim($input['mnu_texto'] ?? ''),
+            'mnu_link'  => trim($input['mnu_link'] ?? ''),
+            'mnu_icono' => trim($icono ?? ''),
+            'id_perfil' => $id_perfil
+        ];
+
+        // 4. Persistencia con manejo de transacciones atómicas
+        try {
+            $this->menuModel->beginTransaction();
+            // echo "<pre>"; print_r($datos); echo "</pre>"; die();
+
+            // Ejecutamos la creación en la base de datos
+            $menu = $this->menuModel->create($datos);
+
+            // Captura del ID a través de tu método público
+            $idMenu = $this->menuModel->getInsertId();
+            if ($idMenu === 0 && is_array($menu)) {
+                $idMenu = (int)($menu['id_menu'] ?? 0);
+            }
+
+            if ($idMenu === 0) {
+                throw new \Exception("Error al procesar el identificador único del nuevo registro.");
+            }
+
+            // 3. Insertar la relación en la tabla puente (Bajo la misma transacción)
+            $this->menuPerfilModel->create([
+                'id_perfil' => $id_perfil,
+                'id_menu' => $idMenu
+            ]);
+
+            // Confirmar cambios en la base de datos
+            $this->menuModel->commit();
+
+            return json_encode([
+                'ok' => true,
+                'mensaje' => 'Menú procesado con éxito.'
+            ]);
+        } catch (\Throwable $e) {
+            // Deshace cualquier cambio si algo falla en el proceso
+            $this->menuModel->rollBack();
+
+            return json_encode([
+                'ok' => false,
+                'mensaje' => "Ocurrió un error inesperado: " . $e->getMessage()
+            ]);
+        }
     }
 
     /**
-     * Muestra un recurso específico.
-     */
-    public function show(int $id)
-    {
-        // $data = $this->model->find($id);
-        // return $this->view('admin.menu.show', compact('data'));
-    }
-
-    /**
-     * Muestra el formulario para editar un recurso específico.
+     * Obtiene el registro par editarlo.
      */
     public function edit(int $id)
     {
-        $title = 'Editar Menú';
         $menu = $this->menuModel->find($id);
         return $menu;
-        // return $this->view('admin.menu.edit', compact('data', 'title'));
     }
 
     /**
