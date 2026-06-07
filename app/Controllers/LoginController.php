@@ -70,7 +70,8 @@ class LoginController extends Controller
                 $menuModel = new \App\Models\Menu();
                 $_SESSION['menuItems'] = $menuModel->getMenuByPerfil((int)$id_perfil);
                 
-                // $_SESSION['username'] = $usuario['username'];
+                $_SESSION['username'] = $usuario['us_shortname'];
+                $_SESSION['us_foto'] = $usuario['us_foto'];
 
                 // Obtener los datos de la unidad educativa...
                 $institucion = $this->institucionModel->find(1);
@@ -79,6 +80,7 @@ class LoginController extends Controller
                 $_SESSION['urlInstitucion'] = $institucion['in_url'];
 
                 $perfil = $this->perfilModel->where('id_perfil', $id_perfil)->first();
+                $_SESSION['nombrePerfil'] = $perfil['pe_nombre'];
                 return json_encode([
                     'error' => false,
                     'slug' => $perfil['pe_slug'],
@@ -95,7 +97,7 @@ class LoginController extends Controller
             return json_encode([
                 'error' => true,
                 'errors' => [
-                    'mensaje' => 'Usuario y/o password incorrectos.'
+                    'mensaje' => 'Usuario, contraseña o perfil incorrectos.'
                 ]
             ]);
         }

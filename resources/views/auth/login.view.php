@@ -32,7 +32,7 @@
     </style>
 </head>
 
-<body class="bg-primary">
+<body class="bg-gradient-light">
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
