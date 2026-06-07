@@ -67,6 +67,7 @@ Route::post('/permissions/:id/update', [PermissionController::class, 'update'], 
 /** Rutas para Menús */
 Route::get('/menus', [MenuController::class, 'index'], [$authMiddleware]);
 Route::post('/menus/get_menu_ajax', [MenuController::class, 'get_menu_ajax'], [$authMiddleware]);
+Route::post('/menus/guardar_orden_ajax', [MenuController::class, 'guardar_orden_ajax'], [$authMiddleware]);
 Route::post('/menus/store', [MenuController::class, 'store'], [$authMiddleware]);
 Route::post('/menus/:id/edit', [MenuController::class, 'edit'], [$authMiddleware]);
 Route::post('/menus/:id/update', [MenuController::class, 'update'], [$authMiddleware]);

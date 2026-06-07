@@ -38,16 +38,13 @@ class MenuController extends Controller
     {
         if (isset($_POST['perfil_id'])) {
             $id_perfil = (int)$_POST['perfil_id'];
-
             $menus = $this->menuModel->getMenus($id_perfil);
 
-            // return $menus;
-
             if (!empty($menus)) {
-                // Llamamos a la función recursiva que ya creaste
+                // Retorna directamente el <ol> recursivo
                 echo $this->renderNestableTree($menus);
             } else {
-                echo '<div class="text-center">No hay menús asignados a este perfil.</div>';
+                echo '<div class="text-center text-muted py-4">No hay menús asignados a este perfil.</div>';
             }
             exit;
         }
@@ -60,25 +57,23 @@ class MenuController extends Controller
         $html = '<ol class="dd-list">';
         foreach ($menus as $menu) {
             $hasChildren = !empty($menu['submenu']);
+
             $html .= '<li class="dd-item dd3-item" data-id="' . $menu["id_menu"] . '">';
-            $html .= '<div class="dd-handle dd3-handle"></div>';
-            $html .= '<div class="dd3-content menu_link">';
-            $html .= '<a href="#" onclick="obtenerDatos(' . $menu["id_menu"] . ')" data-toggle="modal" data-target="#editarMenuModal">(' . $menu["pe_nombre"] . ') ' . $menu["mnu_texto"] . '</a>';
-            $html .= '<a href="' . RUTA_URL . '/menus/delete/' . $menu["id_menu"] . '" class="eliminar-menu float-right" title="Eliminar este menú"><i class="text-danger fas fa-trash-alt"></i></a>';
-            $html .= '</div>';
+            $html .= '  <div class="dd-handle dd3-handle"></div>';
+            $html .= '  <div class="dd3-content menu_link">';
+
+            // Mostrar el nombre del perfil solo si existe en este nodo
+            $perfil = isset($menu["pe_nombre"]) ? '(' . $menu["pe_nombre"] . ') ' : '';
+
+            $html .= '    <a href="#" onclick="obtenerDatos(' . $menu["id_menu"] . ')" data-toggle="modal" data-target="#editarMenuModal">' . $perfil . $menu["mnu_texto"] . '</a>';
+            $html .= '    <a href="' . RUTA_URL . '/menus/delete/' . $menu["id_menu"] . '" class="eliminar-menu float-right" title="Eliminar este menú"><i class="text-danger fas fa-trash-alt"></i></a>';
+            $html .= '  </div>';
+
+            // RECURSIÓN REAL: Si tiene hijos, se llama a sí misma para procesar el sub-arreglo
             if ($hasChildren) {
-                $html .= '<ol class="dd-list">';
-                foreach ($menu['submenu'] as $menu2) {
-                    $html .= '<li class="dd-item dd3-item" data-id="' . $menu2["id_menu"] . '">';
-                    $html .= '<div class="dd-handle dd3-handle"></div>';
-                    $html .= '<div class="dd3-content menu_link">';
-                    $html .= '<a href="#" onclick="obtenerDatos(' . $menu2['id_menu'] . ')" data-toggle="modal" data-target="#editarMenuModal">' . $menu2["mnu_texto"] . '</a>';
-                    $html .= '<a href="' . RUTA_URL . '/menus/delete/' . $menu2["id_menu"] . '" class="eliminar-menu float-right" title="Eliminar este menú"><i class="text-danger fas fa-trash-alt"></i></a>';
-                    $html .= '</div>';
-                    $html .= '</li>';
-                }
-                $html .= '</ol>';
+                $html .= $this->renderNestableTree($menu['submenu']);
             }
+
             $html .= '</li>';
         }
         $html .= '</ol>';
@@ -86,22 +81,48 @@ class MenuController extends Controller
         return $html;
     }
 
-    // Función auxiliar interna para soportar árboles de más de 2 niveles (Nietos)
-    private function insertarEnHijo(&$padre, $sub)
+    public function guardar_orden_ajax()
     {
-        if (isset($padre['id_menu']) && $padre['id_menu'] == $sub['mnu_padre']) {
-            $sub['submenu'] = [];
-            $padre['submenu'][] = $sub;
-            return true;
+        // Verificar que la petición sea POST y contenga la estructura del menú
+        if (isset($_POST['estructura'])) {
+            $estructura = json_decode($_POST['estructura'], true);
+
+            if (!empty($estructura)) {
+                // Iniciamos la actualización recursiva desde la raíz (padre_id = 0)
+                $this->actualizarPosicionesRecursivo($estructura, 0);
+
+                echo json_encode([
+                    'ok' => true,
+                    'mensaje' => 'El orden de los menús se actualizó correctamente.'
+                ]);
+            } else {
+                echo json_encode([
+                    'ok' => false,
+                    'mensaje' => 'La estructura enviada está vacía.'
+                ]);
+            }
+            exit;
         }
-        if (!empty($padre['submenu'])) {
-            foreach ($padre['submenu'] as &$hijo) {
-                if ($this->insertarEnHijo($hijo, $sub)) {
-                    return true;
-                }
+    }
+
+    /**
+     * Función auxiliar recursiva para actualizar jerarquía y orden en la BD
+     */
+    private function actualizarPosicionesRecursivo(array $items, int $padreId)
+    {
+        foreach ($items as $indice => $item) {
+            $idMenu = (int)$item['id'];
+            $nuevoOrden = $indice + 1; // El orden inicia en 1 para la base de datos
+
+            // 1. Actualizar el registro actual con su nuevo padre y su nueva posición
+            // Ajusta los nombres de las columnas 'mnu_padre' y 'mnu_orden' según tu tabla
+            $this->menuModel->actualizarOrdenYPadre($idMenu, $padreId, $nuevoOrden);
+
+            // 2. Si este elemento tiene hijos (submenús), procesarlos recursivamente
+            if (isset($item['children']) && !empty($item['children'])) {
+                $this->actualizarPosicionesRecursivo($item['children'], $idMenu);
             }
         }
-        return false;
     }
 
     /**
@@ -133,6 +154,7 @@ class MenuController extends Controller
             'mnu_texto' => trim($input['mnu_texto'] ?? ''),
             'mnu_link'  => trim($input['mnu_link'] ?? ''),
             'mnu_icono' => trim($icono ?? ''),
+            'mnu_publicado' => 1,
             'id_perfil' => $id_perfil
         ];
 

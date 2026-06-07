@@ -33,11 +33,14 @@
                         </select>
                     </div>
 
-                    <!-- Contenedor Nestable -->
+                    <!-- Contenedor Nestable Corregido -->
                     <div class="cf nestable-lists">
-                        <div id="nestable">
-                            <div class="text-muted text-center py-4">
-                                Selecciona un perfil para cargar sus menús.
+                        <div id="nestable" class="dd">
+                            <!-- El mensaje inicial va dentro de un contenedor limpio sin clases de Nestable -->
+                            <div id="nestable-placeholder">
+                                <div class="text-muted text-center py-4">
+                                    Selecciona un perfil para cargar sus menús.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -56,22 +59,29 @@
     <script src="{{ RUTA_URL }}/public/assets/js/funciones.js"></script>
     <script>
         $(document).ready(function() {
+            // Aplicar un parche rápido de CSS para evitar que Nestable se desborde del layout
+            $('#nestable').css({
+                'max-width': '100%',
+                'width': '100%',
+                'float': 'none'
+            });
+
             $('#select-perfil').change(function() {
                 let perfilId = $(this).val();
 
                 if (perfilId === '') {
                     $('#nestable').html(
-                        '<div class="text-muted text-center py-4">Selecciona un perfil para cargar sus menús.</div>'
+                        '<div id="nestable-placeholder"><div class="text-muted text-center py-4">Selecciona un perfil para cargar sus menús.</div></div>'
                     );
                     return;
                 }
 
+                // Mensaje de carga limpio
                 $('#nestable').html(
-                    '<div class="text-muted text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando menús...</div>'
+                    '<div id="nestable-placeholder"><div class="text-muted text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Cargando menús...</div></div>'
                 );
 
                 cargar_menus_asociados(perfilId);
-
             });
 
             $('#form_insert').submit(function(e) {
@@ -93,15 +103,65 @@
                     perfil_id: idPerfil
                 },
                 success: function(htmlResponse) {
+                    // 1. Destruir caché previo de Nestable
+                    $('#nestable').removeData('nestable');
+
+                    // 2. Inyectar el HTML limpio
                     $('#nestable').html(htmlResponse);
 
-                    // Reinicializar Nestable
-                    $('#nestable').removeData('nestable');
-                    $('#nestable').nestable({});
+                    // 3. Inicializar Nestable con la configuración estándar
+                    $('#nestable').nestable({
+                        maxDepth: 3
+                    });
+
+                    // 4. ESCUCHAR EL CAMBIO (En lugar de un callback interno)
+                    $('#nestable').off('change').on('change', function() {
+
+                        // Detenemos un milisegundo el envío para que el DOM se actualice por completo
+                        setTimeout(function() {
+                            // Serializa la lista en un arreglo jerárquico de JavaScript
+                            const dataSerializada = $('#nestable').nestable('serialize');
+
+                            // Convertimos el arreglo a una cadena JSON string
+                            const jsonEstructura = window.JSON.stringify(dataSerializada);
+
+                            // Enviamos el nuevo orden al controlador PHP por AJAX
+                            $.ajax({
+                                url: '<?= RUTA_URL ?>/menus/guardar_orden_ajax',
+                                type: 'POST',
+                                data: {
+                                    estructura: jsonEstructura
+                                },
+                                dataType: 'json',
+                                success: function(r) {
+                                    if (r.ok) {
+                                        // Notificación flotante (Toast)
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: r.mensaje,
+                                            toast: true,
+                                            position: 'top-end',
+                                            showConfirmButton: false,
+                                            timer: 2000,
+                                            timerProgressBar: true
+                                        });
+                                    } else {
+                                        Swal.fire('Error', r.mensaje, 'error');
+                                    }
+                                },
+                                error: function() {
+                                    Swal.fire('Error',
+                                        'No se pudo conectar con el servidor para guardar el orden.',
+                                        'error');
+                                }
+                            });
+                        }, 50);
+
+                    });
                 },
                 error: function() {
                     $('#nestable').html(
-                        '<div class="dd-empty text-danger text-center py-4">Error al cargar los menús.</div>'
+                        '<div id="nestable-placeholder"><div class="dd-empty text-danger text-center py-4">Error al cargar los menús.</div></div>'
                     );
                 }
             });
@@ -114,12 +174,13 @@
                 data: "id=" + id,
                 dataType: "json",
                 success: function(r) {
-                    // console.log(r);
+                    console.log(r);
                     $("#id_menu").val(r.id_menu);
                     $("#textou").val(r.mnu_texto);
                     $("#enlaceu").val(r.mnu_link);
                     $("#iconou").val(r.mnu_icono);
-                    setearIndice("publicadou", r.mnu_publicado);
+                    // SOLUCIÓN: Forzar a string para que coincida exactamente con el value del <option>
+                    $("#publicadou").val(String(r.mnu_publicado));
                 }
             });
         }

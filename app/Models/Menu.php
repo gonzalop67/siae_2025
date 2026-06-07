@@ -154,6 +154,20 @@ class Menu extends Model
         return false;
     }
 
+    public function actualizarOrdenYPadre(int $idMenu, int $padreId, int $orden)
+    {
+        // Ejemplo con PDO clásico:
+        $sql = "UPDATE sw_menu 
+            SET mnu_padre = ?, mnu_orden = ? 
+            WHERE id_menu = ?";
+
+        $stmt = $this->connection->prepare($sql);
+
+        $stmt->bind_param('iii', $padreId, $orden, $idMenu);
+        $stmt->execute();
+        $stmt->close();
+    }
+
     public function validate(array $data, ?int $id = null): bool
     {
         $this->errors = [];
