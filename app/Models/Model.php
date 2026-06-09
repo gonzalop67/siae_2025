@@ -96,29 +96,41 @@ class Model
     public function query(string $sql, array $data = [], ?string $params = null)
     {
         if ($data) {
-            if ($params == null) {
+            // 1. Inferencia automática de tipos optimizada
+            if ($params === null) {
                 $params = '';
                 foreach ($data as $val) {
-                    if (is_int($val)) $params .= 'i';
-                    elseif (is_double($val)) $params .= 'd';
-                    else $params .= 's';
+                    if (is_int($val)) {
+                        $params .= 'i';
+                    } elseif (is_float($val) || is_double($val)) {
+                        $params .= 'd';
+                    } else {
+                        $params .= 's';
+                    }
                 }
             }
 
+            // 2. Preparación de la consulta
             $stmt = $this->connection->prepare($sql);
             if (!$stmt) {
-                // CAMBIO: Lanzar excepción en lugar de matar el script con die()
-                throw new \mysqli_sql_exception('Error en la preparación SQL: ' . $this->connection->error . ' | SQL: ' . $sql, $this->connection->errno);
+                throw new \mysqli_sql_exception('Error en preparación SQL: ' . $this->connection->error . ' | SQL: ' . $sql, $this->connection->errno);
             }
 
+            // 3. Vinculación de parámetros por referencia (desempaquetado seguro)
             $stmt->bind_param($params, ...$data);
 
+            // 4. Ejecución
             if (!$stmt->execute()) {
-                // CORRECCIÓN CLAVE: Lanzar excepción nativa con el código de error (ej: 1451)
-                throw new \mysqli_sql_exception($stmt->error, $stmt->errno);
+                $error_msg = $stmt->error;
+                $error_no  = $stmt->errno;
+                $stmt->close(); // Cerramos antes de lanzar para evitar fugas de memoria
+                throw new \mysqli_sql_exception($error_msg, $error_no);
             }
 
+            // 5. SOLUCCIÓN AL RECURSO: Almacenamiento seguro del resultado antes de cerrar el Statement
             if ($stmt->field_count > 0) {
+                // get_result() extrae el set de datos completo de MySQLi hacia PHP.
+                // Esto permite cerrar el statement de forma segura sin perder los datos leídos.
                 $this->query = $stmt->get_result();
             } else {
                 $this->query = $stmt->affected_rows;
@@ -126,11 +138,14 @@ class Model
 
             $stmt->close();
         } else {
-            $this->query = $this->connection->query($sql);
-            if (!$this->query) {
+            // Consultas directas sin parámetros
+            $result = $this->connection->query($sql);
+            if ($result === false) {
                 throw new \mysqli_sql_exception('Error en consulta directa: ' . $this->connection->error, $this->connection->errno);
             }
+            $this->query = $result;
         }
+
         return $this;
     }
 
