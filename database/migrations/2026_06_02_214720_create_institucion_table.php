@@ -2,14 +2,14 @@
 
 use App\Models\Model;
 
-class CreateInstitutionTable extends Model
+class CreateInstitucionTable extends Model
 {
     /**
      * Ejecuta la migración (Crear o modificar tablas).
      */
     public function up(): void
     {
-        $sql = "CREATE TABLE IF NOT EXISTS institution (
+        $sql = "CREATE TABLE IF NOT EXISTS institucion (
             id INT AUTO_INCREMENT PRIMARY KEY,
             -- Agrega tus columnas aquí
             nombre VARCHAR(64) NOT NULL,
@@ -41,7 +41,7 @@ class CreateInstitutionTable extends Model
      */
     public function down(): void
     {
-        $sql = "DROP TABLE IF EXISTS institution;";
+        $sql = "DROP TABLE IF EXISTS institucion;";
         $this->connection->query($sql);
     }
 }

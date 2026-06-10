@@ -1,21 +1,24 @@
 <?php
 
-use App\Models\Model;
-
-class CreateOfertasEducativasTable extends Model
+class CreateRolesTable
 {
+    /**
+     * Propiedad para almacenar la conexión que inyectará el comando migrate
+     */
+    public $connection;
+
     /**
      * Ejecuta la migración (Crear o modificar tablas).
      */
     public function up(): void
     {
-        $sql = "CREATE TABLE IF NOT EXISTS ofertas_educativas (
+        $sql = "CREATE TABLE IF NOT EXISTS roles (
             id INT AUTO_INCREMENT PRIMARY KEY,
             -- Agrega tus columnas aquí
-            nombre varchar(64) NOT NULL,
-            activo tinyint(1) UNSIGNED NOT NULL,
-            orden int(2) UNSIGNED NOT NULL DEFAULT 0,
-            intensivo tinyint(1) UNSIGNED DEFAULT 1,
+            nombre VARCHAR(32) NOT NULL,
+            slug VARCHAR(32) NOT NULL,
+            descripcion VARCHAR(64) NOT NULL,
+            -- Fin tus columnas
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP NULL
@@ -29,7 +32,7 @@ class CreateOfertasEducativasTable extends Model
      */
     public function down(): void
     {
-        $sql = "DROP TABLE IF EXISTS ofertas_educativas;";
+        $sql = "DROP TABLE IF EXISTS roles;";
         $this->connection->query($sql);
     }
 }

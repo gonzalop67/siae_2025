@@ -2,20 +2,18 @@
 
 use App\Models\Model;
 
-class CreateOfertasEducativasTable extends Model
+class CreateTareasTable extends Model
 {
     /**
      * Ejecuta la migración (Crear o modificar tablas).
      */
     public function up(): void
     {
-        $sql = "CREATE TABLE IF NOT EXISTS ofertas_educativas (
+        $sql = "CREATE TABLE IF NOT EXISTS tareas (
             id INT AUTO_INCREMENT PRIMARY KEY,
             -- Agrega tus columnas aquí
-            nombre varchar(64) NOT NULL,
-            activo tinyint(1) UNSIGNED NOT NULL,
-            orden int(2) UNSIGNED NOT NULL DEFAULT 0,
-            intensivo tinyint(1) UNSIGNED DEFAULT 1,
+            tarea VARCHAR(255) NOT NULL,
+            hecho TINYINT(1) NOT NULL DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             deleted_at TIMESTAMP NULL
@@ -29,7 +27,7 @@ class CreateOfertasEducativasTable extends Model
      */
     public function down(): void
     {
-        $sql = "DROP TABLE IF EXISTS ofertas_educativas;";
+        $sql = "DROP TABLE IF EXISTS tareas;";
         $this->connection->query($sql);
     }
 }

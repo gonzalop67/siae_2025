@@ -5,6 +5,7 @@
 use App\Controllers\Admin\AdminDashboardController;
 use App\Controllers\Admin\InstitucionController;
 use App\Controllers\Admin\MenuController;
+use App\Controllers\Admin\Oferta_educativaController;
 use App\Controllers\Admin\PermissionController;
 use App\Controllers\Admin\RoleController;
 use App\Controllers\Admin\TaskController;
@@ -85,5 +86,7 @@ Route::post('/tasks/:id/update_done', [TaskController::class, 'update_done'], [$
 /** Rutas para Institución */
 Route::get('/institucion', [InstitucionController::class, 'index'], [$authMiddleware]);
 Route::post('/institucion/update', [InstitucionController::class, 'update'], [$authMiddleware]);
+
+
 
 Route::dispatch();
