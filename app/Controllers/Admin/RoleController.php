@@ -4,9 +4,9 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Perfil;
-use App\Models\Permiso;
-use App\Models\PerfilPermiso;
+use App\Models\Admin\Perfil;
+use App\Models\Admin\Permiso;
+use App\Models\Admin\PerfilPermiso;
 
 class RoleController extends Controller
 {

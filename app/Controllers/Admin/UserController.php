@@ -4,9 +4,9 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Usuario;
-use App\Models\Perfil;
-use App\Models\UsuarioPerfil;
+use App\Models\Admin\Usuario;
+use App\Models\Admin\Perfil;
+use App\Models\Admin\UsuarioPerfil;
 
 use Core\Encrypter;
 

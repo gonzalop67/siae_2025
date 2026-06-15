@@ -4,9 +4,9 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Menu;
-use App\Models\Perfil;
-use App\Models\MenuPerfil;
+use App\Models\Admin\Menu;
+use App\Models\Admin\Perfil;
+use App\Models\Admin\MenuPerfil;
 
 class MenuController extends Controller
 {

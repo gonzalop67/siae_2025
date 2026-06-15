@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
+
+use App\Models\Model;
 
 class Perfil extends Model
 {

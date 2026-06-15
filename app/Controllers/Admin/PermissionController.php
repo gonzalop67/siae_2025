@@ -4,7 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Permiso;
+use App\Models\Admin\Permiso;
 
 class PermissionController extends Controller
 {

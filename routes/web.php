@@ -87,6 +87,6 @@ Route::post('/tasks/:id/update_done', [TaskController::class, 'update_done'], [$
 Route::get('/institucion', [InstitucionController::class, 'index'], [$authMiddleware]);
 Route::post('/institucion/update', [InstitucionController::class, 'update'], [$authMiddleware]);
 
-
+/** Rutas para Ofertas Educativas */
 
 Route::dispatch();

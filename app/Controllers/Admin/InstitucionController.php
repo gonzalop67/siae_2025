@@ -4,7 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Institucion;
+use App\Models\Admin\Institucion;
 
 class InstitucionController extends Controller
 {

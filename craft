@@ -93,14 +93,30 @@ function generarMigración($name, $forcedTableName = null) {
 }
 
 function generarControlador($name, $isResource, $descomentarCrud = false) {
+    // 1. Asegurar el sufijo Controller e identificar rutas / subcarpetas
     if (!str_ends_with($name, 'Controller')) $name .= 'Controller';
-    $targetFile = CONTROLLERS_PATH . $name . '.php';
+    $name = trim(str_replace('\\', '/', $name), '/');
+    $parts = explode('/', $name);
+    
+    $className = array_pop($parts); // "OfertasEducativasController"
+    $subFolders = implode('/', $parts); // "Admin" o vacío
 
+    // 2. Definir rutas físicas y namespaces dinámicos
+    $targetDir = CONTROLLERS_PATH . ($subFolders ? $subFolders . '/' : '');
+    $targetFile = $targetDir . $className . '.php';
+
+    $namespaceBase = 'App\Controllers';
+    $namespaceFinal = $subFolders 
+        ? $namespaceBase . '\\' . str_replace('/', '\\', $subFolders) 
+        : $namespaceBase;
+
+    // 3. Validar existencia del archivo controlador
     if (file_exists($targetFile)) {
         echo "\e[33mEl controlador [{$name}] ya existe.\e[0m\n";
         return;
     }
 
+    // 4. Cargar plantilla (Stub de recurso o básica)
     if ($isResource) {
         if (!file_exists(STUBS_PATH . 'Controller.stub')) {
             echo "\e[31mError:\e[0m Falta plantilla Controller.stub\n";
@@ -108,40 +124,86 @@ function generarControlador($name, $isResource, $descomentarCrud = false) {
         }
         $template = file_get_contents(STUBS_PATH . 'Controller.stub');
     } else {
-        $template = "<?php\n\nnamespace App\Controllers;\n\nuse App\Controllers\Controller;\n\nclass {{ClassName}} extends Controller\n{\n    public function index()\n    {\n        //\n    }\n}\n";
+        $template = "<?php\n\nnamespace {{Namespace}};\n\nuse App\Controllers\Controller;\n\nclass {{ClassName}} extends Controller\n{\n    public function index()\n    {\n        //\n    }\n}\n";
     }
 
-    $baseName = str_replace('Controller', '', $name);
+    // 5. Crear los directorios físicos si no existen
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0755, true);
+    }
+
+    // 6. Calcular variables de reemplazo basadas en el nombre limpio de la clase
+    $baseName = str_replace('Controller', '', $className);
     $lowerName = strtolower($baseName);
-    $compiled = str_replace(['{{ClassName}}', '{{LowerName}}'], [$name, $lowerName], $template);
+
+    $compiled = str_replace(
+        ['{{Namespace}}', '{{ClassName}}', '{{LowerName}}'], 
+        [$namespaceFinal, $className, $lowerName], 
+        $template
+    );
     
-    // NUEVO: Si se ejecuta vía make:crud, activamos las líneas de código comentadas de tu Stub
+    // 7. Tu lógica nativa: Activar líneas comentadas si viene de make:crud
     if ($descomentarCrud) {
         $compiled = preg_replace('/^\s*\/+\s*(\$this->model|\$data|return redirect|return \$this)/m', '$1', $compiled);
     }
 
+    // 8. Escribir archivo final
     file_put_contents($targetFile, $compiled);
     echo "\e[32mControlador creado con éxito:\e[0m App/Controllers/{$name}.php\n";
 }
 
+
 function generarModelo($name) {
-    $targetFile = MODELS_PATH . $name . '.php';
+    // 1. Limpiar barras y separar el nombre de la clase de las subcarpetas
+    $name = trim(str_replace('\\', '/', $name), '/');
+    $parts = explode('/', $name);
+    $className = array_pop($parts); // "OfertasEducativas"
+    $subFolders = implode('/', $parts); // "Admin" (o vacío si no hay)
+
+    // 2. Determinar la ruta final y el namespace dinámico
+    $targetDir = MODELS_PATH . ($subFolders ? $subFolders . '/' : '');
+    $targetFile = $targetDir . $className . '.php';
+
+    $namespaceBase = 'App\Models';
+    $namespaceFinal = $subFolders 
+        ? $namespaceBase . '\\' . str_replace('/', '\\', $subFolders) 
+        : $namespaceBase;
+
+    // 3. Validar existencia del archivo
     if (file_exists($targetFile)) {
         echo "\e[33mEl modelo [{$name}] ya existe.\e[0m\n";
         return;
     }
 
+    // 4. Validar que exista la plantilla stub
     if (!file_exists(STUBS_PATH . 'Model.stub')) {
         echo "\e[31mError:\e[0m Falta plantilla Model.stub\n";
         return;
     }
 
+    // 5. Crear los directorios físicos si no existen
+    if (!is_dir($targetDir)) {
+        mkdir($targetDir, 0755, true);
+    }
+
+    // 6. Calcular el nombre de la tabla en snake_case (ej: "ofertas_educativas_table" -> "ofertas_educativas")
+    $snakeName = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $className));
+    $tableName = $snakeName . 's';
+
+    // 7. Leer, reemplazar variables e inyectar el Namespace
     $template = file_get_contents(STUBS_PATH . 'Model.stub');
-    $tableName = strtolower($name) . 's';
-    $compiled = str_replace(['{{ModelName}}', '{{TableName}}'], [$name, $tableName], $template);
+    
+    $compiled = str_replace(
+        ['{{Namespace}}', '{{ModelName}}', '{{TableName}}'], 
+        [$namespaceFinal, $className, $tableName], 
+        $template
+    );
+
+    // 8. Guardar archivo final
     file_put_contents($targetFile, $compiled);
     echo "\e[32mModelo creado con éxito:\e[0m App/Models/{$name}.php (Tabla: {$tableName})\n";
 }
+
 
 // ==========================================
 // COMANDO: php craft make:migration
@@ -170,7 +232,6 @@ if ($command === 'make:migration') {
     generarMigración($name, $tableName);
     exit(0);
 }
-
 
 // ==========================================
 // COMANDO: php craft migrate

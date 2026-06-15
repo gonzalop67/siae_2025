@@ -4,7 +4,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Task;
+use App\Models\Admin\Task;
 
 class TaskController extends Controller
 {

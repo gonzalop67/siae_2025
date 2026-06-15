@@ -4,16 +4,16 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
 
-use App\Models\Oferta_educativa;
+use App\Models\Admin\OfertasEducativas;
 
 class Oferta_educativaController extends Controller
 {
-    protected Oferta_educativa $ofertaEducativaModel;
+    protected OfertasEducativas $ofertaEducativaModel;
 
     public function __construct()
     {
         parent::__construct(); // <--- ESTO ES OBLIGATORIO
-        $this->ofertaEducativaModel = new Oferta_educativa;
+        $this->ofertaEducativaModel = new OfertasEducativas;
     }
     
     /**

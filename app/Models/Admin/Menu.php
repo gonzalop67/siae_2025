@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Admin;
 
 use App\Models\Model;
 
@@ -30,11 +30,19 @@ class Menu extends Model
     public function getMenuByPerfil(int $id_perfil): array
     {
         // 1. CONSULTA CON JOIN: Conectamos la tabla puente usando id_menu
-        $sql = "SELECT m.id_menu, m.mnu_texto, m.mnu_enlace, m.mnu_link, m.mnu_nivel, m.mnu_orden, m.mnu_padre, m.mnu_icono, m.mnu_publicado 
-                FROM sw_menu m
-                INNER JOIN sw_menu_perfil mp ON m.id_menu = mp.id_menu
-                WHERE mp.id_perfil = ? AND m.mnu_publicado = 1
-                ORDER BY m.mnu_nivel ASC, m.mnu_orden ASC";
+        $sql = "SELECT m.id_menu, 
+                       m.mnu_texto, 
+                       m.mnu_enlace, 
+                       m.mnu_link, 
+                       m.mnu_nivel, 
+                       m.mnu_orden, 
+                       m.mnu_padre, 
+                       m.mnu_icono, 
+                       m.mnu_publicado 
+                  FROM sw_menu m
+                 INNER JOIN sw_menu_perfil mp ON m.id_menu = mp.id_menu
+                 WHERE mp.id_perfil = ? AND m.mnu_publicado = 1
+                 ORDER BY m.mnu_nivel ASC, m.mnu_orden ASC";
 
         $stmt = $this->connection->prepare($sql);
         if (!$stmt) {
