@@ -2,10 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Models\Perfil;
-use App\Models\Usuario;
-use App\Models\Institucion;
-use App\Models\UsuarioPerfil;
+use App\Models\Admin\Perfil;
+use App\Models\Admin\Usuario;
+use App\Models\Admin\Institucion;
+use App\Models\Admin\UsuarioPerfil;
 
 use Core\Encrypter;
 
@@ -67,7 +67,7 @@ class LoginController extends Controller
                 $_SESSION['user_id']   = $usuario['id_usuario']; // ID del usuario logueado
                 $_SESSION['perfil_id'] = $id_perfil;             // ID del perfil seleccionado activo
 
-                $menuModel = new \App\Models\Menu();
+                $menuModel = new \App\Models\Admin\Menu();
                 $_SESSION['menuItems'] = $menuModel->getMenuByPerfil((int)$id_perfil);
                 
                 $_SESSION['username'] = $usuario['us_shortname'];

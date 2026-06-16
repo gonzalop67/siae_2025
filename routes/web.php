@@ -5,7 +5,6 @@
 use App\Controllers\Admin\AdminDashboardController;
 use App\Controllers\Admin\InstitucionController;
 use App\Controllers\Admin\MenuController;
-use App\Controllers\Admin\Oferta_educativaController;
 use App\Controllers\Admin\PermissionController;
 use App\Controllers\Admin\RoleController;
 use App\Controllers\Admin\TaskController;

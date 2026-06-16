@@ -90,7 +90,7 @@ class Menu extends Model
     public function getMenus(int $id_perfil)
     {
         // Filtramos directamente por el ID del perfil seleccionado
-        $sql = "SELECT m.*, pe_nombre FROM `sw_menu` m
+        $sql = "SELECT m.* FROM `sw_menu` m
             INNER JOIN `sw_menu_perfil` mp ON m.id_menu = mp.id_menu
             INNER JOIN `sw_perfil` p ON p.id_perfil = mp.id_perfil 
             WHERE mp.id_perfil = ?

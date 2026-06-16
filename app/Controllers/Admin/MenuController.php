@@ -62,10 +62,7 @@ class MenuController extends Controller
             $html .= '  <div class="dd-handle dd3-handle"></div>';
             $html .= '  <div class="dd3-content menu_link">';
 
-            // Mostrar el nombre del perfil solo si existe en este nodo
-            $perfil = isset($menu["pe_nombre"]) ? '(' . $menu["pe_nombre"] . ') ' : '';
-
-            $html .= '    <a href="#" onclick="obtenerDatos(' . $menu["id_menu"] . ')" data-toggle="modal" data-target="#editarMenuModal">' . $perfil . $menu["mnu_texto"] . '</a>';
+            $html .= '    <a href="#" onclick="obtenerDatos(' . $menu["id_menu"] . ')" data-toggle="modal" data-target="#editarMenuModal">' . $menu["mnu_texto"] . '</a>';
             $html .= '    <a href="' . RUTA_URL . '/menus/delete/' . $menu["id_menu"] . '" class="eliminar-menu float-right" title="Eliminar este menú"><i class="text-danger fas fa-trash-alt"></i></a>';
             $html .= '  </div>';
 
