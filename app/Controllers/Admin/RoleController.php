@@ -40,8 +40,6 @@ class RoleController extends Controller
                 ->paginate(5);
         }
 
-        // return $roles;
-
         return $this->view('admin.roles.index', compact('roles', 'title'));
     }
 

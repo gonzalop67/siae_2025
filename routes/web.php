@@ -55,12 +55,18 @@ Route::post('/roles/:id/permissions', [RoleController::class, 'updatePermissions
 // Ruta para la eliminación "suave"
 Route::post('/roles/:id/delete', [RoleController::class, 'delete'], [$authMiddleware]);
 
-/** Rutas para Permisos */
-Route::get('/permissions', [PermissionController::class, 'index'], [$authMiddleware]);
-Route::get('/permissions/create', [PermissionController::class, 'create'], [$authMiddleware]);
-Route::post('/permissions', [PermissionController::class, 'store'], [$authMiddleware]);
-Route::get('/permissions/:id/edit', [PermissionController::class, 'edit'], [$authMiddleware]);
-Route::post('/permissions/:id/update', [PermissionController::class, 'update'], [$authMiddleware]);
+/** Rutas para Permisos (Quita el / del inicio si tu enrutador usa trim($uri, '/')) */
+Route::get('permissions', [PermissionController::class, 'index'], [$authMiddleware]);
+Route::get('permissions/create', [PermissionController::class, 'create'], [$authMiddleware]);
+Route::post('permissions', [PermissionController::class, 'store'], [$authMiddleware]);
+// Ver el listado de la papelera (GET)
+Route::get('permissions/wastebasket', [PermissionController::class, 'wastebasket'], [$authMiddleware]);
+Route::post('permissions/:id/restore', [PermissionController::class, 'restore'], [$authMiddleware]);
+Route::post('permissions/:id/destroy', [PermissionController::class, 'destroy'], [$authMiddleware]);
+// Rutas comunes
+Route::get('permissions/:id/edit', [PermissionController::class, 'edit'], [$authMiddleware]);
+Route::post('permissions/:id/update', [PermissionController::class, 'update'], [$authMiddleware]);
+Route::post('permissions/:id/delete', [PermissionController::class, 'delete'], [$authMiddleware]);
 
 /** Rutas para Menús */
 Route::get('/menus', [MenuController::class, 'index'], [$authMiddleware]);

@@ -17,8 +17,8 @@
                     <div class="d-flex align-items-center">
 
                         <!-- Se cambió me-3 por mr-3 (Bootstrap 4) y se quitó el mb-3 para alinearlos bien -->
-                        <a href="<?= RUTA_URL ?>/permissions/create" class="btn btn-primary btn-sm mr-1"><i
-                                class="fa-solid fa-user-gear"></i> Nuevo Permiso</a>
+                        <a href="<?= RUTA_URL ?>/permissions/create" class="btn btn-primary btn-sm mr-1"><i class="fa-solid fa-user-gear"></i> Nuevo Permiso</a>
+                        <a href="<?= RUTA_URL ?>/permissions/wastebasket" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> Papelera</a>
 
                     </div>
 
@@ -83,4 +83,51 @@
             @endif
         </div>
     </div>
+    <script>
+        function confirmarEliminacion(idPermiso) {
+            // 1. Mostrar alerta de confirmación previa al borrado
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "El permiso será enviado a la papelera.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                // 2. Si el usuario confirma, enviamos la petición vía Fetch (AJAX)
+                if (result.isConfirmed) {
+                    // Reemplaza esta URL por la ruta real que apunte a tu método destroy
+                    fetch(`${base_url}/permissions/${idPermiso}/delete`, {
+                            method: 'POST', // O 'DELETE' según manejes tus rutas en PHP puro
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // 3. Alerta de éxito total
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    // Recargamos la página o removemos la fila de la tabla dinámicamente
+                                    location.reload();
+                                });
+                            } else {
+                                // Alerta en caso de error lógico
+                                Swal.fire('Error', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            // Alerta en caso de error de red
+                            Swal.fire('Error', 'No se pudo comunicar con el servidor.', 'error');
+                        });
+                }
+            });
+        }
+    </script>
 @endsection

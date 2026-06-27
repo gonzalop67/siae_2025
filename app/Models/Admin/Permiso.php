@@ -10,6 +10,9 @@ class Permiso extends Model
     protected string $primaryKey = 'id_permiso';
     protected array $fillable = ['nombre', 'slug', 'descripcion'];
 
+    // Activas la funcionalidad exclusivamente para este modelo
+    protected bool $useSoftDeletes = true;
+
     public function validate(array $data, ?int $id = null): bool
     {
         $this->errors = [];

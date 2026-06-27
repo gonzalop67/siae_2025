@@ -52,7 +52,4 @@
     </div>
 </div>
 
-<script>
-    const base_url = "<?php echo RUTA_URL; ?>";
-</script>
 <script src="<?php echo RUTA_URL; ?>public/assets/js/pages/admin/aportes_evaluacion/create.js"></script>

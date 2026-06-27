@@ -65,15 +65,21 @@ class Model
     }
 
     // SOFT DELETE: Métodos modificadores de flujo estilo Laravel
-    public function withTrashed(): self
+    public function withTrashed()
     {
+        $this->resetQuery();
+        $this->useSoftDeletes = true;
         $this->withTrashed = true;
+        $this->onlyTrashed = false;
         return $this;
     }
 
-    public function onlyTrashed(): self
+    public function onlyTrashed()
     {
+        $this->resetQuery(); // Limpia campos structurales (where, values, orderBy)
+        $this->useSoftDeletes = true;
         $this->onlyTrashed = true;
+        $this->withTrashed = false;
         return $this;
     }
 
@@ -96,41 +102,29 @@ class Model
     public function query(string $sql, array $data = [], ?string $params = null)
     {
         if ($data) {
-            // 1. Inferencia automática de tipos optimizada
-            if ($params === null) {
+            if ($params == null) {
                 $params = '';
                 foreach ($data as $val) {
-                    if (is_int($val)) {
-                        $params .= 'i';
-                    } elseif (is_float($val) || is_double($val)) {
-                        $params .= 'd';
-                    } else {
-                        $params .= 's';
-                    }
+                    if (is_int($val)) $params .= 'i';
+                    elseif (is_double($val)) $params .= 'd';
+                    else $params .= 's';
                 }
             }
 
-            // 2. Preparación de la consulta
             $stmt = $this->connection->prepare($sql);
             if (!$stmt) {
-                throw new \mysqli_sql_exception('Error en preparación SQL: ' . $this->connection->error . ' | SQL: ' . $sql, $this->connection->errno);
+                // CAMBIO: Lanzar excepción en lugar de matar el script con die()
+                throw new \mysqli_sql_exception('Error en la preparación SQL: ' . $this->connection->error . ' | SQL: ' . $sql, $this->connection->errno);
             }
 
-            // 3. Vinculación de parámetros por referencia (desempaquetado seguro)
             $stmt->bind_param($params, ...$data);
 
-            // 4. Ejecución
             if (!$stmt->execute()) {
-                $error_msg = $stmt->error;
-                $error_no  = $stmt->errno;
-                $stmt->close(); // Cerramos antes de lanzar para evitar fugas de memoria
-                throw new \mysqli_sql_exception($error_msg, $error_no);
+                // CORRECCIÓN CLAVE: Lanzar excepción nativa con el código de error (ej: 1451)
+                throw new \mysqli_sql_exception($stmt->error, $stmt->errno);
             }
 
-            // 5. SOLUCCIÓN AL RECURSO: Almacenamiento seguro del resultado antes de cerrar el Statement
             if ($stmt->field_count > 0) {
-                // get_result() extrae el set de datos completo de MySQLi hacia PHP.
-                // Esto permite cerrar el statement de forma segura sin perder los datos leídos.
                 $this->query = $stmt->get_result();
             } else {
                 $this->query = $stmt->affected_rows;
@@ -138,14 +132,11 @@ class Model
 
             $stmt->close();
         } else {
-            // Consultas directas sin parámetros
-            $result = $this->connection->query($sql);
-            if ($result === false) {
+            $this->query = $this->connection->query($sql);
+            if (!$this->query) {
                 throw new \mysqli_sql_exception('Error en consulta directa: ' . $this->connection->error, $this->connection->errno);
             }
-            $this->query = $result;
         }
-
         return $this;
     }
 
@@ -202,7 +193,7 @@ class Model
         return $sql;
     }
 
-    // SOFT DELETE: Limpiar los estados para no afectar a la siguiente consulta del script
+    // SOFT DELETE: Limpiar solo las cláusulas estructurales de la consulta actual
     protected function resetQuery()
     {
         $this->select = "*";
@@ -210,8 +201,8 @@ class Model
         $this->values = [];
         $this->orderBy = "";
         $this->query = null;
-        $this->withTrashed = false; // Reset de bandera
-        $this->onlyTrashed = false; // Reset de bandera
+        // ❌ ELIMINADO: No limpies aquí con $this->onlyTrashed = false;
+        // ❌ ELIMINADO: No limpies aquí con $this->withTrashed = false;
     }
 
     public function first()
@@ -252,13 +243,13 @@ class Model
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         if ($page < 1) $page = 1;
 
-        // MEJORA: El conteo ahora usa la misma estructura de buildSelectSql para respetar SoftDeletes
+        // MEJORA CRÍTICA: Se califica 'deleted_at' con el nombre de la tabla para evitar ambigüedades en JOINs
         $softDeleteWhere = "";
         if ($this->useSoftDeletes) {
             if ($this->onlyTrashed) {
-                $softDeleteWhere = "deleted_at IS NOT NULL";
+                $softDeleteWhere = "{$this->table}.deleted_at IS NOT NULL";
             } elseif (!$this->withTrashed) {
-                $softDeleteWhere = "deleted_at IS NULL";
+                $softDeleteWhere = "{$this->table}.deleted_at IS NULL";
             }
         }
 
@@ -312,13 +303,19 @@ class Model
         $queryParams = $_GET;
         unset($queryParams['page']); // Eliminamos la página actual para sobrescribirla después
 
-        $this->resetQuery();
-
         $last_page = (int)ceil($total / $cant);
         if ($last_page < 1) $last_page = 1;
 
         // Construcción de strings de consulta para preservar el buscador en los enlaces
         $queryString = count($queryParams) > 0 ? '&' . http_build_query($queryParams) : '';
+
+        // 🔥 CORRECCIÓN AQUÍ: Movido al final absoluto del proceso.
+        // Primero limpiamos la estructura de la consulta
+        $this->resetQuery();
+
+        // Y finalmente apagamos las banderas para que el modelo quede limpio para el siguiente flujo del script
+        $this->onlyTrashed = false;
+        $this->withTrashed = false;
 
         return [
             'total'        => $total,
@@ -335,6 +332,10 @@ class Model
     // SOFT DELETE: Ahora utiliza buildSelectSql() en vez de SQL duro para respetar los filtros
     public function all()
     {
+        $this->resetQuery();
+        $this->useSoftDeletes = true;
+        $this->withTrashed = false;
+        $this->onlyTrashed = false;
         $sql = $this->buildSelectSql();
         return $this->query($sql, $this->values)->get();
     }
@@ -461,7 +462,6 @@ class Model
             $fields[] = "{$key} = ?";
         }
         $sql = "UPDATE {$this->table} SET " . implode(', ', $fields) . " WHERE {$this->primaryKey} = ?";
-
         $values = array_values($data);
         $values[] = $id;
 
